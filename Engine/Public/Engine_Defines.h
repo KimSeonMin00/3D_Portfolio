@@ -6,6 +6,8 @@
 
 #include <d3dcompiler.h>
 #include <Effects11/d3dx11effect.h>
+#include <DirectXTK/DDSTextureLoader.h>
+#include <DirectXTK/WICTextureLoader.h>
 
 #include <DirectXMath.h>
 using namespace DirectX;

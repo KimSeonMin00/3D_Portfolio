@@ -85,6 +85,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 	}
 
+	RELEASE_INSTANCE(CGameInstance);
+
 	Safe_Release(pMainApp);
     
     return (int) msg.wParam;

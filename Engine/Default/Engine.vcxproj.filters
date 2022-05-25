@@ -58,6 +58,9 @@
     <ClCompile Include="..\Public\Engine_Struct.cpp">
       <Filter>99.HIeaders</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Texture.cpp">
+      <Filter>01.Utility\03.Components\Texture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -130,6 +133,9 @@
     <ClInclude Include="..\Public\Shader.h">
       <Filter>01.Utility\03.Components\Shader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Texture.h">
+      <Filter>01.Utility\03.Components\Texture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00.System">
@@ -197,6 +203,9 @@
     </Filter>
     <Filter Include="01.Utility\03.Components\Shader">
       <UniqueIdentifier>{333a6cbe-5c39-402b-9846-a97473f9c414}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Components\Texture">
+      <UniqueIdentifier>{02d8ede7-995d-4a21-a002-80443e03ad7d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
