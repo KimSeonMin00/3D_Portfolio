@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="98.Default">
+      <UniqueIdentifier>{4df6ad82-f155-45c5-806f-5368a5ea872b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.MainApp">
+      <UniqueIdentifier>{fcc4098d-4d4d-4bb2-be3c-5fffd82925a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99.Headers">
+      <UniqueIdentifier>{4d737215-7201-4bdd-a061-8e56bc2835d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels">
+      <UniqueIdentifier>{f79c1202-5ed2-46c7-9f70-688a16401582}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\Logo">
+      <UniqueIdentifier>{e7a52a48-4c68-4d4a-bc3f-f1acbc038b42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\Loading">
+      <UniqueIdentifier>{3454500c-e17a-497d-8f35-67a44428a328}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\GamePlay">
+      <UniqueIdentifier>{a1af0104-8e17-49bc-bf0a-acf1c3e35ffd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\Loading\Loader">
+      <UniqueIdentifier>{c4a585e4-8014-4baa-a70d-affc236effc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.ShaderFiles">
+      <UniqueIdentifier>{5816a62e-eb06-4d91-a4fe-c3bb2a7b5b1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects">
+      <UniqueIdentifier>{4e7a46a3-df4e-45d1-ac0c-ccfbe4e1b118}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Client.h">
+      <Filter>98.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>98.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>98.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>98.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MainApp.h">
+      <Filter>00.MainApp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Client_Defines.h">
+      <Filter>99.Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Loader.h">
+      <Filter>01.Levels\Loading\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_GamePlay.h">
+      <Filter>01.Levels\GamePlay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Loading.h">
+      <Filter>01.Levels\Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Logo.h">
+      <Filter>01.Levels\Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BackGround.h">
+      <Filter>02.GameObjects</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Client.cpp">
+      <Filter>98.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>98.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MainApp.cpp">
+      <Filter>00.MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Loader.cpp">
+      <Filter>01.Levels\Loading\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_GamePlay.cpp">
+      <Filter>01.Levels\GamePlay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Loading.cpp">
+      <Filter>01.Levels\Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Logo.cpp">
+      <Filter>01.Levels\Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BackGround.cpp">
+      <Filter>02.GameObjects</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Client.ico">
+      <Filter>98.Default</Filter>
+    </Image>
+    <Image Include="small.ico">
+      <Filter>98.Default</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Client.rc">
+      <Filter>98.Default</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt">
+      <Filter>98.Default</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shader_VtxTex.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
