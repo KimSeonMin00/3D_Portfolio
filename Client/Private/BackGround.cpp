@@ -50,9 +50,36 @@ HRESULT CBackGround::Render()
 		return E_FAIL;
 
 
-	m_pShaderCom->Set_RawValue("g_WorldMatrix", &XMMatrixIdentity(), sizeof(_float4x4));
-	m_pShaderCom->Set_RawValue("g_ViewMatrix", &XMMatrixIdentity(), sizeof(_float4x4));
-	m_pShaderCom->Set_RawValue("g_ProjMatrix", &XMMatrixIdentity(), sizeof(_float4x4));
+	_float4x4		WorldMatrix, ViewMatrix, ProjMatrix;
+
+	// xm -> float : Store
+	// float -> xm : Load
+
+	XMStoreFloat4x4(&WorldMatrix, XMMatrixIdentity());
+	XMStoreFloat4x4(&ViewMatrix, XMMatrixIdentity());
+	XMStoreFloat4x4(&ProjMatrix, XMMatrixIdentity());
+
+	/*_float3			vPosition, vDir;
+
+	_vector			vPos = XMLoadFloat3(&vPosition) + XMLoadFloat3(&vDir);
+
+	XMMatrixRotationY(XMConvertToRadians(30.f))
+
+	XMStoreFloat3(&vPosition, vPos);*/
+
+	//_vector			vDir = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+	//
+	//vDir = XMVectorSetZ(vDir, 1.f);
+	//
+	//D3DXMatrixScaling();
+	//XMMatrixScaling()
+
+	m_pShaderCom->Set_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4));
+	m_pShaderCom->Set_RawValue("g_ViewMatrix", &ViewMatrix, sizeof(_float4x4));
+	m_pShaderCom->Set_RawValue("g_ProjMatrix", &ProjMatrix, sizeof(_float4x4));
+
+	if (FAILED(m_pTextureCom->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture", 0)))
+		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Begin(0)))
 		return E_FAIL;
@@ -75,6 +102,10 @@ HRESULT CBackGround::SetUp_Components()
 
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Components(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBufferCom)))
+		return E_FAIL;
+
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Components(LEVEL_LOGO, TEXT("Prototype_Component_Texture_Logo"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
 	return S_OK;

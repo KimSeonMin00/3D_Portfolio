@@ -2,7 +2,6 @@
 #include "..\Public\Loader.h"
 
 #include "GameInstance.h"
-
 #include "BackGround.h"
 
 
@@ -74,12 +73,11 @@ _uint CLoader::Loading_ForLogo()
 #pragma region COMPONENT
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩중입니다."));
 
-	
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_Logo"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Texture/Default%d.dds"), 2))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("모델을 생성중입니다."));
-
-	
-
 
 #pragma endregion
 

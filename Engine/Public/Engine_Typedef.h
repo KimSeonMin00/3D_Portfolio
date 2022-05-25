@@ -24,9 +24,10 @@ namespace Engine
 	typedef XMFLOAT4					_float4;
 	typedef XMFLOAT3					_float3;
 	typedef XMFLOAT2					_float2;
+	typedef XMVECTOR					_vector;
 
 	typedef XMFLOAT4X4					_float4x4;
+	typedef XMMATRIX					_matrix;
 
-
-
+	typedef FXMMATRIX					_fmatrix;
 }
