@@ -11,8 +11,6 @@
 // Read online: https://github.com/ocornut/imgui/tree/master/docs
 
 #pragma once
-#include "Graphic_Device.h"
-#include "Client_Defines.h"
 #include "imgui.h"      // IMGUI_IMPL_API
 
 struct ID3D11Device;

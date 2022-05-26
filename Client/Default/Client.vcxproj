@@ -155,6 +155,14 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Reference\Headers\ImGui\imconfig.h" />
+    <ClInclude Include="..\..\Reference\Headers\ImGui\imgui.h" />
+    <ClInclude Include="..\..\Reference\Headers\ImGui\imgui_impl_dx11.h" />
+    <ClInclude Include="..\..\Reference\Headers\ImGui\imgui_impl_win32.h" />
+    <ClInclude Include="..\..\Reference\Headers\ImGui\imgui_internal.h" />
+    <ClInclude Include="..\..\Reference\Headers\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="..\..\Reference\Headers\ImGui\imstb_textedit.h" />
+    <ClInclude Include="..\..\Reference\Headers\ImGui\imstb_truetype.h" />
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
@@ -168,6 +176,13 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Reference\Headers\ImGui\imgui.cpp" />
+    <ClCompile Include="..\..\Reference\Headers\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="..\..\Reference\Headers\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="..\..\Reference\Headers\ImGui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="..\..\Reference\Headers\ImGui\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\..\Reference\Headers\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="..\..\Reference\Headers\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />

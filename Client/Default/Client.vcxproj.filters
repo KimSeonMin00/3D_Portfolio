@@ -13,9 +13,6 @@
     <Filter Include="01.Levels">
       <UniqueIdentifier>{f79c1202-5ed2-46c7-9f70-688a16401582}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\Logo">
-      <UniqueIdentifier>{e7a52a48-4c68-4d4a-bc3f-f1acbc038b42}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\Loading">
       <UniqueIdentifier>{3454500c-e17a-497d-8f35-67a44428a328}</UniqueIdentifier>
     </Filter>
@@ -30,6 +27,12 @@
     </Filter>
     <Filter Include="02.GameObjects">
       <UniqueIdentifier>{4e7a46a3-df4e-45d1-ac0c-ccfbe4e1b118}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\Loading\Logo">
+      <UniqueIdentifier>{e7a52a48-4c68-4d4a-bc3f-f1acbc038b42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="96.ImGUI">
+      <UniqueIdentifier>{9573ee95-c92c-47fa-8aad-e0b82d8a60a9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -61,10 +64,34 @@
       <Filter>01.Levels\Loading</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_Logo.h">
-      <Filter>01.Levels\Logo</Filter>
+      <Filter>01.Levels\Loading\Logo</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BackGround.h">
       <Filter>02.GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Reference\Headers\ImGui\imgui_impl_win32.h">
+      <Filter>96.ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Reference\Headers\ImGui\imgui_internal.h">
+      <Filter>96.ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Reference\Headers\ImGui\imstb_rectpack.h">
+      <Filter>96.ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Reference\Headers\ImGui\imstb_textedit.h">
+      <Filter>96.ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Reference\Headers\ImGui\imstb_truetype.h">
+      <Filter>96.ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Reference\Headers\ImGui\imconfig.h">
+      <Filter>96.ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Reference\Headers\ImGui\imgui.h">
+      <Filter>96.ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Reference\Headers\ImGui\imgui_impl_dx11.h">
+      <Filter>96.ImGUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -87,10 +114,31 @@
       <Filter>01.Levels\Loading</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_Logo.cpp">
-      <Filter>01.Levels\Logo</Filter>
+      <Filter>01.Levels\Loading\Logo</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BackGround.cpp">
       <Filter>02.GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Reference\Headers\ImGui\imgui_tables.cpp">
+      <Filter>96.ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Reference\Headers\ImGui\imgui_widgets.cpp">
+      <Filter>96.ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Reference\Headers\ImGui\imgui.cpp">
+      <Filter>96.ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Reference\Headers\ImGui\imgui_demo.cpp">
+      <Filter>96.ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Reference\Headers\ImGui\imgui_draw.cpp">
+      <Filter>96.ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Reference\Headers\ImGui\imgui_impl_dx11.cpp">
+      <Filter>96.ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Reference\Headers\ImGui\imgui_impl_win32.cpp">
+      <Filter>96.ImGUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -3,6 +3,10 @@
 #include "GameInstance.h"
 #include "Level_Loading.h"
 
+#include "ImGui\imgui.h"
+#include "ImGui\imgui_impl_win32.h"
+#include "ImGui\imgui_impl_dx11.h"
+
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::Get_Instance())
@@ -32,6 +36,13 @@ HRESULT CMainApp::NativeConstruct()
 	if (FAILED(Open_Level(LEVEL_LOGO)))
 		return E_FAIL;
 
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	ImGui_ImplWin32_Init(&g_hWnd);
+	ImGui_ImplDX11_Init(m_pDevice, m_pDeviceContext);
+	ImGui::StyleColorsDark();
+
 	return S_OK;
 }
 
@@ -48,8 +59,19 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Clear_BackBuffer_View(_float4(0.f, 0.f, 1.f, 1.f));
 	m_pGameInstance->Clear_DepthStencil_View();
 
+	ImGui_ImplWin32_NewFrame();
+	ImGui_ImplDX11_NewFrame();
+	ImGui::NewFrame();
+	{
+		ImGui::Begin("Test");
+	}
+	ImGui::EndFrame();
+
 	if (FAILED(m_pRenderer->Draw_Renderer()))
 		return E_FAIL;
+
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 	m_pGameInstance->Render_Engine();
 
@@ -101,6 +123,10 @@ CMainApp * CMainApp::Create()
 
 void CMainApp::Free()
 {
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
+
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);
 
