@@ -1,5 +1,9 @@
 #include "..\Public\GameObject.h"
+
 #include "GameInstance.h"
+#include "Transform.h"
+
+const _tchar* CGameObject::m_pTransformTag = TEXT("Com_Transform");
 
 CGameObject::CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_pDevice(pDevice), m_pDeviceContext(pDeviceContext)
@@ -10,6 +14,7 @@ CGameObject::CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceCont
 
 CGameObject::CGameObject(const CGameObject & rhs)
 	: m_pDevice(rhs.m_pDevice), m_pDeviceContext(rhs.m_pDeviceContext)
+	, m_pTransformCom((CTransform*)rhs.m_pTransformCom->Clone(nullptr))
 {	
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
@@ -25,13 +30,21 @@ CComponent * CGameObject::Find_Component(const _tchar * pComponentTag)
 	return iter->second;	
 }
 
-HRESULT CGameObject::NativeConstruct_Prototype()
+HRESULT CGameObject::NativeConstruct_Prototype(const CTransform::TRANSFORMDESC & TransformDesc)
 {
+	m_pTransformCom = CTransform::Create(m_pDevice, m_pDeviceContext, TransformDesc);
+	if (nullptr == m_pTransformCom)
+		return E_FAIL;
+
 	return S_OK;
 }
 
 HRESULT CGameObject::NativeConstruct(void * pArg)
 {
+	m_Components.emplace(m_pTransformTag, m_pTransformCom);
+
+	Safe_AddRef(m_pTransformCom);
+
 	return S_OK;
 }
 

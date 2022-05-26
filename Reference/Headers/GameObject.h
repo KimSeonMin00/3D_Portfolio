@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Base.h"
+#include "Transform.h"
 
 /* 인게임에 출현할 수 있는 게임오브젝트들의 부모다. */
 BEGIN(Engine)
@@ -16,7 +16,7 @@ public:
 	class CComponent* Find_Component(const _tchar* pComponentTag);
 
 public:
-	virtual HRESULT NativeConstruct_Prototype();
+	virtual HRESULT NativeConstruct_Prototype(const CTransform::TRANSFORMDESC& TransformDesc);
 	virtual HRESULT NativeConstruct(void* pArg);
 	virtual void Tick(_float fTimeDelta);
 	virtual void Late_Tick(_float fTimeDelta);
@@ -25,6 +25,10 @@ public:
 protected:
 	ID3D11Device*				m_pDevice = nullptr;
 	ID3D11DeviceContext*		m_pDeviceContext = nullptr;
+
+protected:
+	static const _tchar*		m_pTransformTag;
+	class CTransform*			m_pTransformCom = nullptr;
 
 protected:
 	map<const _tchar*, class CComponent*>			m_Components;

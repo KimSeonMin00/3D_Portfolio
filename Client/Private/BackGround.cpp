@@ -12,9 +12,9 @@ CBackGround::CBackGround(const CBackGround & rhs)
 {
 }
 
-HRESULT CBackGround::NativeConstruct_Prototype()
+HRESULT CBackGround::NativeConstruct_Prototype(const CTransform::TRANSFORMDESC & TransformDesc)
 {
-	if (FAILED(__super::NativeConstruct_Prototype()))
+	if (FAILED(__super::NativeConstruct_Prototype(TransformDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -28,6 +28,13 @@ HRESULT CBackGround::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
+	m_fSizeX = g_iWinCX;
+	m_fSizeY = g_iWinCY;
+	m_fX = g_iWinCX >> 1;
+	m_fY = g_iWinCY >> 1;
+
+	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixTranspose(XMMatrixOrthographicLH(g_iWinCX, g_iWinCY, 0.f, 1.f)));
+
 	return S_OK;
 }
 
@@ -40,6 +47,9 @@ void CBackGround::Late_Tick(_float fTimeDelta)
 	if (nullptr == m_pRendererCom)
 		return;
 
+	m_pTransformCom->Set_Scaled(XMVectorSet(m_fSizeX, m_fSizeY, 1.f, 0.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_fX - (g_iWinCX >> 1), -m_fY + (g_iWinCY >> 1), 0.f, 1.f));
+
 	m_pRendererCom->Add_RenderList(CRenderer::RENDER_PRIORITY, this);
 }
 
@@ -49,34 +59,15 @@ HRESULT CBackGround::Render()
 		nullptr == m_pVIBufferCom)
 		return E_FAIL;
 
-
 	_float4x4		WorldMatrix, ViewMatrix, ProjMatrix;
 
-	// xm -> float : Store
-	// float -> xm : Load
-
-	XMStoreFloat4x4(&WorldMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&ViewMatrix, XMMatrixIdentity());
-	XMStoreFloat4x4(&ProjMatrix, XMMatrixIdentity());
 
-	/*_float3			vPosition, vDir;
+	if (FAILED(m_pTransformCom->Bind_OnShader(m_pShaderCom, "g_WorldMatrix")))
+		return E_FAIL;
 
-	_vector			vPos = XMLoadFloat3(&vPosition) + XMLoadFloat3(&vDir);
-
-	XMMatrixRotationY(XMConvertToRadians(30.f))
-
-	XMStoreFloat3(&vPosition, vPos);*/
-
-	//_vector			vDir = XMVectorSet(1.f, 0.f, 0.f, 0.f);
-	//
-	//vDir = XMVectorSetZ(vDir, 1.f);
-	//
-	//D3DXMatrixScaling();
-	//XMMatrixScaling()
-
-	m_pShaderCom->Set_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4));
 	m_pShaderCom->Set_RawValue("g_ViewMatrix", &ViewMatrix, sizeof(_float4x4));
-	m_pShaderCom->Set_RawValue("g_ProjMatrix", &ProjMatrix, sizeof(_float4x4));
+	m_pShaderCom->Set_RawValue("g_ProjMatrix", &m_ProjMatrix, sizeof(_float4x4));
 
 	if (FAILED(m_pTextureCom->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture", 0)))
 		return E_FAIL;
@@ -111,11 +102,11 @@ HRESULT CBackGround::SetUp_Components()
 	return S_OK;
 }
 
-CBackGround * CBackGround::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+CBackGround * CBackGround::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const CTransform::TRANSFORMDESC& TransformDesc)
 {
 	CBackGround*		pInstance = new CBackGround(pDevice, pDeviceContext);
 
-	if (FAILED(pInstance->NativeConstruct_Prototype()))
+	if (FAILED(pInstance->NativeConstruct_Prototype(TransformDesc)))
 	{
 		MSGBOX(TEXT("Failed to Created : CBackGround"));
 		Safe_Release(pInstance);

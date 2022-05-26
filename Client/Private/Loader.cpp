@@ -59,7 +59,7 @@ _uint CLoader::Loading_ForLogo()
 
 	///* For.Prototype_GameObject_BackGround */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround"),
-		CBackGround::Create(m_pDevice, m_pDeviceContext))))
+		CBackGround::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(5.f, XMConvertToRadians(90.0f))))))
 		return -1;
 
 	///* For.Prototype_GameObject_UI */
