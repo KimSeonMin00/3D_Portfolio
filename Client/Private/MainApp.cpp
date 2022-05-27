@@ -1,11 +1,12 @@
 #include "stdafx.h"
+
+#include "ImGui\imgui.h"
+#include "ImGui\imgui_impl_dx11.h"
+#include "ImGui\imgui_impl_win32.h"
+
 #include "..\Public\MainApp.h"
 #include "GameInstance.h"
 #include "Level_Loading.h"
-
-#include "ImGui\imgui.h"
-#include "ImGui\imgui_impl_win32.h"
-#include "ImGui\imgui_impl_dx11.h"
 
 
 CMainApp::CMainApp()
@@ -19,6 +20,13 @@ HRESULT CMainApp::NativeConstruct()
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;
 
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO &io = ImGui::GetIO();
+	ImGui::StyleColorsDark();
+
+	ImGui_ImplWin32_Init(g_hWnd);
+
 	CGraphic_Device::GRAPHICDEVDESC		GraphicDevDesc;
 	ZeroMemory(&GraphicDevDesc, sizeof(CGraphic_Device::GRAPHICDEVDESC));
 
@@ -30,18 +38,13 @@ HRESULT CMainApp::NativeConstruct()
 	if (FAILED(m_pGameInstance->Initialize_Engine(g_hInst, LEVEL_END, GraphicDevDesc, &m_pDevice, &m_pDeviceContext)))
 		return E_FAIL;
 
+	ImGui_ImplDX11_Init(m_pDevice, m_pDeviceContext);
+
 	if (FAILED(Ready_Prototype_Component_Static()))
 		return E_FAIL;
 
 	if (FAILED(Open_Level(LEVEL_LOGO)))
 		return E_FAIL;
-
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO();
-	ImGui_ImplWin32_Init(&g_hWnd);
-	ImGui_ImplDX11_Init(m_pDevice, m_pDeviceContext);
-	ImGui::StyleColorsDark();
 
 	return S_OK;
 }
@@ -59,21 +62,20 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Clear_BackBuffer_View(_float4(0.f, 0.f, 1.f, 1.f));
 	m_pGameInstance->Clear_DepthStencil_View();
 
-	ImGui_ImplWin32_NewFrame();
 	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
-	{
-		ImGui::Begin("Test");
-	}
-	ImGui::EndFrame();
 
 	if (FAILED(m_pRenderer->Draw_Renderer()))
 		return E_FAIL;
 
+	m_pGameInstance->Render_Engine();
+
+	ImGui::Begin("Test");
+	ImGui::End();
+
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-	m_pGameInstance->Render_Engine();
 
 	m_pGameInstance->Present();
 
@@ -123,8 +125,8 @@ CMainApp * CMainApp::Create()
 
 void CMainApp::Free()
 {
-	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
+	ImGui_ImplDX11_Shutdown();
 	ImGui::DestroyContext();
 
 	Safe_Release(m_pDeviceContext);
