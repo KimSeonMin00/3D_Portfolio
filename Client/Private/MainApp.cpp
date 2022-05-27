@@ -22,9 +22,7 @@ HRESULT CMainApp::NativeConstruct()
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImGuiIO &io = ImGui::GetIO();
 	ImGui::StyleColorsDark();
-
 	ImGui_ImplWin32_Init(g_hWnd);
 
 	CGraphic_Device::GRAPHICDEVDESC		GraphicDevDesc;
@@ -72,6 +70,7 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Render_Engine();
 
 	ImGui::Begin("Test");
+	ImGui::Button("Check");
 	ImGui::End();
 
 	ImGui::Render();
