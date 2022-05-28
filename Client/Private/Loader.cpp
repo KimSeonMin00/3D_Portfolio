@@ -3,7 +3,8 @@
 
 #include "GameInstance.h"
 #include "BackGround.h"
-
+#include "Terrain.h"
+#include "Camera_Free.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_pDevice(pDevice)
@@ -100,9 +101,9 @@ _uint CLoader::Loading_ForGamePlay()
 	lstrcpy(m_szLoadingText, TEXT("객체 원형을 생성중입니다."));
 
 	///* For.Prototype_GameObject_Terrain */
-	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"),
-	//	CTerrain::Create(m_pGraphic_Device))))
-	//	return -1;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"),
+		CTerrain::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC()))))
+		return -1;
 
 
 	///*For.Prototype_GameObject_Player*/
@@ -111,9 +112,9 @@ _uint CLoader::Loading_ForGamePlay()
 	//	return -1;
 
 	///* For.Prototype_GameObject_Camera_Free */
-	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
-	//	CCamera_Free::Create(m_pGraphic_Device))))
-	//	return -1;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
+		CCamera_Free::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(10.f, XMConvertToRadians(60.f))))))
+		return -1;
 
 	///* For.Prototype_GameObject_Sky */
 	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Sky"),
@@ -128,9 +129,9 @@ _uint CLoader::Loading_ForGamePlay()
 	lstrcpy(m_szLoadingText, TEXT("지형을 생성 중입니다. "));
 
 	///* For.Prototype_Component_VIBuffer_Terrain. */
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"), 
-	//	CVIBuffer_Terrain::Create(m_pGraphic_Device, TEXT("../Bin/Resources/Textures/Terrain/Height.bmp")))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
+		CVIBuffer_Terrain::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Texture/Terrain/Height.bmp")))))
+		return E_FAIL;
 
 	///* For.Prototype_Component_VIBuffer_Cube. */
 	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Cube"),
@@ -144,9 +145,9 @@ _uint CLoader::Loading_ForGamePlay()
 
 
 	///* For.Prototype_Component_Texture_Terrain . */
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"), 
-	//	CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Terrain/Grass_%d.tga"), 2))))
-	//	return E_FAIL;
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Texture/Terrain/Grass_%d.dds"), 2))))
+		return E_FAIL;
 
 	///* For.Prototype_Component_Texture_Player. */
 	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Player"),

@@ -15,6 +15,20 @@ namespace Engine
 		static const D3D11_INPUT_ELEMENT_DESC	Elements[iNumElement];
 	};
 
+	typedef struct tagVertexNormalTexture
+	{
+
+		XMFLOAT3			vNormal;
+		XMFLOAT2			vTexUV;
+		XMFLOAT3			vPosition;
+	}VTXNORTEX;
+
+	struct ENGINE_DLL VTXNORTEX_DECLARATION
+	{
+		static const unsigned int iNumElement = 3;
+		static const D3D11_INPUT_ELEMENT_DESC	Elements[iNumElement];
+	};
+
 	typedef struct tagFaceIndices16
 	{
 		unsigned short		_0, _1, _2;

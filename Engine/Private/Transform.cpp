@@ -14,6 +14,15 @@ CTransform::CTransform(const CTransform & rhs)
 {
 }
 
+_float3 CTransform::Get_Scaled() const
+{
+	_matrix		WorldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
+
+	return _float3(XMVectorGetX(XMVector3Length(WorldMatrix.r[0])),
+		XMVectorGetX(XMVector3Length(WorldMatrix.r[1])),
+		XMVectorGetX(XMVector3Length(WorldMatrix.r[2])));
+}
+
 void CTransform::Set_TransformDesc(const TRANSFORMDESC & TransformDesc)
 {
 	m_TransformDesc = TransformDesc;
@@ -111,6 +120,25 @@ HRESULT CTransform::Turn(_fvector vAxis, _double TimeDelta)
 	Set_State(CTransform::STATE_RIGHT, vRight);
 	Set_State(CTransform::STATE_UP, vUp);
 	Set_State(CTransform::STATE_LOOK, vLook);
+
+	return S_OK;
+}
+
+HRESULT CTransform::LookAt(_fvector vAt)
+{
+	_vector		vPosition = Get_State(CTransform::STATE_POSITION);
+
+	_vector		vLook = vAt - vPosition;
+
+	_vector		vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook);
+
+	_vector		vUp = XMVector3Cross(vLook, vRight);
+
+	_float3		vScale = Get_Scaled();
+
+	Set_State(STATE_RIGHT, XMVector3Normalize(vRight) * vScale.x);
+	Set_State(STATE_UP, XMVector3Normalize(vUp) * vScale.y);
+	Set_State(STATE_LOOK, XMVector3Normalize(vLook) * vScale.z);
 
 	return S_OK;
 }

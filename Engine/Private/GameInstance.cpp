@@ -9,15 +9,18 @@ CGameInstance::CGameInstance()
 	, m_pObject_Manager(CObject_Manager::Get_Instance())
 	, m_pComponent_Manager(CComponent_Manager::Get_Instance())
 	, m_pInput_Device(CInput_Device::Get_Instance())
+	, m_pPipeline(CPipeline::Get_Instance())
 	/*, m_pPicking(CPicking::Get_Instance())*/
 {
 	/*Safe_AddRef(m_pPicking);*/
+	Safe_AddRef(m_pPipeline);
 	Safe_AddRef(m_pComponent_Manager);
 	Safe_AddRef(m_pObject_Manager);
 	Safe_AddRef(m_pLevel_Manager);
 	Safe_AddRef(m_pInput_Device);
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pTimer_Manager);
+
 }
 
 
@@ -62,6 +65,8 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 	// m_pPicking->Transform_ToWorldSpace();
 
 	m_pObject_Manager->Tick(fTimeDelta);
+
+	m_pPipeline->Tick();
 
 	m_pObject_Manager->Late_Tick(fTimeDelta);
 
@@ -195,6 +200,30 @@ CComponent * CGameInstance::Clone_Component(_uint iLevelIndex, const _tchar * pP
 		return nullptr;
 
 	return m_pComponent_Manager->Clone_Component(iLevelIndex, pPrototypeTag, pArg);
+}
+
+_matrix CGameInstance::Get_TransformMatrix(CPipeline::TRANSFORMSTATETYPE eStateType)
+{
+	if (nullptr == m_pPipeline)
+		return XMMatrixIdentity();
+
+	return m_pPipeline->Get_TransformMatrix(eStateType);
+}
+
+_float4x4 CGameInstance::Get_TransformFloat4x4(CPipeline::TRANSFORMSTATETYPE eStateType)
+{
+	if (nullptr == m_pPipeline)
+		return _float4x4();
+
+	return m_pPipeline->Get_TransformFloat4x4(eStateType);
+}
+
+_float4x4 CGameInstance::Get_TransformFloat4x4_TP(CPipeline::TRANSFORMSTATETYPE eStateType)
+{
+	if (nullptr == m_pPipeline)
+		return _float4x4();
+
+	return m_pPipeline->Get_TransformFloat4x4_TP(eStateType);
 }
 
 //bool CGameInstance::Picking(CVIBuffer * pVIBuffer, CTransform * pTransform, _float3 * pOut)

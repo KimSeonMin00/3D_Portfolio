@@ -30,6 +30,12 @@ public:
 		return XMLoadFloat4x4(&m_WorldMatrix).r[eState];
 	}
 
+	_matrix Get_WorldMatrix() {
+		return XMLoadFloat4x4(&m_WorldMatrix);
+	}
+
+	_float3 Get_Scaled() const;
+
 	void Set_State(STATE eState, _fvector vState) {
 		/*_matrix		WorldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
 		WorldMatrix.r[eState] = vState;
@@ -53,6 +59,7 @@ public:
 	HRESULT Go_Right(_double TimeDelta);
 	HRESULT Go_Left(_double TimeDelta);
 	HRESULT Turn(_fvector vAxis, _double TimeDelta);
+	HRESULT LookAt(_fvector vAt);
 
 public:
 	HRESULT Bind_OnShader(class CShader* pShader, const char* pConstantName);

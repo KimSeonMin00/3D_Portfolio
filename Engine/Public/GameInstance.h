@@ -7,6 +7,7 @@
 #include "Level_Manager.h"
 #include "Object_Manager.h"
 #include "Component_Manager.h"
+#include "Pipeline.h"
 
 
 BEGIN(Engine)
@@ -51,6 +52,11 @@ public: /* For.Component_Manager */
 	HRESULT Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, class CComponent* pPrototype);
 	class CComponent* Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg = nullptr);
 
+public: /* For.PipeLine */
+	_matrix Get_TransformMatrix(CPipeline::TRANSFORMSTATETYPE eStateType);
+	_float4x4 Get_TransformFloat4x4(CPipeline::TRANSFORMSTATETYPE eStateType);
+	_float4x4 Get_TransformFloat4x4_TP(CPipeline::TRANSFORMSTATETYPE eStateType);
+
 //public: /* For.Picking */
 //	bool Picking(class CVIBuffer* pVIBuffer, class CTransform* pTransform, _float3* pOut);
 //
@@ -62,6 +68,7 @@ private:
 	CLevel_Manager*				m_pLevel_Manager = nullptr;
 	CObject_Manager*			m_pObject_Manager = nullptr;
 	CComponent_Manager*			m_pComponent_Manager = nullptr;
+	CPipeline*						m_pPipeline = nullptr;
 	//CPicking*					m_pPicking = nullptr;
 
 public:
