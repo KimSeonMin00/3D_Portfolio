@@ -5,6 +5,7 @@
 #include "BackGround.h"
 #include "Terrain.h"
 #include "Camera_Free.h"
+#include "UI.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_pDevice(pDevice)
@@ -114,6 +115,10 @@ _uint CLoader::Loading_ForGamePlay()
 	///* For.Prototype_GameObject_Camera_Free */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
 		CCamera_Free::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(10.f, XMConvertToRadians(60.f))))))
+		return -1;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI"),
+		CUI::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC()))))
 		return -1;
 
 	///* For.Prototype_GameObject_Sky */

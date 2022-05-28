@@ -29,7 +29,10 @@ void CImguiManager::Tick(_double TimeDelta)
 	ImGui::NewFrame();
 
 	ImGui::Begin("Test");
-	ImGui::Button("Check");
+	if(ImGui::Button("Create"))
+	{
+		m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI"));
+	}
 	ImGui::End();
 }
 
