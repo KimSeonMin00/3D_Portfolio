@@ -1,8 +1,5 @@
 #include "stdafx.h"
-
-#include "ImGui\imgui.h"
-#include "ImGui\imgui_impl_dx11.h"
-#include "ImGui\imgui_impl_win32.h"
+#include "ImguiManager.h"
 
 #include "..\Public\MainApp.h"
 #include "GameInstance.h"
@@ -20,11 +17,6 @@ HRESULT CMainApp::NativeConstruct()
 	if (nullptr == m_pGameInstance)
 		return E_FAIL;
 
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGui::StyleColorsDark();
-	ImGui_ImplWin32_Init(g_hWnd);
-
 	CGraphic_Device::GRAPHICDEVDESC		GraphicDevDesc;
 	ZeroMemory(&GraphicDevDesc, sizeof(CGraphic_Device::GRAPHICDEVDESC));
 
@@ -36,13 +28,13 @@ HRESULT CMainApp::NativeConstruct()
 	if (FAILED(m_pGameInstance->Initialize_Engine(g_hInst, LEVEL_END, GraphicDevDesc, &m_pDevice, &m_pDeviceContext)))
 		return E_FAIL;
 
-	ImGui_ImplDX11_Init(m_pDevice, m_pDeviceContext);
-
 	if (FAILED(Ready_Prototype_Component_Static()))
 		return E_FAIL;
 
 	if (FAILED(Open_Level(LEVEL_LOGO)))
 		return E_FAIL;
+
+	m_pImgui_Manager = CImguiManager::Create(g_hWnd, m_pDevice, m_pDeviceContext);
 
 	return S_OK;
 }
@@ -50,6 +42,9 @@ HRESULT CMainApp::NativeConstruct()
 void CMainApp::Tick(_double TimeDelta)
 {
 	m_pGameInstance->Tick_Engine(TimeDelta);
+
+	if (nullptr != m_pImgui_Manager)
+		m_pImgui_Manager->Tick(TimeDelta);
 }
 
 HRESULT CMainApp::Render()
@@ -60,21 +55,13 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Clear_BackBuffer_View(_float4(0.f, 0.f, 1.f, 1.f));
 	m_pGameInstance->Clear_DepthStencil_View();
 
-	ImGui_ImplDX11_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
-
 	if (FAILED(m_pRenderer->Draw_Renderer()))
 		return E_FAIL;
 
 	m_pGameInstance->Render_Engine();
 
-	ImGui::Begin("Test");
-	ImGui::Button("Check");
-	ImGui::End();
-
-	ImGui::Render();
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+	if (nullptr != m_pImgui_Manager)
+		m_pImgui_Manager->Render();
 
 	m_pGameInstance->Present();
 
@@ -129,9 +116,7 @@ CMainApp * CMainApp::Create()
 
 void CMainApp::Free()
 {
-	ImGui_ImplWin32_Shutdown();
-	ImGui_ImplDX11_Shutdown();
-	ImGui::DestroyContext();
+	Safe_Release(m_pImgui_Manager);
 
 	Safe_Release(m_pDeviceContext);
 	Safe_Release(m_pDevice);

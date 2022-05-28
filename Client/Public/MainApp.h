@@ -27,6 +27,7 @@ private:
 	ID3D11DeviceContext*		m_pDeviceContext = nullptr;
 	CRenderer*						m_pRenderer = nullptr;
 
+	class CImguiManager*		m_pImgui_Manager = nullptr;
 public:
 	HRESULT Open_Level(LEVEL eLevel);
 	HRESULT Ready_Prototype_Component_Static();

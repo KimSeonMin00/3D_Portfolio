@@ -43,6 +43,9 @@
     <Filter Include="02.GameObjects\Terrain">
       <UniqueIdentifier>{fa7e8c5d-7e5f-4039-8966-c19e3f728aa6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96.ImGUI\Manager">
+      <UniqueIdentifier>{bf9e0d73-5b85-4189-948e-6ae814a20960}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -108,6 +111,9 @@
     <ClInclude Include="..\Public\Terrain.h">
       <Filter>02.GameObjects\Terrain</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ImguiManager.h">
+      <Filter>96.ImGUI\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -160,6 +166,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp">
       <Filter>02.GameObjects\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImguiManager.cpp">
+      <Filter>96.ImGUI\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
