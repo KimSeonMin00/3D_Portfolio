@@ -9,6 +9,7 @@
 
 BEGIN(Engine)
 class CGameInstance;
+class CTransform;
 END
 
 BEGIN(Client)
@@ -27,6 +28,9 @@ public:
 
 private:
 	CGameInstance* m_pGameInstance = nullptr;
+	_uint				  m_iNumItems = 0;
+	static const char* CurrentItem;
+	CTransform*		m_pTransform = nullptr;
 
 public:
 	static CImguiManager* Create(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);

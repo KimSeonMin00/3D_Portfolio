@@ -32,6 +32,8 @@ HRESULT CUI::NativeConstruct(void * pArg)
 	m_fSizeY = 100.f;
 	m_fX = g_iWinCX >> 1;
 	m_fY = g_iWinCY >> 1;
+	m_pTransformCom->Set_Scaled(XMVectorSet(m_fSizeX, m_fSizeY, 1.f, 0.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_fX - (g_iWinCX >> 1), -m_fY + (g_iWinCY >> 1), 0.f, 1.f));
 
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixTranspose(XMMatrixOrthographicLH(g_iWinCX, g_iWinCY, 0.f, 1.f)));
 
@@ -46,9 +48,6 @@ void CUI::Late_Tick(_float fTimeDelta)
 {
 	if (nullptr == m_pRendererCom)
 		return;
-
-	m_pTransformCom->Set_Scaled(XMVectorSet(m_fSizeX, m_fSizeY, 1.f, 0.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_fX - (g_iWinCX >> 1), -m_fY + (g_iWinCY >> 1), 0.f, 1.f));
 
 	m_pRendererCom->Add_RenderList(CRenderer::RENDER_PRIORITY, this);
 }

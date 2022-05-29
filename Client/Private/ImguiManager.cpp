@@ -2,6 +2,10 @@
 #include "..\Public\ImguiManager.h"
 #include "GameInstance.h"
 
+#include "Transform.h"
+
+const char* CImguiManager::CurrentItem = nullptr;
+
 CImguiManager::CImguiManager()
 	:m_pGameInstance(CGameInstance::Get_Instance())
 {
@@ -31,7 +35,67 @@ void CImguiManager::Tick(_double TimeDelta)
 	ImGui::Begin("Test");
 	if(ImGui::Button("Create"))
 	{
-		m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI"));
+			m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI"));
+			m_iNumItems++;
+	}
+
+	ImGui::PushItemWidth(100);
+
+	if (ImGui::BeginCombo("UI", CurrentItem))
+	{
+		for (int n = 0; n < m_iNumItems; n++)
+		{
+			char Item[256] = "";
+			sprintf_s(Item, "UI_%d", n);
+
+			bool is_selected = (CurrentItem == Item); // You can store your selection however you want, outside or inside your objects
+			if (ImGui::Selectable(Item, is_selected))
+			{
+				CurrentItem = Item;
+
+				if (m_pTransform != nullptr)
+					Safe_Release(m_pTransform);
+
+				m_pTransform = (CTransform*)m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Com_Transform"), n);
+				Safe_AddRef(m_pTransform);
+			}
+
+			if (is_selected)
+			{
+				ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	_float3 fScale = {0.f, 0.f, 0.f};
+	_float3 fPosition = { 0.f, 0.f, 0.f };
+
+	if (m_pTransform != nullptr)
+	{
+		fScale = m_pTransform->Get_Scaled();
+		
+
+		ImGui::Text("Scale");
+		ImGui::PushItemWidth(50);
+		ImGui::InputFloat("Scale.x", &fScale.x); ImGui::SameLine();
+		ImGui::InputFloat("Scale.y", &fScale.y); ImGui::SameLine();
+		ImGui::InputFloat("Scale.z", &fScale.z);
+
+		m_pTransform->Set_Scaled(XMLoadFloat3(&fScale));
+
+		XMStoreFloat3(&fPosition, m_pTransform->Get_State(CTransform::STATE_POSITION));
+
+		fPosition.x = fPosition.x + (g_iWinCX >> 1);
+		fPosition.y = -fPosition.y + (g_iWinCY >> 1);
+
+		ImGui::Text("Position");
+		ImGui::PushItemWidth(50);
+		ImGui::InputFloat("Position.x", &fPosition.x); ImGui::SameLine();
+		ImGui::InputFloat("Position.y", &fPosition.y); ImGui::SameLine();
+		ImGui::InputFloat("Position.z", &fPosition.z);
+
+		m_pTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(fPosition.x - (g_iWinCX >> 1), -fPosition.y + (g_iWinCY >> 1), 0.f, 1.f));
 	}
 	ImGui::End();
 }
