@@ -58,7 +58,10 @@ PS_OUT PS_MAIN_RECT(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	Out.vColor = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+	vector		vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+	vector    vGreen = vector (0.f, 0.8f, 0.f, 1.f);
+
+	Out.vColor = vGreen * vMtrlDiffuse;
 
 	return Out;
 }
