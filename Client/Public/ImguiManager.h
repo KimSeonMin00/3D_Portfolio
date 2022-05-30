@@ -28,8 +28,12 @@ public:
 
 private:
 	CGameInstance* m_pGameInstance = nullptr;
+
 	_uint				  m_iNumItems = 0;
+
 	static const char* CurrentItem;
+	_uint				   m_iCurrentItemIndex = 0;
+
 	CTransform*		m_pTransform = nullptr;
 
 public:

@@ -41,6 +41,14 @@ void CImguiManager::Tick(_double TimeDelta)
 
 	ImGui::PushItemWidth(100);
 
+	if (m_iNumItems > 0)
+	{
+		char Item[256] = "";
+		sprintf_s(Item, "UI_%d", m_iCurrentItemIndex);
+
+		CurrentItem = Item;
+	}
+
 	if (ImGui::BeginCombo("UI", CurrentItem))
 	{
 		for (int n = 0; n < m_iNumItems; n++)
@@ -49,9 +57,11 @@ void CImguiManager::Tick(_double TimeDelta)
 			sprintf_s(Item, "UI_%d", n);
 
 			bool is_selected = (CurrentItem == Item); // You can store your selection however you want, outside or inside your objects
+
 			if (ImGui::Selectable(Item, is_selected))
 			{
 				CurrentItem = Item;
+				m_iCurrentItemIndex = n;
 
 				if (m_pTransform != nullptr)
 					Safe_Release(m_pTransform);
