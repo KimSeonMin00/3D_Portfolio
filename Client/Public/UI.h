@@ -32,11 +32,15 @@ private:
 	CTexture*						m_pTextureCom = nullptr;
 
 private:
+	_bool				m_bSelectedByImgui = false;
+
 	_float				m_fX, m_fY, m_fSizeX, m_fSizeY;
 	_float4x4			m_ProjMatrix;
 
 public:
 	HRESULT SetUp_Components();
+
+	void		 Be_Selected() { m_bSelectedByImgui = true; }
 
 public:
 	static CUI* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const CTransform::TRANSFORMDESC& TransformDesc);

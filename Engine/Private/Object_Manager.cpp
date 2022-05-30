@@ -21,6 +21,18 @@ CComponent * CObject_Manager::Get_ComponentPtr(_uint iLevelID, const _tchar * pL
 	return pLayer->Get_ComponentPtr(pComponentTag, iIndex);	
 }
 
+CGameObject * CObject_Manager::Get_GameObjectPtr(_uint iLevelID, const _tchar * pLayerTag, _uint iIndex)
+{
+	if (iLevelID >= m_iNumLevels)
+		return nullptr;
+
+	CLayer*		pLayer = Find_Layer(iLevelID, pLayerTag);
+	if (nullptr == pLayer)
+		return nullptr;
+
+	return pLayer->Get_GameObjectPtr(iIndex);
+}
+
 HRESULT CObject_Manager::Reserve_Manager(_uint iNumLevels)
 {
 	if (nullptr != m_pLayers)

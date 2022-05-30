@@ -49,6 +49,8 @@ void CUI::Late_Tick(_float fTimeDelta)
 	if (nullptr == m_pRendererCom)
 		return;
 
+	m_bSelectedByImgui = false;
+
 	m_pRendererCom->Add_RenderList(CRenderer::RENDER_PRIORITY, this);
 }
 
@@ -70,9 +72,18 @@ HRESULT CUI::Render()
 
 	if (FAILED(m_pTextureCom->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture", 0)))
 		return E_FAIL;
+	
+	if (false == m_bSelectedByImgui)
+	{
+		if (FAILED(m_pShaderCom->Begin(0)))
+			return E_FAIL;
+	}
 
-	if (FAILED(m_pShaderCom->Begin(0)))
-		return E_FAIL;
+	else
+	{
+		if (FAILED(m_pShaderCom->Begin(1)))
+			return E_FAIL;
+	}
 
 	if (FAILED(m_pVIBufferCom->Render()))
 		return E_FAIL;

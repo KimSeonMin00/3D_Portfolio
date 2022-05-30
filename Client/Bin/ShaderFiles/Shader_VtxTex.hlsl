@@ -59,9 +59,20 @@ PS_OUT PS_MAIN_RECT(PS_IN In)
 	PS_OUT		Out = (PS_OUT)0;
 
 	vector		vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
-	vector    vGreen = vector (0.f, 0.8f, 0.f, 1.f);
 
-	Out.vColor = vGreen * vMtrlDiffuse;
+	Out.vColor = vMtrlDiffuse;
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_RECT_COLOR(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	vector		vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+	vector    vRed = vector (1.f, 0.f, 0.f, 1.f);
+
+	Out.vColor = vRed * vMtrlDiffuse;
 
 	return Out;
 }
@@ -75,6 +86,13 @@ technique11 DefaultTechinque
 		VertexShader = compile vs_5_0 VS_MAIN_RECT();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_RECT();
+	}
+
+	pass Rect_Color
+	{
+		VertexShader = compile vs_5_0 VS_MAIN_RECT();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_RECT_COLOR();
 	}
 
 }

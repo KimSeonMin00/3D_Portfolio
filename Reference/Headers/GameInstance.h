@@ -49,6 +49,7 @@ public: /* For.Object_Manager */
 	HRESULT Add_Layer(_uint iLevelIndex, const _tchar* pLayerTag, const _tchar* pPrototypeTag, void* pArg = nullptr);
 
 	class CComponent* Get_Component(_uint iLevelID, const _tchar* pLayerTag, const _tchar* pComponentTag, _uint iIndex = 0);
+	class CGameObject* Get_GameObjectPtr(_uint iLevelID, const _tchar* pLayerTag, _uint iIndex = 0);
 
 public: /* For.Component_Manager */
 	HRESULT Add_Prototype(_uint iLevelIndex, const _tchar* pPrototypeTag, class CComponent* pPrototype);

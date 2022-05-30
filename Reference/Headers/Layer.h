@@ -12,7 +12,7 @@ public:
 
 public:
 	class CComponent* Get_ComponentPtr(const _tchar* pComponentTag, _uint iIndex);
-
+	class CGameObject* Get_GameObjectPtr(_uint iIndex);
 public:
 	HRESULT NativeConstruct();
 

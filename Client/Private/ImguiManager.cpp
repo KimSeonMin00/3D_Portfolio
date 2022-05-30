@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 
 #include "Transform.h"
+#include "UI.h"
 
 const char* CImguiManager::CurrentItem = nullptr;
 
@@ -33,10 +34,10 @@ void CImguiManager::Tick(_double TimeDelta)
 	ImGui::NewFrame();
 
 	ImGui::Begin("Test");
-	if(ImGui::Button("Create"))
+	if (ImGui::Button("Create"))
 	{
-			m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI"));
-			m_iNumItems++;
+		m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI"));
+		m_iNumItems++;
 	}
 
 	ImGui::PushItemWidth(100);
@@ -62,12 +63,6 @@ void CImguiManager::Tick(_double TimeDelta)
 			{
 				CurrentItem = Item;
 				m_iCurrentItemIndex = n;
-
-				if (m_pTransform != nullptr)
-					Safe_Release(m_pTransform);
-
-				m_pTransform = (CTransform*)m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Com_Transform"), n);
-				Safe_AddRef(m_pTransform);
 			}
 
 			if (is_selected)
@@ -78,19 +73,34 @@ void CImguiManager::Tick(_double TimeDelta)
 		ImGui::EndCombo();
 	}
 
-	_float3 fScale = {0.f, 0.f, 0.f};
-	_float3 fPosition = { 0.f, 0.f, 0.f };
-
-	if (m_pTransform != nullptr)
+	if (nullptr != CurrentItem)
 	{
+		CUI* pSelectedUI = (CUI*)m_pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_UI"), m_iCurrentItemIndex);
+
+		if (nullptr != pSelectedUI)
+		{
+			Safe_AddRef(pSelectedUI);
+			pSelectedUI->Be_Selected();
+			Safe_Release(pSelectedUI);
+		}
+
+		m_pTransform = (CTransform*)m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Com_Transform"), m_iCurrentItemIndex);
+		if (nullptr == m_pTransform)
+			return;
+
+		Safe_AddRef(m_pTransform);
+
+		_float3 fScale = { 0.f, 0.f, 0.f };
+		_float3 fPosition = { 0.f, 0.f, 0.f };
+
+
 		fScale = m_pTransform->Get_Scaled();
-		
+
 
 		ImGui::Text("Scale");
 		ImGui::PushItemWidth(50);
 		ImGui::InputFloat("Scale.x", &fScale.x); ImGui::SameLine();
 		ImGui::InputFloat("Scale.y", &fScale.y); ImGui::SameLine();
-		ImGui::InputFloat("Scale.z", &fScale.z);
 
 		m_pTransform->Set_Scaled(XMLoadFloat3(&fScale));
 
@@ -98,6 +108,7 @@ void CImguiManager::Tick(_double TimeDelta)
 
 		fPosition.x = fPosition.x + (g_iWinCX >> 1);
 		fPosition.y = -fPosition.y + (g_iWinCY >> 1);
+		fPosition.z = 1.f;
 
 		if (m_pGameInstance->Get_DIMButtonState(CInput_Device::DIMB_RBUTTON))
 		{
@@ -110,21 +121,23 @@ void CImguiManager::Tick(_double TimeDelta)
 
 			vMousePos.x = ((_float)ptMouse.x);
 			vMousePos.y = ((_float)ptMouse.y);
-			vMousePos.z = 0.f;
+			vMousePos.z = 1.f;
 
 			fPosition.x = vMousePos.x;
 			fPosition.y = vMousePos.y;
-			fPosition.z = vMousePos.z;
+			fPosition.z = 0.f;
 		}
 
 		ImGui::Text("Position");
 		ImGui::PushItemWidth(50);
 		ImGui::InputFloat("Position.x", &fPosition.x); ImGui::SameLine();
 		ImGui::InputFloat("Position.y", &fPosition.y); ImGui::SameLine();
-		ImGui::InputFloat("Position.z", &fPosition.z);
 
 		m_pTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(fPosition.x - (g_iWinCX >> 1), -fPosition.y + (g_iWinCY >> 1), 0.f, 1.f));
+
+		Safe_Release(m_pTransform);
 	}
+
 	ImGui::End();
 }
 

@@ -16,6 +16,7 @@ private:
 
 public:
 	class CComponent* Get_ComponentPtr(_uint iLevelID, const _tchar* pLayerTag, const _tchar* pComponentTag, _uint iIndex = 0);
+	class CGameObject* Get_GameObjectPtr(_uint iLevelID, const _tchar* pLayerTag, _uint iIndex = 0);
 public:
 	HRESULT Reserve_Manager(_uint iNumLevels);
 public:
