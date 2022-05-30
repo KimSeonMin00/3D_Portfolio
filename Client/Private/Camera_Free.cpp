@@ -63,7 +63,7 @@ void CCamera_Free::Tick(_float fTimeDelta)
 
 	_long		MouseMove = 0;
 
-	if (MouseMove = pGameInstance->Get_DIMMoveState(CInput_Device::DIMM_X))
+	/*if (MouseMove = pGameInstance->Get_DIMMoveState(CInput_Device::DIMM_X))
 	{
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * MouseMove * 0.1f);
 	}
@@ -71,7 +71,7 @@ void CCamera_Free::Tick(_float fTimeDelta)
 	if (MouseMove = pGameInstance->Get_DIMMoveState(CInput_Device::DIMM_Y))
 	{
 		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), fTimeDelta * MouseMove * 0.1f);
-	}
+	}*/
 
 	if (FAILED(__super::Bind_TransformMatrices()))
 		return;

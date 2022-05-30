@@ -99,6 +99,24 @@ void CImguiManager::Tick(_double TimeDelta)
 		fPosition.x = fPosition.x + (g_iWinCX >> 1);
 		fPosition.y = -fPosition.y + (g_iWinCY >> 1);
 
+		if (m_pGameInstance->Get_DIMButtonState(CInput_Device::DIMB_RBUTTON))
+		{
+			POINT		ptMouse;
+
+			GetCursorPos(&ptMouse);
+			ScreenToClient(g_hWnd, &ptMouse);
+
+			_float3		vMousePos;
+
+			vMousePos.x = ((_float)ptMouse.x);
+			vMousePos.y = ((_float)ptMouse.y);
+			vMousePos.z = 0.f;
+
+			fPosition.x = vMousePos.x;
+			fPosition.y = vMousePos.y;
+			fPosition.z = vMousePos.z;
+		}
+
 		ImGui::Text("Position");
 		ImGui::PushItemWidth(50);
 		ImGui::InputFloat("Position.x", &fPosition.x); ImGui::SameLine();
