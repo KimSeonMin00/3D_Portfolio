@@ -92,6 +92,8 @@ HRESULT CGameObject::Add_Components(_uint iLevelID, const _tchar * pPrototypeTag
 
 void CGameObject::Free()
 {
+	Safe_Release(m_pTransformCom);
+
 	for (auto& Pair : m_Components)
 		Safe_Release(Pair.second);
 	m_Components.clear();

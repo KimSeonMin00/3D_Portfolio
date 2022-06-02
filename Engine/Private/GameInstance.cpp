@@ -264,6 +264,8 @@ void CGameInstance::Release_Engine()
 
 	/*CPicking::Get_Instance()->Destroy_Instance();*/
 
+	CPipeline::Get_Instance()->Destroy_Instance();
+
 	CInput_Device::Get_Instance()->Destroy_Instance();
 
 	CGraphic_Device::Get_Instance()->Destroy_Instance();	
@@ -274,6 +276,7 @@ void CGameInstance::Release_Engine()
 void CGameInstance::Free()
 {
 	/*Safe_Release(m_pPicking);*/
+	Safe_Release(m_pPipeline);
 	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pObject_Manager);
 	Safe_Release(m_pLevel_Manager);	
