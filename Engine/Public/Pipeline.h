@@ -17,6 +17,14 @@ public:
 	virtual ~CPipeline() = default;
 
 public:
+	_float4 Get_CamPositionFloat4() const {
+		return m_vCamPosition;
+	}
+
+	_vector Get_CamPositionVector() const {
+		return XMLoadFloat4(&m_vCamPosition);
+	}
+
 	_matrix Get_TransformMatrix(TRANSFORMSTATETYPE eStateType) {
 		return XMLoadFloat4x4(&m_TransformMatrix[eStateType]);
 	}

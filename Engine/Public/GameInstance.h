@@ -8,6 +8,7 @@
 #include "Object_Manager.h"
 #include "Component_Manager.h"
 #include "Pipeline.h"
+#include "Light_Manager.h"
 
 
 BEGIN(Engine)
@@ -56,10 +57,15 @@ public: /* For.Component_Manager */
 	class CComponent* Clone_Component(_uint iLevelIndex, const _tchar* pPrototypeTag, void* pArg = nullptr);
 
 public: /* For.PipeLine */
+	_float4 Get_CamPositionFloat4() const;
+	_vector Get_CamPositionVector() const;
 	_matrix Get_TransformMatrix(CPipeline::TRANSFORMSTATETYPE eStateType);
 	_float4x4 Get_TransformFloat4x4(CPipeline::TRANSFORMSTATETYPE eStateType);
 	_float4x4 Get_TransformFloat4x4_TP(CPipeline::TRANSFORMSTATETYPE eStateType);
 
+public: /* For.Light */
+	const LIGHTDESC* Get_LightDesc(_uint iIndex) const;
+	HRESULT Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const LIGHTDESC& LightDesc);
 //public: /* For.Picking */
 //	bool Picking(class CVIBuffer* pVIBuffer, class CTransform* pTransform, _float3* pOut);
 //
@@ -72,6 +78,7 @@ private:
 	CObject_Manager*			m_pObject_Manager = nullptr;
 	CComponent_Manager*			m_pComponent_Manager = nullptr;
 	CPipeline*						m_pPipeline = nullptr;
+	CLight_Manager*				m_pLight_Manager = nullptr;
 	//CPicking*					m_pPicking = nullptr;
 
 public:

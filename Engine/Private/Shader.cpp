@@ -82,7 +82,7 @@ HRESULT CShader::Begin(_uint iPassIndex)
 	return S_OK;
 }
 
-HRESULT CShader::Set_RawValue(const char * pConstantName, void * pData, _uint iLength)
+HRESULT CShader::Set_RawValue(const char * pConstantName, const void * pData, _uint iLength)
 {
 	if (nullptr == m_pEffect)
 		return E_FAIL;

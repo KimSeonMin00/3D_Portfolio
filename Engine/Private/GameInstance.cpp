@@ -10,9 +10,11 @@ CGameInstance::CGameInstance()
 	, m_pComponent_Manager(CComponent_Manager::Get_Instance())
 	, m_pInput_Device(CInput_Device::Get_Instance())
 	, m_pPipeline(CPipeline::Get_Instance())
+	, m_pLight_Manager(CLight_Manager::Get_Instance())
 	/*, m_pPicking(CPicking::Get_Instance())*/
 {
 	/*Safe_AddRef(m_pPicking);*/
+	Safe_AddRef(m_pLight_Manager);
 	Safe_AddRef(m_pPipeline);
 	Safe_AddRef(m_pComponent_Manager);
 	Safe_AddRef(m_pObject_Manager);
@@ -218,6 +220,22 @@ CComponent * CGameInstance::Clone_Component(_uint iLevelIndex, const _tchar * pP
 	return m_pComponent_Manager->Clone_Component(iLevelIndex, pPrototypeTag, pArg);
 }
 
+_float4 CGameInstance::Get_CamPositionFloat4() const
+{
+	if (nullptr == m_pPipeline)
+		return _float4(0.f, 0.f, 0.f, 0.f);
+
+	return m_pPipeline->Get_CamPositionFloat4();
+}
+
+_vector CGameInstance::Get_CamPositionVector() const
+{
+	if (nullptr == m_pPipeline)
+		return XMVectorZero();
+
+	return m_pPipeline->Get_CamPositionVector();
+}
+
 _matrix CGameInstance::Get_TransformMatrix(CPipeline::TRANSFORMSTATETYPE eStateType)
 {
 	if (nullptr == m_pPipeline)
@@ -240,6 +258,22 @@ _float4x4 CGameInstance::Get_TransformFloat4x4_TP(CPipeline::TRANSFORMSTATETYPE 
 		return _float4x4();
 
 	return m_pPipeline->Get_TransformFloat4x4_TP(eStateType);
+}
+
+const LIGHTDESC * CGameInstance::Get_LightDesc(_uint iIndex) const
+{
+	if (nullptr == m_pLight_Manager)
+		return nullptr;
+
+	return m_pLight_Manager->Get_LightDesc(iIndex);
+}
+
+HRESULT CGameInstance::Add_Light(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const LIGHTDESC & LightDesc)
+{
+	if (nullptr == m_pLight_Manager)
+		return E_FAIL;
+
+	return m_pLight_Manager->Add_Light(pDevice, pDeviceContext, LightDesc);
 }
 
 //bool CGameInstance::Picking(CVIBuffer * pVIBuffer, CTransform * pTransform, _float3 * pOut)
@@ -268,6 +302,8 @@ void CGameInstance::Release_Engine()
 
 	CInput_Device::Get_Instance()->Destroy_Instance();
 
+	CLight_Manager::Get_Instance()->Destroy_Instance();
+
 	CGraphic_Device::Get_Instance()->Destroy_Instance();	
 
 	
@@ -276,6 +312,7 @@ void CGameInstance::Release_Engine()
 void CGameInstance::Free()
 {
 	/*Safe_Release(m_pPicking);*/
+	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pPipeline);
 	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pObject_Manager);

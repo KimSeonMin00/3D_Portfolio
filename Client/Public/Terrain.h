@@ -31,8 +31,12 @@ private:
 	CRenderer*						m_pRendererCom = nullptr;
 	CVIBuffer_Terrain*				m_pVIBufferCom = nullptr;
 
+private:
+	_uint					m_iPassIndex = 0;
+
 public:
 	HRESULT SetUp_Components();
+	HRESULT SetUp_ConstantTable();
 
 public:
 	static CTerrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const CTransform::TRANSFORMDESC& TransformDesc);
