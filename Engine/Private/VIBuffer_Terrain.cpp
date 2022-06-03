@@ -61,14 +61,6 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(const _tchar* pHeightMapFil
 		}
 	}
 
-	m_VBSubResourceData.pSysMem = pVertices;
-
-	if (FAILED(__super::Ready_Vertex_Buffer()))
-		return E_FAIL;
-
-	Safe_Delete_Array(pVertices);
-	Safe_Delete_Array(pPixel);
-
 #pragma endregion
 
 #pragma region INDEX_BUFFER
@@ -136,7 +128,7 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(const _tchar* pHeightMapFil
 	}
 
 	for (_uint i = 0; i < m_iNumVertices; ++i)
-		XMStoreFloat3(&pVertices[i].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[i].vNormal)));
+		DirectX::XMStoreFloat3(&pVertices[i].vNormal, XMVector3Normalize(DirectX::XMLoadFloat3(&pVertices[i].vNormal)));
 
 	m_VBSubResourceData.pSysMem = pVertices;
 
