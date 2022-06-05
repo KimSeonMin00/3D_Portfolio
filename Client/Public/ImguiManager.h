@@ -18,6 +18,9 @@ class CImguiManager final
 	:public CBase
 {
 public:
+	enum ToolList {TOOL_UI, TOOL_END};
+
+public:
 	CImguiManager();
 	virtual ~CImguiManager() = default;
 
@@ -27,14 +30,19 @@ public:
 	HRESULT Render();
 
 private:
+	void	UI_Tool();
+
+private:
 	CGameInstance* m_pGameInstance = nullptr;
 
+	ToolList			  m_eToolList = TOOL_END;
+	//For UI Tool
 	_uint				  m_iNumItems = 0;
-
 	static const char* CurrentItem;
 	_uint				   m_iCurrentItemIndex = 0;
-
 	CTransform*		m_pTransform = nullptr;
+
+	_bool					m_bEnableImgui = true;
 
 public:
 	static CImguiManager* Create(HWND hWnd, ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);

@@ -33,7 +33,39 @@ void CImguiManager::Tick(_double TimeDelta)
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
-	ImGui::Begin("Test");
+	if(ImGui::Begin("Tool_List"))
+	{
+		if(ImGui::Button("UI"))
+		{
+			m_eToolList = TOOL_UI;			
+		}
+
+		switch (m_eToolList)
+		{
+		case TOOL_UI:
+			ImGui::Begin("UI_Tool");
+			UI_Tool();
+			ImGui::End();
+			break;
+
+		default:
+			break;
+		}
+
+		ImGui::End();
+	}
+}
+
+HRESULT CImguiManager::Render()
+{
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+	return S_OK;
+}
+
+void CImguiManager::UI_Tool()
+{
 	if (ImGui::Button("Create"))
 	{
 		m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI"));
@@ -170,7 +202,7 @@ void CImguiManager::Tick(_double TimeDelta)
 					{
 						hr = pFileSave->SetDefaultExtension(L"dat");
 
-						if(SUCCEEDED(hr))
+						if (SUCCEEDED(hr))
 						{
 							// Show the Open dialog box.
 							hr = pFileSave->Show(NULL);
@@ -281,43 +313,43 @@ void CImguiManager::Tick(_double TimeDelta)
 									// Display the file name to the user.
 									if (SUCCEEDED(hr))
 									{
-											HANDLE		hFile = CreateFile(pszFilePath, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+										HANDLE		hFile = CreateFile(pszFilePath, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-											m_iNumItems = 0;
+										m_iNumItems = 0;
 
-											if (INVALID_HANDLE_VALUE == hFile)
-												return;
+										if (INVALID_HANDLE_VALUE == hFile)
+											return;
 
-											DWORD	dwByte = 0;
+										DWORD	dwByte = 0;
 
-											while (true)
+										while (true)
+										{
+											_float3 fScale = { 0.f, 0.f, 0.f };
+											_float3 fPosition = { 0.f, 0.f, 0.f };
+
+											ReadFile(hFile, &fScale.x, sizeof(_float), &dwByte, nullptr);
+											ReadFile(hFile, &fScale.y, sizeof(_float), &dwByte, nullptr);
+
+											ReadFile(hFile, &fPosition.x, sizeof(_float), &dwByte, nullptr);
+											ReadFile(hFile, &fPosition.y, sizeof(_float), &dwByte, nullptr);
+
+											if (0 == dwByte)
 											{
-												_float3 fScale = { 0.f, 0.f, 0.f };
-												_float3 fPosition = { 0.f, 0.f, 0.f };
-
-												ReadFile(hFile, &fScale.x, sizeof(_float), &dwByte, nullptr);
-												ReadFile(hFile, &fScale.y, sizeof(_float), &dwByte, nullptr);
-
-												ReadFile(hFile, &fPosition.x, sizeof(_float), &dwByte, nullptr);
-												ReadFile(hFile, &fPosition.y, sizeof(_float), &dwByte, nullptr);
-
-												if (0 == dwByte)
-												{
-													break;
-												}
-
-												m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI"));
-
-												m_pTransform = (CTransform*)m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Com_Transform"), m_iNumItems);
-												Safe_AddRef(m_pTransform);
-
-												m_pTransform->Set_Scaled(XMLoadFloat3(&fScale));
-												m_pTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(fPosition.x, fPosition.y, 0.f, 1.f));
-
-												Safe_Release(m_pTransform);
-
-												m_iNumItems++;
+												break;
 											}
+
+											m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI"));
+
+											m_pTransform = (CTransform*)m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Com_Transform"), m_iNumItems);
+											Safe_AddRef(m_pTransform);
+
+											m_pTransform->Set_Scaled(XMLoadFloat3(&fScale));
+											m_pTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(fPosition.x, fPosition.y, 0.f, 1.f));
+
+											Safe_Release(m_pTransform);
+
+											m_iNumItems++;
+										}
 									}
 									pItem->Release();
 								}
@@ -330,16 +362,6 @@ void CImguiManager::Tick(_double TimeDelta)
 			CoUninitialize();
 		}
 	}
-
-	ImGui::End();
-}
-
-HRESULT CImguiManager::Render()
-{
-	ImGui::Render();
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-	return S_OK;
 }
 
 CImguiManager * CImguiManager::Create(HWND hWnd, ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
