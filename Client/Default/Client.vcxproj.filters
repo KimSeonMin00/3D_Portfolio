@@ -28,9 +28,6 @@
     <Filter Include="02.GameObjects">
       <UniqueIdentifier>{4e7a46a3-df4e-45d1-ac0c-ccfbe4e1b118}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\Loading\Logo">
-      <UniqueIdentifier>{e7a52a48-4c68-4d4a-bc3f-f1acbc038b42}</UniqueIdentifier>
-    </Filter>
     <Filter Include="96.ImGUI">
       <UniqueIdentifier>{9573ee95-c92c-47fa-8aad-e0b82d8a60a9}</UniqueIdentifier>
     </Filter>
@@ -48,6 +45,12 @@
     </Filter>
     <Filter Include="02.GameObjects\UI">
       <UniqueIdentifier>{d2ea9df6-816b-469f-b416-b8e4ec77f98c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Player">
+      <UniqueIdentifier>{ab8ba964-2bd6-4aec-a74a-f4b137535b52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\Logo">
+      <UniqueIdentifier>{e7a52a48-4c68-4d4a-bc3f-f1acbc038b42}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -79,7 +82,7 @@
       <Filter>01.Levels\Loading</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_Logo.h">
-      <Filter>01.Levels\Loading\Logo</Filter>
+      <Filter>01.Levels\Logo</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Reference\Headers\ImGui\imgui_impl_win32.h">
       <Filter>96.ImGUI</Filter>
@@ -120,6 +123,9 @@
     <ClInclude Include="..\Public\UI.h">
       <Filter>02.GameObjects\UI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Player.h">
+      <Filter>02.GameObjects\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -141,7 +147,7 @@
       <Filter>01.Levels\Loading</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_Logo.cpp">
-      <Filter>01.Levels\Loading\Logo</Filter>
+      <Filter>01.Levels\Logo</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Reference\Headers\ImGui\imgui_tables.cpp">
       <Filter>96.ImGUI</Filter>
@@ -179,6 +185,9 @@
     <ClCompile Include="..\Private\UI.cpp">
       <Filter>02.GameObjects\UI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Player.cpp">
+      <Filter>02.GameObjects\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -203,6 +212,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNonAnim.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

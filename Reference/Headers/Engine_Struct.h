@@ -27,6 +27,20 @@ namespace Engine
 		XMFLOAT4		vSpecular;
 	}MATERIALDESC;
 
+	typedef struct tagVertex_NonAnim
+	{
+		XMFLOAT3			vPosition;
+		XMFLOAT3			vNormal;
+		XMFLOAT2			vTexUV;
+		XMFLOAT3			vTangent;
+	}VTXNONANIM;
+
+	struct ENGINE_DLL VTXNONANIM_DECLARATION
+	{
+		static const unsigned int iNumElement = 4;
+		static const D3D11_INPUT_ELEMENT_DESC	Elements[iNumElement];
+	};
+
 	typedef struct tagVertexTexture
 	{
 		XMFLOAT3			vPosition;

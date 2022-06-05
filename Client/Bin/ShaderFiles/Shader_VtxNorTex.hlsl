@@ -19,10 +19,6 @@ vector			g_vCamPosition;
 texture2D		g_SourDiffTexture;
 texture2D		g_DestDiffTexture;
 texture2D		g_FilterTexture;
-//texture2D		g_BrushTexture;
-
-//vector			g_vBrushPos = vector(20.f, 0.f, 20.f, 1.f);
-//float			g_fRadius = 5.f;
 
 sampler		DefaultSampler = sampler_state
 {
@@ -98,20 +94,6 @@ PS_OUT PS_MAIN_TERRAIN_DIRECTIONAL(PS_IN In)
 	PS_OUT		Out = (PS_OUT)0;
 
 	vector		vSourDiffuse = g_SourDiffTexture.Sample(DefaultSampler, In.vTexUV * 30.f);
-	vector		vDestDiffuse = g_DestDiffTexture.Sample(DefaultSampler, In.vTexUV * 30.f);
-	vector		vFilter = g_FilterTexture.Sample(PointSampler, In.vTexUV);
-	/*vector		vBrush = (vector)0.f;
-
-	if (In.vWorldPos.x < g_vBrushPos.x + g_fRadius  && g_vBrushPos.x - g_fRadius < In.vWorldPos.x &&
-		In.vWorldPos.z < g_vBrushPos.z + g_fRadius  && g_vBrushPos.z - g_fRadius < In.vWorldPos.z)
-	{
-		float2		vTexUV;
-
-		vTexUV.x = (In.vWorldPos.x - (g_vBrushPos.x - g_fRadius)) / (2.f * g_fRadius);
-		vTexUV.y = ((g_vBrushPos.z + g_fRadius) - In.vWorldPos.z) / (2.f * g_fRadius);
-
-		vBrush = g_BrushTexture.Sample(DefaultSampler, vTexUV);
-	}*/
 
 	vector		vMtrlDiffuse = vSourDiffuse;
 

@@ -58,7 +58,7 @@ HRESULT CLevel_GamePlay::Ready_LightDesc()
 	LIGHTDESC			LightDesc;
 	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
 
-	LightDesc.eType = tagLightDesc::TYPE_POINT;
+	/*LightDesc.eType = tagLightDesc::TYPE_POINT;
 	LightDesc.vPosition = _float4(15.f, 5.f, 15.f, 1.f);
 	LightDesc.fRange = 10.f;
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
@@ -66,16 +66,16 @@ HRESULT CLevel_GamePlay::Ready_LightDesc()
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pDeviceContext, LightDesc)))
-	return E_FAIL;
+	return E_FAIL;*/
 
-	/*LightDesc.eType = tagLightDesc::TYPE_DIRECTIONAL;
+	LightDesc.eType = tagLightDesc::TYPE_DIRECTIONAL;
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pDeviceContext, LightDesc)))
-		return E_FAIL;*/
+		return E_FAIL;
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -139,8 +139,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 
 	Safe_AddRef(pGameInstance);
 
-	/*if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Player"))))
-		return E_FAIL;*/
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Player"))))
+		return E_FAIL;
 
 	Safe_Release(pGameInstance);
 

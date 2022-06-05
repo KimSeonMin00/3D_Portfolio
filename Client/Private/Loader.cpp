@@ -6,6 +6,7 @@
 #include "Terrain.h"
 #include "Camera_Free.h"
 #include "UI.h"
+#include "Player.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_pDevice(pDevice)
@@ -76,7 +77,7 @@ _uint CLoader::Loading_ForLogo()
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩중입니다."));
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_Logo"),
-		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Texture/Default%d.dds"), 2))))
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Default%d.dds"), 2))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("모델을 생성중입니다."));
@@ -108,13 +109,13 @@ _uint CLoader::Loading_ForGamePlay()
 
 
 	///*For.Prototype_GameObject_Player*/
-	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"),
-	//	CPlayer::Create(m_pGraphic_Device))))
-	//	return -1;
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"),
+		CPlayer::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(7.f, XMConvertToRadians(60.f))))))
+		return -1;
 
 	///* For.Prototype_GameObject_Camera_Free */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
-		CCamera_Free::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(10.f, XMConvertToRadians(60.f))))))
+		CCamera_Free::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1000.f, XMConvertToRadians(60.f))))))
 		return -1;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI"),
@@ -135,7 +136,7 @@ _uint CLoader::Loading_ForGamePlay()
 
 	///* For.Prototype_Component_VIBuffer_Terrain. */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
-		CVIBuffer_Terrain::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Texture/Terrain/Height.bmp")))))
+		CVIBuffer_Terrain::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Terrain/Height.bmp")))))
 		return E_FAIL;
 
 	///* For.Prototype_Component_VIBuffer_Cube. */
@@ -151,7 +152,7 @@ _uint CLoader::Loading_ForGamePlay()
 
 	///* For.Prototype_Component_Texture_Terrain . */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"),
-		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Texture/Terrain/Grass_%d.dds"), 2))))
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Terrain/Grass_%d.dds"), 2))))
 		return E_FAIL;
 
 	///* For.Prototype_Component_Texture_Player. */
@@ -164,17 +165,17 @@ _uint CLoader::Loading_ForGamePlay()
 	//	CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../Bin/Resources/Textures/SkyBox/Sky_%d.dds"), 4))))
 	//	return E_FAIL;
 
+	lstrcpy(m_szLoadingText, TEXT("모델을 생성 중입니다. "));
+	/* For.Prototype_Component_Model_Fiona. */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Yasuo"),
+		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/", "Yasuo.fbx", CModel::TYPE_NONANIM))))
+		return E_FAIL;
 
-	///* For.Prototype_Component_Shader_Rect */
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_Rect"),
-	//	CShader::Create(m_pGraphic_Device, TEXT("../Bin/ShaderFiles/Shader_Rect.hlsl")))))
-	//	return E_FAIL;
-
-	///* For.Prototype_Component_Shader_Cube */
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_Cube"),
-	//	CShader::Create(m_pGraphic_Device, TEXT("../Bin/ShaderFiles/Shader_Cube.hlsl")))))
-	//	return E_FAIL;
-
+	lstrcpy(m_szLoadingText, TEXT("셰이더을 생성 중입니다. "));
+	/* For.Prototype_Component_Shader_Cube */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxNonAnim"),
+		CShader::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_VtxNonAnim.hlsl"), VTXNONANIM_DECLARATION::Elements, VTXNONANIM_DECLARATION::iNumElement))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
