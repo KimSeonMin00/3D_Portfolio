@@ -49,13 +49,16 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(const _tchar* pHeightMapFil
 
 	VTXNORTEX*			pVertices = new VTXNORTEX[m_iNumVertices];
 
+	m_pVerticesPos = new _float3[m_iNumVertices];
+	ZeroMemory(m_pVerticesPos, sizeof(_float3) * m_iNumVertices);
+
 	for (_uint i = 0; i < m_iNumVerticesZ; ++i)
 	{
 		for (_uint j = 0; j < m_iNumVerticesX; ++j)
 		{
 			_uint		iIndex = i * m_iNumVerticesX + j;
 
-			pVertices[iIndex].vPosition = _float3(j, (pPixel[iIndex] & 0x000000ff) / 15.f, i);
+			pVertices[iIndex].vPosition = m_pVerticesPos[iIndex] =  _float3(j, (pPixel[iIndex] & 0x000000ff) / 15.f, i);
 			pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
 			pVertices[iIndex].vTexUV = _float2(j / (m_iNumVerticesX - 1.f), i / (m_iNumVerticesZ - 1.f));
 		}
@@ -80,6 +83,9 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(const _tchar* pHeightMapFil
 
 	FACEINDICES32*		pIndices = new FACEINDICES32[m_iNumPrimitive];
 	ZeroMemory(pIndices, sizeof(FACEINDICES32) * m_iNumPrimitive);
+
+	m_pIndices = new FACEINDICES32[m_iNumPrimitive];
+	ZeroMemory(m_pIndices, sizeof(FACEINDICES32) * m_iNumPrimitive);
 
 	_uint		iNumFaces = 0;
 
@@ -126,6 +132,8 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(const _tchar* pHeightMapFil
 			++iNumFaces;
 		}
 	}
+
+	memcpy(m_pIndices, pIndices, sizeof(FACEINDICES32) * m_iNumPrimitive);
 
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 		DirectX::XMStoreFloat3(&pVertices[i].vNormal, XMVector3Normalize(DirectX::XMLoadFloat3(&pVertices[i].vNormal)));
