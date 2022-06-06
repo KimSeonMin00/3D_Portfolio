@@ -2,7 +2,7 @@
 
 #include "Graphic_Device.h"
 #include "Input_Device.h"
-//#include "Picking.h"
+#include "Picking.h"
 #include "Timer_Manager.h"
 #include "Level_Manager.h"
 #include "Object_Manager.h"
@@ -79,7 +79,7 @@ private:
 	CComponent_Manager*			m_pComponent_Manager = nullptr;
 	CPipeline*						m_pPipeline = nullptr;
 	CLight_Manager*				m_pLight_Manager = nullptr;
-	//CPicking*					m_pPicking = nullptr;
+	CPicking*					m_pPicking = nullptr;
 
 public:
 	static void Release_Engine();

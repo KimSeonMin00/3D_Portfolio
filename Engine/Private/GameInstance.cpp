@@ -11,9 +11,9 @@ CGameInstance::CGameInstance()
 	, m_pInput_Device(CInput_Device::Get_Instance())
 	, m_pPipeline(CPipeline::Get_Instance())
 	, m_pLight_Manager(CLight_Manager::Get_Instance())
-	/*, m_pPicking(CPicking::Get_Instance())*/
+	,m_pPicking(CPicking::Get_Instance())
 {
-	/*Safe_AddRef(m_pPicking);*/
+	Safe_AddRef(m_pPicking);
 	Safe_AddRef(m_pLight_Manager);
 	Safe_AddRef(m_pPipeline);
 	Safe_AddRef(m_pComponent_Manager);
@@ -49,8 +49,8 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInstance, _uint iNumLevels, 
 		return E_FAIL;
 
 
-	/*if (FAILED(m_pPicking->Initialize(*ppOut, GraphicDesc.hWnd, GraphicDesc.iWinCX, GraphicDesc.iWinCY)))
-		return E_FAIL;*/
+	if (FAILED(m_pPicking->Initialize(GraphicDesc.hWnd, GraphicDesc.iWinCX, GraphicDesc.iWinCY)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -296,7 +296,7 @@ void CGameInstance::Release_Engine()
 
 	CTimer_Manager::Get_Instance()->Destroy_Instance();
 
-	/*CPicking::Get_Instance()->Destroy_Instance();*/
+	CPicking::Get_Instance()->Destroy_Instance();
 
 	CPipeline::Get_Instance()->Destroy_Instance();
 
@@ -311,7 +311,7 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
-	/*Safe_Release(m_pPicking);*/
+	Safe_Release(m_pPicking);
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pPipeline);
 	Safe_Release(m_pComponent_Manager);
