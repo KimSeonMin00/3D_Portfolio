@@ -64,7 +64,7 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 
 	m_pInput_Device->Update_InputDeviceState();
 
-	// m_pPicking->Transform_ToWorldSpace();
+	 m_pPicking->Transform_ToWorldSpace();
 
 	m_pObject_Manager->Tick(fTimeDelta);
 
@@ -276,14 +276,14 @@ HRESULT CGameInstance::Add_Light(ID3D11Device * pDevice, ID3D11DeviceContext * p
 	return m_pLight_Manager->Add_Light(pDevice, pDeviceContext, LightDesc);
 }
 
-//bool CGameInstance::Picking(CVIBuffer * pVIBuffer, CTransform * pTransform, _float3 * pOut)
-//{
-//	if (nullptr == m_pPicking)
-//		return false;
-//
-//	return m_pPicking->Picking(pVIBuffer, pTransform, pOut);
-//}
-//
+bool CGameInstance::Picking(CVIBuffer * pVIBuffer, CTransform * pTransform, _float3 * pOut)
+{
+	if (nullptr == m_pPicking)
+		return false;
+
+	return m_pPicking->Picking(pVIBuffer, pTransform, pOut);
+}
+
 void CGameInstance::Release_Engine()
 {	
 	CGameInstance::Get_Instance()->Destroy_Instance();

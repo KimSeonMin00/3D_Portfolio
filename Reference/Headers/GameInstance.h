@@ -2,7 +2,7 @@
 
 #include "Graphic_Device.h"
 #include "Input_Device.h"
-//#include "Picking.h"
+#include "Picking.h"
 #include "Timer_Manager.h"
 #include "Level_Manager.h"
 #include "Object_Manager.h"
@@ -66,9 +66,9 @@ public: /* For.PipeLine */
 public: /* For.Light */
 	const LIGHTDESC* Get_LightDesc(_uint iIndex) const;
 	HRESULT Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const LIGHTDESC& LightDesc);
-//public: /* For.Picking */
-//	bool Picking(class CVIBuffer* pVIBuffer, class CTransform* pTransform, _float3* pOut);
-//
+public: /* For.Picking */
+	bool Picking(class CVIBuffer* pVIBuffer, class CTransform* pTransform, _float3* pOut);
+
 
 private:
 	CGraphic_Device*			m_pGraphic_Device = nullptr;
@@ -79,7 +79,7 @@ private:
 	CComponent_Manager*			m_pComponent_Manager = nullptr;
 	CPipeline*						m_pPipeline = nullptr;
 	CLight_Manager*				m_pLight_Manager = nullptr;
-	//CPicking*					m_pPicking = nullptr;
+	CPicking*					m_pPicking = nullptr;
 
 public:
 	static void Release_Engine();

@@ -66,9 +66,9 @@ public: /* For.PipeLine */
 public: /* For.Light */
 	const LIGHTDESC* Get_LightDesc(_uint iIndex) const;
 	HRESULT Add_Light(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const LIGHTDESC& LightDesc);
-//public: /* For.Picking */
-//	bool Picking(class CVIBuffer* pVIBuffer, class CTransform* pTransform, _float3* pOut);
-//
+public: /* For.Picking */
+	bool Picking(class CVIBuffer* pVIBuffer, class CTransform* pTransform, _float3* pOut);
+
 
 private:
 	CGraphic_Device*			m_pGraphic_Device = nullptr;
