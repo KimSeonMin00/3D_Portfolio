@@ -28,7 +28,7 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_Scaled(XMVectorSet(0.1f, 0.1f, 0.1f, 0.f));
+	m_pTransformCom->Set_Scaled(XMVectorSet(0.001f, 0.001f, 0.001f, 0.f));
 
 	return S_OK;
 }

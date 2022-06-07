@@ -168,7 +168,7 @@ _uint CLoader::Loading_ForGamePlay()
 	lstrcpy(m_szLoadingText, TEXT("모델을 생성 중입니다. "));
 	/* For.Prototype_Component_Model_Fiona. */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Yasuo"),
-		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/", "Fiona.fbx", CModel::TYPE_NONANIM))))
+		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/", "Yasuo.fbx", CModel::TYPE_NONANIM))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을 생성 중입니다. "));
