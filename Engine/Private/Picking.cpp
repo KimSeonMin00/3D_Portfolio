@@ -51,7 +51,7 @@ void CPicking::Transform_ToWorldSpace()
 	m_vWorldRayPos + m_vWorldRayDir;
 }
 
-bool CPicking::Picking(CVIBuffer * pVIBuffer, CTransform * pTransform, _float4 * pOut)
+bool CPicking::Picking(CVIBuffer * pVIBuffer, CTransform * pTransform, _float3 * pOut)
 {
 	_vector		vRayPos = XMVector3TransformCoord(m_vWorldRayPos, XMMatrixInverse(nullptr, pTransform->Get_WorldMatrix()));
 	_vector		vRayDir = XMVector3TransformNormal(m_vWorldRayDir, XMMatrixInverse(nullptr, pTransform->Get_WorldMatrix()));
@@ -77,6 +77,24 @@ bool CPicking::Picking(CVIBuffer * pVIBuffer, CTransform * pTransform, _float4 *
 				iIndices[j] = *(_ushort*)((((_byte*)pIndices) + (iIndexSize * 3) * i) + iIndexSize * j);
 			else
 				iIndices[j] = *(_ulong*)((((_byte*)pIndices) + (iIndexSize * 3) * i) + iIndexSize * j);
+		}
+
+		_float fDist;
+
+		if (true == TriangleTests::Intersects(
+			vRayPos,
+			vRayDir,
+			XMLoadFloat3(&pVerticesPos[iIndices[0]]),
+			XMLoadFloat3(&pVerticesPos[iIndices[1]]),
+			XMLoadFloat3(&pVerticesPos[iIndices[2]]),
+			fDist
+		))
+		{
+			_vector vPickPos = vRayPos + vRayDir * fDist;
+
+			XMStoreFloat3(pOut, vPickPos);
+
+			return true;
 		}
 	}
 

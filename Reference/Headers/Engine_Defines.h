@@ -15,6 +15,7 @@
 #include <Assimp/postprocess.h>
 
 #include <DirectXMath.h>
+#include <DirectXCollision.h>
 using namespace DirectX;
 
 #include <typeinfo>

@@ -42,6 +42,24 @@ void CTerrain::Late_Tick(_float fTimeDelta)
 	if (nullptr == m_pRendererCom)
 		return;
 
+	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
+	if (nullptr == pGameInstance)
+		return;
+
+	Safe_AddRef(pGameInstance);
+
+	if (GetKeyState(VK_LBUTTON) < 0)
+	{
+		_float3		vOut;
+		if (true == pGameInstance->Picking(m_pVIBufferCom, m_pTransformCom, &vOut))
+		{
+			MSGBOX(TEXT("Terrain Picking"));
+		}
+	}
+
+
+	Safe_Release(pGameInstance);
+
 	m_pRendererCom->Add_RenderList(CRenderer::RENDER_NONALPHABLEND, this);
 }
 
