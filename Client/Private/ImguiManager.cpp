@@ -4,6 +4,7 @@
 
 #include "Transform.h"
 #include "UI.h"
+#include "Terrain.h"
 
 const char* CImguiManager::CurrentItem = nullptr;
 
@@ -40,11 +41,22 @@ void CImguiManager::Tick(_double TimeDelta)
 			m_eToolList = TOOL_UI;			
 		}
 
+		if (ImGui::Button("Object"))
+		{
+			m_eToolList = TOOL_OBJECT;
+		}
+
 		switch (m_eToolList)
 		{
 		case TOOL_UI:
 			ImGui::Begin("UI_Tool");
 			UI_Tool();
+			ImGui::End();
+			break;
+
+		case TOOL_OBJECT:
+			ImGui::Begin("Object_Tool");
+			Object_Tool();
 			ImGui::End();
 			break;
 
@@ -362,6 +374,54 @@ void CImguiManager::UI_Tool()
 			CoUninitialize();
 		}
 	}
+}
+
+void CImguiManager::Object_Tool()
+{
+	_float3 fPosition = { 0.f, 0.f, 0.f };
+
+	m_pTransform = (CTransform*)m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"), 0);
+	XMStoreFloat3(&fPosition, m_pTransform->Get_State(CTransform::STATE_POSITION));
+
+	ImGui::Text("Position");
+	ImGui::PushItemWidth(50);
+	ImGui::InputFloat("Position.x", &fPosition.x); ImGui::SameLine();
+	ImGui::InputFloat("Position.y", &fPosition.y); ImGui::SameLine();
+	ImGui::InputFloat("Position.z", &fPosition.z);
+
+	if (m_pGameInstance->Get_DIKeyState(DIK_P) & 0x80)
+	{
+		CTerrain* pTerrain = (CTerrain*)m_pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
+
+		fPosition = pTerrain->Get_PickingPosition();
+	}
+
+	ImGui::Text("Rotation");
+	ImGui::PushItemWidth(180);
+	ImGui::DragFloat("Rotation.x", &fRotation.x, 2.f, 0.f, 360.f);
+	ImGui::DragFloat("Rotation.y", &fRotation.y, 2.f, 0.f, 360.f);
+	ImGui::DragFloat("Rotation.z", &fRotation.z, 2.f, 0.f, 360.f);
+
+	_vector vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	_vector vLook = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+
+	_matrix		RotationMatrix, RotationXMat, RotationYMat, RotationZMat;
+
+	RotationXMat = XMMatrixRotationX(XMConvertToRadians(fRotation.x));
+	RotationYMat = XMMatrixRotationY(XMConvertToRadians(fRotation.y));
+	RotationZMat = XMMatrixRotationZ(XMConvertToRadians(fRotation.z));
+
+	RotationMatrix = RotationXMat * RotationYMat * RotationZMat;
+
+	vRight = XMVector3TransformNormal(vRight, RotationMatrix);
+	vUp = XMVector3TransformNormal(vUp, RotationMatrix);
+	vLook = XMVector3TransformNormal(vLook, RotationMatrix);
+
+	m_pTransform->Set_State(CTransform::STATE_RIGHT, vRight);
+	m_pTransform->Set_State(CTransform::STATE_UP, vUp);
+	m_pTransform->Set_State(CTransform::STATE_LOOK, vLook);
+	m_pTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(fPosition.x, fPosition.y, fPosition.z, 1.f));
 }
 
 CImguiManager * CImguiManager::Create(HWND hWnd, ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)

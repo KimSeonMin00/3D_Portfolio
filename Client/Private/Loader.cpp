@@ -115,7 +115,7 @@ _uint CLoader::Loading_ForGamePlay()
 
 	///* For.Prototype_GameObject_Camera_Free */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Camera_Free"),
-		CCamera_Free::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1000.f, XMConvertToRadians(60.f))))))
+		CCamera_Free::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(10.f, XMConvertToRadians(60.f))))))
 		return -1;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI"),
@@ -165,10 +165,14 @@ _uint CLoader::Loading_ForGamePlay()
 	//	CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../Bin/Resources/Textures/SkyBox/Sky_%d.dds"), 4))))
 	//	return E_FAIL;
 
+	_matrix		PivotMatrix;
+
+	PivotMatrix = XMMatrixScaling(0.0001f, 0.0001f, 0.0001f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+
 	lstrcpy(m_szLoadingText, TEXT("모델을 생성 중입니다. "));
 	/* For.Prototype_Component_Model_Fiona. */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Yasuo"),
-		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/", "Yasuo.fbx", CModel::TYPE_NONANIM))))
+		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/", "Yasuo.fbx", CModel::TYPE_NONANIM, PivotMatrix))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을 생성 중입니다. "));

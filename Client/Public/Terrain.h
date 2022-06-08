@@ -19,6 +19,9 @@ private:
 	virtual ~CTerrain() = default;
 
 public:
+	_float3 Get_PickingPosition();
+
+public:
 	virtual HRESULT NativeConstruct_Prototype(const CTransform::TRANSFORMDESC& TransformDesc);
 	virtual HRESULT NativeConstruct(void* pArg);
 	virtual void Tick(_float fTimeDelta);

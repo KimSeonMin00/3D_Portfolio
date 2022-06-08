@@ -28,13 +28,39 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_Scaled(XMVectorSet(0.001f, 0.001f, 0.001f, 0.f));
-
 	return S_OK;
 }
 
 void CPlayer::Tick(_float fTimeDelta)
 {
+	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
+	if (nullptr == pGameInstance)
+		return;
+
+	Safe_AddRef(pGameInstance);
+
+	if (pGameInstance->Get_DIKeyState(DIK_UP) & 0x80)
+	{
+		m_pTransformCom->Go_Straight(fTimeDelta);
+	}
+
+
+	if (pGameInstance->Get_DIKeyState(DIK_DOWN) & 0x80)
+	{
+		m_pTransformCom->Go_Backward(fTimeDelta);
+	}
+
+	if (pGameInstance->Get_DIKeyState(DIK_LEFT) & 0x80)
+	{
+		m_pTransformCom->Go_Left(fTimeDelta);
+	}
+
+	if (pGameInstance->Get_DIKeyState(DIK_RIGHT) & 0x80)
+	{
+		m_pTransformCom->Go_Right(fTimeDelta);
+	}
+
+	Safe_Release(pGameInstance);
 }
 
 void CPlayer::Late_Tick(_float fTimeDelta)
@@ -56,8 +82,16 @@ HRESULT CPlayer::Render()
 
 	m_pShaderCom->Begin(0);
 
-	if (FAILED(m_pModelCom->Render(m_pShaderCom)))
-		return E_FAIL;
+	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+
+		m_pShaderCom->Begin(0);
+
+		m_pModelCom->Render(i);
+	}
 
 	return S_OK;
 }

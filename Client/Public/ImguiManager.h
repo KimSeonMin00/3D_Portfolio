@@ -18,7 +18,7 @@ class CImguiManager final
 	:public CBase
 {
 public:
-	enum ToolList {TOOL_UI, TOOL_END};
+	enum ToolList {TOOL_UI, TOOL_OBJECT, TOOL_END};
 
 public:
 	CImguiManager();
@@ -32,6 +32,9 @@ public:
 private:
 	void	UI_Tool();
 
+
+	void	Object_Tool();
+
 private:
 	CGameInstance* m_pGameInstance = nullptr;
 
@@ -41,6 +44,9 @@ private:
 	static const char* CurrentItem;
 	_uint				   m_iCurrentItemIndex = 0;
 	CTransform*		m_pTransform = nullptr;
+
+	//For Object Tool
+	_float3 fRotation = { 0.f ,0.f ,0.f };
 
 	_bool					m_bEnableImgui = true;
 

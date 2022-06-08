@@ -10,12 +10,14 @@ CMeshContainer::CMeshContainer(const CMeshContainer & rhs)
 {
 }
 
-HRESULT CMeshContainer::NativeConstruct_Prototype(CModel::TYPE eModelType, aiMesh * pAIMesh)
+HRESULT CMeshContainer::NativeConstruct_Prototype(CModel::TYPE eModelType, aiMesh * pAIMesh, _fmatrix PivotMatrix)
 {
 	HRESULT		hr = 0;
 
+	m_iMaterialIndex = pAIMesh->mMaterialIndex;
+
 	if (CModel::TYPE_NONANIM == eModelType)
-		hr = Ready_NonAnimModel(pAIMesh);
+		hr = Ready_NonAnimModel(pAIMesh, PivotMatrix);
 	else
 		hr = Ready_AnimModel(pAIMesh);
 
@@ -64,7 +66,7 @@ HRESULT CMeshContainer::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-HRESULT CMeshContainer::Ready_NonAnimModel(aiMesh * pAIMesh)
+HRESULT CMeshContainer::Ready_NonAnimModel(aiMesh * pAIMesh, _fmatrix PivotMatrix)
 {
 	m_iStride = sizeof(VTXNONANIM);
 	m_iNumVertices = pAIMesh->mNumVertices;
@@ -83,7 +85,11 @@ HRESULT CMeshContainer::Ready_NonAnimModel(aiMesh * pAIMesh)
 	for (_uint i = 0; i < m_iNumVertices; ++i)
 	{
 		memcpy(&pVertices[i].vPosition, &pAIMesh->mVertices[i], sizeof(_float3));
+		XMStoreFloat3(&pVertices[i].vPosition, XMVector3TransformCoord(XMLoadFloat3(&pVertices[i].vPosition), PivotMatrix));
+
 		memcpy(&pVertices[i].vNormal, &pAIMesh->mNormals[i], sizeof(_float3));
+		XMStoreFloat3(&pVertices[i].vNormal, XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&pVertices[i].vNormal), PivotMatrix)));
+
 		memcpy(&pVertices[i].vTexUV, &pAIMesh->mTextureCoords[0][i], sizeof(_float2));
 		memcpy(&pVertices[i].vTangent, &pAIMesh->mTangents[i], sizeof(_float3));
 	}
@@ -103,11 +109,11 @@ HRESULT CMeshContainer::Ready_AnimModel(aiMesh * pAIMesh)
 	return S_OK;
 }
 
-CMeshContainer * CMeshContainer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, CModel::TYPE eModelType, aiMesh * pAIMesh)
+CMeshContainer * CMeshContainer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, CModel::TYPE eModelType, aiMesh * pAIMesh, _fmatrix PivotMatrix)
 {
 	CMeshContainer*		pInstance = new CMeshContainer(pDevice, pDeviceContext);
 
-	if (FAILED(pInstance->NativeConstruct_Prototype(eModelType, pAIMesh)))
+	if (FAILED(pInstance->NativeConstruct_Prototype(eModelType, pAIMesh, PivotMatrix)))
 	{
 		MSGBOX(TEXT("Failed to Created : CMeshContainer"));
 		Safe_Release(pInstance);
