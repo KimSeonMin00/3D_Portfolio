@@ -38,11 +38,13 @@ void CImguiManager::Tick(_double TimeDelta)
 	{
 		if(ImGui::Button("UI"))
 		{
+			m_iCurrentItemIndex = 0;
 			m_eToolList = TOOL_UI;			
 		}
 
 		if (ImGui::Button("Object"))
 		{
+			m_iCurrentItemIndex = 0;
 			m_eToolList = TOOL_OBJECT;
 		}
 
@@ -81,12 +83,12 @@ void CImguiManager::UI_Tool()
 	if (ImGui::Button("Create"))
 	{
 		m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI"));
-		m_iNumItems++;
+		m_iNumUI++;
 	}
 
 	ImGui::PushItemWidth(100);
 
-	if (m_iNumItems > 0)
+	if (m_iNumUI > 0)
 	{
 		char Item[256] = "";
 		sprintf_s(Item, "UI_%d", m_iCurrentItemIndex);
@@ -96,7 +98,7 @@ void CImguiManager::UI_Tool()
 
 	if (ImGui::BeginCombo("UI", CurrentItem))
 	{
-		for (int n = 0; n < m_iNumItems; n++)
+		for (int n = 0; n < m_iNumUI; n++)
 		{
 			char Item[256] = "";
 			sprintf_s(Item, "UI_%d", n);
@@ -238,7 +240,7 @@ void CImguiManager::UI_Tool()
 
 										DWORD	dwByte = 0;
 
-										for (_uint i = 0; i < m_iNumItems; i++)
+										for (_uint i = 0; i < m_iNumUI; i++)
 										{
 											m_pTransform = (CTransform*)m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Com_Transform"), i);
 											if (nullptr == m_pTransform)
@@ -327,7 +329,7 @@ void CImguiManager::UI_Tool()
 									{
 										HANDLE		hFile = CreateFile(pszFilePath, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
-										m_iNumItems = 0;
+										m_iNumUI = 0;
 
 										if (INVALID_HANDLE_VALUE == hFile)
 											return;
@@ -352,7 +354,7 @@ void CImguiManager::UI_Tool()
 
 											m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI"));
 
-											m_pTransform = (CTransform*)m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Com_Transform"), m_iNumItems);
+											m_pTransform = (CTransform*)m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Com_Transform"), m_iNumUI);
 											Safe_AddRef(m_pTransform);
 
 											m_pTransform->Set_Scaled(XMLoadFloat3(&fScale));
@@ -360,7 +362,7 @@ void CImguiManager::UI_Tool()
 
 											Safe_Release(m_pTransform);
 
-											m_iNumItems++;
+											m_iNumUI++;
 										}
 									}
 									pItem->Release();
@@ -378,9 +380,51 @@ void CImguiManager::UI_Tool()
 
 void CImguiManager::Object_Tool()
 {
+	if (ImGui::Button("Create"))
+	{
+		m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Prototype_GameObject_Player"));
+		m_iNumObject++;
+	}
+
+	if (m_iNumObject > 0)
+	{
+		char Item[256] = "";
+		sprintf_s(Item, "Player_%d", m_iCurrentItemIndex);
+
+		CurrentItem = Item;
+	}
+
+	if (ImGui::BeginCombo("Player", CurrentItem))
+	{
+		for (int n = 0; n < m_iNumObject; n++)
+		{
+			char Item[256] = "";
+			sprintf_s(Item, "Player_%d", n);
+
+			bool is_selected = (CurrentItem == Item); // You can store your selection however you want, outside or inside your objects
+
+			if (ImGui::Selectable(Item, is_selected))
+			{
+				CurrentItem = Item;
+				m_iCurrentItemIndex = n;
+			}
+
+			if (is_selected)
+			{
+				ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
+			}
+		}
+		ImGui::EndCombo();
+	}
+
 	_float3 fPosition = { 0.f, 0.f, 0.f };
 
-	m_pTransform = (CTransform*)m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"), 0);
+	m_pTransform = (CTransform*)m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"), m_iCurrentItemIndex);
+
+	if (nullptr == m_pTransform)
+		return;
+
+	Safe_AddRef(m_pTransform);
 	XMStoreFloat3(&fPosition, m_pTransform->Get_State(CTransform::STATE_POSITION));
 
 	ImGui::Text("Position");
@@ -393,7 +437,12 @@ void CImguiManager::Object_Tool()
 	{
 		CTerrain* pTerrain = (CTerrain*)m_pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
 
-		fPosition = pTerrain->Get_PickingPosition();
+		if (nullptr != pTerrain)
+		{
+			Safe_AddRef(pTerrain);
+			fPosition = pTerrain->Get_PickingPosition();
+			Safe_Release(pTerrain);
+		}
 	}
 
 	_float3 fRotation = { 0.f ,0.f ,0.f };
@@ -409,33 +458,54 @@ void CImguiManager::Object_Tool()
 	ImGui::RadioButton("Up_Axis", &e, 1); ImGui::SameLine();
 	ImGui::RadioButton("Look_Axis", &e, 2);
 
-	if (ImGui::Button("Rotate +10"))
+	_float mousemove = 0.f;
+
+	if (ImGui::SliderFloat("Rotate", &mousemove, -1.f, 1.f, "%.2f", 1.f))
 	{
 		if (e == 0)
-			m_pTransform->Turn(vRight, XMConvertToRadians(10));
+			m_pTransform->Turn(vRight, XMConvertToRadians(1) * mousemove);
 
 		else if (e == 1)
-			m_pTransform->Turn(vUp, XMConvertToRadians(10));
+			m_pTransform->Turn(vUp, XMConvertToRadians(1) * mousemove);
 
 		else if (e == 2)
-			m_pTransform->Turn(vLook, XMConvertToRadians(10));
+			m_pTransform->Turn(vLook, XMConvertToRadians(1) * mousemove);
 	}
 
-	if (ImGui::Button("Rotate -10"))
+	if (ImGui::Button("Rotate +1"))
 	{
 		if (e == 0)
-			m_pTransform->Turn(vRight, XMConvertToRadians(-10));
+			m_pTransform->Turn(vRight, XMConvertToRadians(1));
 
 		else if (e == 1)
-			m_pTransform->Turn(vUp, XMConvertToRadians(-10));
+			m_pTransform->Turn(vUp, XMConvertToRadians(1));
 
 		else if (e == 2)
-			m_pTransform->Turn(vLook, XMConvertToRadians(-10));
+			m_pTransform->Turn(vLook, XMConvertToRadians(1));
 	}
 
+	if (ImGui::Button("Rotate -1"))
+	{
+		if (e == 0)
+			m_pTransform->Turn(vRight, XMConvertToRadians(-1));
 
+		else if (e == 1)
+			m_pTransform->Turn(vUp, XMConvertToRadians(-1));
+
+		else if (e == 2)
+			m_pTransform->Turn(vLook, XMConvertToRadians(-1));
+	}
+
+	if (ImGui::Button("Initialize"))
+	{
+		m_pTransform->Set_State(CTransform::STATE_RIGHT, XMVectorSet(1.f, 0.f, 0.f, 0.f));
+		m_pTransform->Set_State(CTransform::STATE_UP, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+		m_pTransform->Set_State(CTransform::STATE_LOOK, XMVectorSet(0.f, 0.f, 1.f, 0.f));
+	}
 
 	m_pTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(fPosition.x, fPosition.y, fPosition.z, 1.f));
+
+	Safe_Release(m_pTransform);
 }
 
 CImguiManager * CImguiManager::Create(HWND hWnd, ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)

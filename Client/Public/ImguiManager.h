@@ -40,12 +40,13 @@ private:
 
 	ToolList			  m_eToolList = TOOL_END;
 	//For UI Tool
-	_uint				  m_iNumItems = 0;
+	_uint				  m_iNumUI = 0;
 	static const char* CurrentItem;
 	_uint				   m_iCurrentItemIndex = 0;
 	CTransform*		m_pTransform = nullptr;
 
 	//For Object Tool
+	_uint m_iNumObject = 1;
 
 	_bool					m_bEnableImgui = true;
 
