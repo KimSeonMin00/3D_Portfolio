@@ -396,31 +396,45 @@ void CImguiManager::Object_Tool()
 		fPosition = pTerrain->Get_PickingPosition();
 	}
 
+	_float3 fRotation = { 0.f ,0.f ,0.f };
+
 	ImGui::Text("Rotation");
-	ImGui::PushItemWidth(180);
-	ImGui::DragFloat("Rotation.x", &fRotation.x, 2.f, 0.f, 360.f);
-	ImGui::DragFloat("Rotation.y", &fRotation.y, 2.f, 0.f, 360.f);
-	ImGui::DragFloat("Rotation.z", &fRotation.z, 2.f, 0.f, 360.f);
 
-	_vector vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f);
-	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	_vector vLook = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+	_vector vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+	_vector vUp = m_pTransform->Get_State(CTransform::STATE_UP);
+	_vector vLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
 
-	_matrix		RotationMatrix, RotationXMat, RotationYMat, RotationZMat;
+	static int e = 0;
+	ImGui::RadioButton("Right_Axis", &e, 0); ImGui::SameLine();
+	ImGui::RadioButton("Up_Axis", &e, 1); ImGui::SameLine();
+	ImGui::RadioButton("Look_Axis", &e, 2);
 
-	RotationXMat = XMMatrixRotationX(XMConvertToRadians(fRotation.x));
-	RotationYMat = XMMatrixRotationY(XMConvertToRadians(fRotation.y));
-	RotationZMat = XMMatrixRotationZ(XMConvertToRadians(fRotation.z));
+	if (ImGui::Button("Rotate +10"))
+	{
+		if (e == 0)
+			m_pTransform->Turn(vRight, XMConvertToRadians(10));
 
-	RotationMatrix = RotationXMat * RotationYMat * RotationZMat;
+		else if (e == 1)
+			m_pTransform->Turn(vUp, XMConvertToRadians(10));
 
-	vRight = XMVector3TransformNormal(vRight, RotationMatrix);
-	vUp = XMVector3TransformNormal(vUp, RotationMatrix);
-	vLook = XMVector3TransformNormal(vLook, RotationMatrix);
+		else if (e == 2)
+			m_pTransform->Turn(vLook, XMConvertToRadians(10));
+	}
 
-	m_pTransform->Set_State(CTransform::STATE_RIGHT, vRight);
-	m_pTransform->Set_State(CTransform::STATE_UP, vUp);
-	m_pTransform->Set_State(CTransform::STATE_LOOK, vLook);
+	if (ImGui::Button("Rotate -10"))
+	{
+		if (e == 0)
+			m_pTransform->Turn(vRight, XMConvertToRadians(-10));
+
+		else if (e == 1)
+			m_pTransform->Turn(vUp, XMConvertToRadians(-10));
+
+		else if (e == 2)
+			m_pTransform->Turn(vLook, XMConvertToRadians(-10));
+	}
+
+
+
 	m_pTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(fPosition.x, fPosition.y, fPosition.z, 1.f));
 }
 

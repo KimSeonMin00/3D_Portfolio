@@ -46,7 +46,6 @@ private:
 	CTransform*		m_pTransform = nullptr;
 
 	//For Object Tool
-	_float3 fRotation = { 0.f ,0.f ,0.f };
 
 	_bool					m_bEnableImgui = true;
 
