@@ -61,16 +61,19 @@ void CCamera_Free::Tick(_float fTimeDelta)
 		m_pTransformCom->Go_Right(fTimeDelta);
 	}
 
-	_long		MouseMove = 0;
-
-	if (MouseMove = pGameInstance->Get_DIMMoveState(CInput_Device::DIMM_X))
+	if (pGameInstance->Get_DIMButtonState(CInput_Device::DIMB_WHEEL))
 	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * MouseMove * 0.1f);
-	}
+		_long		MouseMove = 0;
 
-	if (MouseMove = pGameInstance->Get_DIMMoveState(CInput_Device::DIMM_Y))
-	{
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), fTimeDelta * MouseMove * 0.1f);
+		if (MouseMove = pGameInstance->Get_DIMMoveState(CInput_Device::DIMM_X))
+		{
+			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * MouseMove * 0.1f);
+		}
+
+		if (MouseMove = pGameInstance->Get_DIMMoveState(CInput_Device::DIMM_Y))
+		{
+			m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), fTimeDelta * MouseMove * 0.1f);
+		}
 	}
 
 	if (FAILED(__super::Bind_TransformMatrices()))

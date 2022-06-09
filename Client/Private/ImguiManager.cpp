@@ -433,7 +433,7 @@ void CImguiManager::Object_Tool()
 	ImGui::InputFloat("Position.y", &fPosition.y); ImGui::SameLine();
 	ImGui::InputFloat("Position.z", &fPosition.z);
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_P) & 0x80)
+	if (m_pGameInstance->Get_DIMButtonState(CInput_Device::DIMB_RBUTTON))
 	{
 		CTerrain* pTerrain = (CTerrain*)m_pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
 
