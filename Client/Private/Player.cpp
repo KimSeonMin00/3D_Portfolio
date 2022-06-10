@@ -28,39 +28,15 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
+	m_pModelCom->SetUp_AnimationIndex(0);
+
 	return S_OK;
 }
 
 void CPlayer::Tick(_float fTimeDelta)
 {
-	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
-	if (nullptr == pGameInstance)
-		return;
 
-	Safe_AddRef(pGameInstance);
-
-	if (pGameInstance->Get_DIKeyState(DIK_UP) & 0x80)
-	{
-		m_pTransformCom->Go_Straight(fTimeDelta);
-	}
-
-
-	if (pGameInstance->Get_DIKeyState(DIK_DOWN) & 0x80)
-	{
-		m_pTransformCom->Go_Backward(fTimeDelta);
-	}
-
-	if (pGameInstance->Get_DIKeyState(DIK_LEFT) & 0x80)
-	{
-		m_pTransformCom->Go_Left(fTimeDelta);
-	}
-
-	if (pGameInstance->Get_DIKeyState(DIK_RIGHT) & 0x80)
-	{
-		m_pTransformCom->Go_Right(fTimeDelta);
-	}
-
-	Safe_Release(pGameInstance);
+	m_pModelCom->Play_Animation(fTimeDelta);
 }
 
 void CPlayer::Late_Tick(_float fTimeDelta)
@@ -80,12 +56,12 @@ HRESULT CPlayer::Render()
 	if (FAILED(SetUp_ConstantTable()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(0);
-
 	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
+		m_pModelCom->SetUp_BoneMatrices_OnShader(m_pShaderCom, "g_Bones", i);
+
 		m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 
 		m_pShaderCom->Begin(0);
@@ -103,7 +79,7 @@ HRESULT CPlayer::SetUp_Components()
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxNonAnim"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnim"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	/* For.Com_Model*/
@@ -122,51 +98,7 @@ HRESULT CPlayer::SetUp_ConstantTable()
 
 	m_pShaderCom->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_VIEW), sizeof(_float4x4));
 	m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_PROJ), sizeof(_float4x4));
-	// m_pShaderCom->Set_RawValue("g_vCamPosition", &pGameInstance->Get_CamPositionFloat4(), sizeof(_float4));
-
-	//const LIGHTDESC* pLightDesc = pGameInstance->Get_LightDesc(0);
-	//if (nullptr == pLightDesc)
-	//	return E_FAIL;
-
-
-
-	//if (pLightDesc->eType == tagLightDesc::TYPE_POINT)
-	//{
-	//	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightPos", &pLightDesc->vPosition, sizeof(_float4))))
-	//		return E_FAIL;
-	//	if (FAILED(m_pShaderCom->Set_RawValue("g_fRange", &pLightDesc->fRange, sizeof(_float))))
-	//		return E_FAIL;
-
-	//	m_iPassIndex = 1;
-	//}
-	//else
-	//{
-	//	if (FAILED(m_pShaderCom->Set_RawValue("g_vLightDir", &pLightDesc->vDirection, sizeof(_float4))))
-	//		return E_FAIL;
-
-	//	m_iPassIndex = 0;
-	//}
-
-	//
-	//if (FAILED(m_pShaderCom->Set_RawValue("g_vLightDiffuse", &pLightDesc->vDiffuse, sizeof(_float4))))
-	//	return E_FAIL;
-	//if (FAILED(m_pShaderCom->Set_RawValue("g_vLightAmbient", &pLightDesc->vAmbient, sizeof(_float4))))
-	//	return E_FAIL;
-	//if (FAILED(m_pShaderCom->Set_RawValue("g_vLightSpecular", &pLightDesc->vSpecular, sizeof(_float4))))
-	//	return E_FAIL;
-
-
-	//if (FAILED(m_pTextureCom[TYPE_DIFFUSE]->Bind_OnShader(m_pShaderCom, "g_SourDiffTexture", 0)))
-	//	return E_FAIL;
-	//if (FAILED(m_pTextureCom[TYPE_DIFFUSE]->Bind_OnShader(m_pShaderCom, "g_DestDiffTexture", 1)))
-	//	return E_FAIL;	
-	//if (FAILED(m_pTextureCom[TYPE_FILTER]->Bind_OnShader(m_pShaderCom, "g_FilterTexture", 0)))
-	//	return E_FAIL;
-	//if (FAILED(m_pTextureCom[TYPE_BRUSH]->Bind_OnShader(m_pShaderCom, "g_BrushTexture", 0)))
-	//	return E_FAIL;
-
-	//// m_pShaderCom->Set_SRV("g_FilterTexture", m_pFilterSRV);
-
+	
 	RELEASE_INSTANCE(CGameInstance);
 }
 

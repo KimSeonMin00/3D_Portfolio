@@ -21,14 +21,20 @@ public:
 	}
 
 public:
-	HRESULT SetUp_Material_OnShader(class CShader* pShader, const char* pConstantName, _uint iMeshIndex, aiTextureType eTextureType);
-
-public:
 	virtual HRESULT NativeConstruct_Prototype(const char* pModelFilePath, const char* pModelFileName, TYPE eType, _fmatrix PivotMatrix);
 	virtual HRESULT NativeConstruct(void* pArg);
 
 public:
 	HRESULT Render(_uint iMeshIndex);
+
+public:
+	HRESULT SetUp_Material_OnShader(class CShader* pShader, const char* pConstantName, _uint iMeshIndex, aiTextureType eTextureType);
+	HRESULT SetUp_AnimationIndex(_uint iAnimIndex);
+	HRESULT SetUp_BoneMatrices_OnShader(class CShader* pShader, const char* pConstantName, _uint iMeshIndex);
+	void Play_Animation(_double TimeDelta);
+
+public:
+	class CHierarchyNode* Find_HierarcyNodes(const char* pBoneName);
 
 private:
 	const aiScene*			m_pScene = nullptr;
@@ -49,8 +55,21 @@ private:
 	typedef vector<MODELMATERIAL>			MATERIALS;
 
 private:
+	vector<CHierarchyNode*>					m_HierarchyNodes;
+	typedef vector<CHierarchyNode*>			HIERARCHYNODES;
+
+private:
+	_uint									m_iCurrentAnimIndex = 0;
+	_uint									m_iNumAnimations = 0;
+	vector<class CAnimation*>				m_Animations;
+	typedef vector<class CAnimation*>		ANIMATIONS;
+
+
+private:
 	HRESULT Ready_MeshContainers();
 	HRESULT Ready_Materials(const char* pModelFilePath);
+	HRESULT Ready_HierarchyNodes(aiNode* pNode, class CHierarchyNode* pParent, _uint iDepth);
+	HRESULT Ready_Animation();
 
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const char* pModelFilePath, const char* pModelFileName, TYPE eType, _fmatrix PivotMatrix);

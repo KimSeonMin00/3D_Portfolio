@@ -3,6 +3,14 @@
 
 namespace Engine
 {
+	typedef struct tagKeyFrame
+	{
+		XMFLOAT3		vScale;
+		XMFLOAT4		vRotation;
+		XMFLOAT3		vPosition;
+		double			Time;
+	}KEYFRAME;
+
 	typedef struct tagModelMaterial
 	{
 		class CTexture*		pTexture[AI_TEXTURE_TYPE_MAX];
@@ -31,6 +39,22 @@ namespace Engine
 		XMFLOAT4		vAmbient;
 		XMFLOAT4		vSpecular;
 	}MATERIALDESC;
+
+	typedef struct tagVertex_Anim
+	{
+		XMFLOAT3			vPosition;
+		XMFLOAT3			vNormal;
+		XMFLOAT2			vTexUV;
+		XMFLOAT3			vTangent;
+		XMUINT4				vBlendIndex;
+		XMFLOAT4			vBlendWeight;
+	}VTXANIM;
+
+	struct ENGINE_DLL VTXANIM_DECLARATION
+	{
+		static const unsigned int iNumElement = 6;
+		static const D3D11_INPUT_ELEMENT_DESC	Elements[iNumElement];
+	};
 
 	typedef struct tagVertex_NonAnim
 	{
