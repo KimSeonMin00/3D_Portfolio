@@ -13,6 +13,9 @@ public:
 	HRESULT NativeConstruct(aiAnimation * pAIAnimation, class CModel* pModel);
 	void Update_TransformationMatrices(_double TimeDelta);
 
+public:
+	void			Set_Initialize();
+
 private:
 	char			m_szName[MAX_PATH] = "";
 	_double			m_Duration = 0.0;
@@ -25,7 +28,7 @@ private:
 
 private:
 	_double			m_TimeAcc = 0.0;
-	_bool			m_isFinished = false;
+	_bool				m_isFinished = false;
 
 public:
 	static CAnimation* Create(aiAnimation* pAIAnimation, class CModel* pModel);

@@ -64,6 +64,10 @@ private:
 	vector<class CAnimation*>				m_Animations;
 	typedef vector<class CAnimation*>		ANIMATIONS;
 
+public:
+	void		Set_Initialize();
+	
+
 
 private:
 	HRESULT Ready_MeshContainers();

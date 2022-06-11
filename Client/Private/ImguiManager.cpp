@@ -5,6 +5,7 @@
 #include "Transform.h"
 #include "UI.h"
 #include "Terrain.h"
+#include "Player.h"
 
 const char* CImguiManager::CurrentItem = nullptr;
 
@@ -506,6 +507,20 @@ void CImguiManager::Object_Tool()
 	m_pTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(fPosition.x, fPosition.y, fPosition.z, 1.f));
 
 	Safe_Release(m_pTransform);
+
+	ImGui::PushItemWidth(100);
+	ImGui::InputInt("Index", &m_iIndex);
+
+	if (ImGui::Button("Set_Index"))
+	{
+		CPlayer* pPlayer = (CPlayer*)m_pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_Player"), 0);
+		if (nullptr != pPlayer)
+		{
+			Safe_AddRef(pPlayer);
+			pPlayer->Change_AnimtionIndex(m_iIndex);
+			Safe_Release(pPlayer);
+		}
+	}
 }
 
 CImguiManager * CImguiManager::Create(HWND hWnd, ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)

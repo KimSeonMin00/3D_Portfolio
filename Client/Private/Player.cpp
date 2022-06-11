@@ -28,13 +28,12 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	m_pModelCom->SetUp_AnimationIndex(0);
-
 	return S_OK;
 }
 
 void CPlayer::Tick(_float fTimeDelta)
 {
+	m_pModelCom->SetUp_AnimationIndex(m_iAnimationIndex);
 
 	m_pModelCom->Play_Animation(fTimeDelta);
 }
@@ -100,6 +99,13 @@ HRESULT CPlayer::SetUp_ConstantTable()
 	m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_PROJ), sizeof(_float4x4));
 	
 	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CPlayer::Change_AnimtionIndex(_uint iIndex)
+{
+	m_iAnimationIndex = iIndex;
+	m_pModelCom->SetUp_AnimationIndex(m_iAnimationIndex);
+	m_pModelCom->Set_Initialize();
 }
 
 CPlayer * CPlayer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const CTransform::TRANSFORMDESC & TransformDesc)

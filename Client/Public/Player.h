@@ -35,6 +35,12 @@ public:
 	HRESULT SetUp_Components();
 	HRESULT SetUp_ConstantTable();
 
+private:
+	_uint m_iAnimationIndex = 0;
+
+public:
+	void Change_AnimtionIndex(_uint iIndex);
+
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const CTransform::TRANSFORMDESC& TransformDesc);
 	virtual CGameObject* Clone(void* pArg);

@@ -51,6 +51,16 @@ void CAnimation::Update_TransformationMatrices(_double TimeDelta)
 		m_isFinished = false;
 }
 
+void CAnimation::Set_Initialize()
+{
+	for (_uint i = 0; i < m_iNumChannels; ++i)
+	{
+		m_Channels[i]->Set_CurrentKeyFrameIndex(0);
+		m_TimeAcc = 0.0;
+		m_Channels[i]->Update_TransformationMatrix(m_TimeAcc);
+	}
+}
+
 CAnimation * CAnimation::Create(aiAnimation * pAIAnimation, CModel * pModel)
 {
 	CAnimation*		pInstance = new CAnimation();

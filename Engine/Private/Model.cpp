@@ -162,6 +162,11 @@ HRESULT CModel::Render(_uint iMeshIndex)
 	return S_OK;
 }
 
+void CModel::Set_Initialize()
+{
+		m_Animations[m_iCurrentAnimIndex]->Set_Initialize();
+}
+
 HRESULT CModel::Ready_MeshContainers()
 {
 	if (nullptr == m_pScene)
