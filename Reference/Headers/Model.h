@@ -21,6 +21,7 @@ public:
 	}
 
 	_bool	Get_Finished();
+	_uint	Get_KeyFrame();
 
 public:
 	virtual HRESULT NativeConstruct_Prototype(const char* pModelFilePath, const char* pModelFileName, TYPE eType, _fmatrix PivotMatrix);

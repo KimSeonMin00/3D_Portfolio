@@ -46,8 +46,6 @@ HRESULT CLevel_GamePlay::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
-	SetWindowText(g_hWnd, TEXT("게임플레이레벨임."));
-
 	return S_OK;
 }
 

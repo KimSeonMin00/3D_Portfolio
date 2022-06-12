@@ -69,7 +69,9 @@ void CChannel::Update_TransformationMatrix(_double TimeAcc)
 	else
 	{
 		while (TimeAcc >= m_KeyFrames[m_iCurrentKeyFrame + 1]->Time)
+		{
 			++m_iCurrentKeyFrame;
+		}
 
 		_vector		vSourScale, vDestScale;
 		_vector		vSourRotation, vDestRotation;

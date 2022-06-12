@@ -20,6 +20,7 @@ public:
 	{
 		return m_isFinished;
 	};
+	_uint			Get_KeyFrame();
 
 private:
 	char			m_szName[MAX_PATH] = "";

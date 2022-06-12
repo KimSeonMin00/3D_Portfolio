@@ -227,9 +227,17 @@ void CPlayer::Move(_float fTimeDelta)
 
 	else
 	{
-		m_eState = STATE_IDLE;
-		m_pModelCom->SetUp_AnimationIndex(43);
-		m_pModelCom->Set_Initialize();
+		if (16 == m_pModelCom->Get_KeyFrame())
+		{
+			m_eState = STATE_IDLE;
+			m_pModelCom->SetUp_AnimationIndex(43);
+			m_pModelCom->Set_Initialize();
+		}
+
+		else
+		{
+			m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * 0.5f * fTimeDelta));
+		}
 	}
 }
 

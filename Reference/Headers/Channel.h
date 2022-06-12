@@ -14,6 +14,11 @@ public:
 		m_iCurrentKeyFrame = iIndex;
 	}
 
+	_uint Get_KeyFrame()
+	{
+		return m_iCurrentKeyFrame;
+	};
+
 public:
 	HRESULT NativeConstruct(aiNodeAnim* pChannel, class CHierarchyNode* pHierarchyNode);
 	void Update_TransformationMatrix(_double TimeAcc);

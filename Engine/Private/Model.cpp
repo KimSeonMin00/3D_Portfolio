@@ -111,6 +111,12 @@ _bool CModel::Get_Finished()
 	return m_Animations[m_iCurrentAnimIndex]->Get_Finished();
 }
 
+_uint CModel::Get_KeyFrame()
+{
+	return m_Animations[m_iCurrentAnimIndex]->Get_KeyFrame();
+}
+
+
 HRESULT CModel::NativeConstruct_Prototype(const char * pModelFilePath, const char * pModelFileName, TYPE eType, _fmatrix PivotMatrix)
 {
 	XMStoreFloat4x4(&m_PivotMatrix, PivotMatrix);

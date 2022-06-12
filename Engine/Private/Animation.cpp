@@ -65,6 +65,20 @@ void CAnimation::Set_Initialize()
 	}
 }
 
+_uint CAnimation::Get_KeyFrame()
+{
+	_uint m_iCurrentFrame = 0;
+
+	for (_uint i = 0; i < m_iNumChannels; ++i)
+	{
+		_uint Temp = m_Channels[i]->Get_KeyFrame();
+		if (Temp > m_iCurrentFrame)
+			m_iCurrentFrame = Temp;
+	}
+
+	return m_iCurrentFrame;
+}
+
 CAnimation * CAnimation::Create(aiAnimation * pAIAnimation, CModel * pModel)
 {
 	CAnimation*		pInstance = new CAnimation();
