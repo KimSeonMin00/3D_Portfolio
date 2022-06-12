@@ -46,12 +46,6 @@ void CPlayer::Tick(_float fTimeDelta)
 	m_pModelCom->Check_Looped(fTimeDelta);
 
 	Update_State(fTimeDelta);
-
-	SetUp_Animation_Index(fTimeDelta);
-
-	m_pModelCom->Play_Animation(fTimeDelta);
-
-	
 }
 
 void CPlayer::Late_Tick(_float fTimeDelta)
@@ -134,6 +128,7 @@ void CPlayer::Key_Input(_float fTimeDelta)
 	if (pGameInstance->Get_DIMButtonState(CInput_Device::DIMB_RBUTTON) & 0x80)
 	{
 		m_eState = STATE_MOVE;
+		m_bMove_Stop = false;
 
 		_float3 vPositionPicking = { 0.f, 0.f, 0.f };
 		_float3 vMoveDist = { 0.f, 0.f, 0.f };
@@ -156,49 +151,45 @@ void CPlayer::Key_Input(_float fTimeDelta)
 		m_vMoveDir = XMVector3Normalize(m_vMoveDir);
 		m_fMoveDist = 0.f;
 	}
-}
 
-void CPlayer::SetUp_Animation_Index(_float fTimeDelta)
-{
-	switch (m_eState)
+	if (pGameInstance->Get_DIMButtonState(CInput_Device::DIMB_LBUTTON) & 0x80)
 	{
-	case STATE_IDLE:
-		if (m_bIsChange_State == true)
+		m_eState = STATE_ATTACK;
+
+		_float3 vPositionPicking = { 0.f, 0.f, 0.f };
+
+		CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
+
+		if (nullptr != pTerrain)
 		{
-			m_pModelCom->SetUp_AnimationIndex(43);
-			if (m_pModelCom->Get_Finished())
-			{
-				m_pModelCom->SetUp_AnimationIndex(40);
-				m_pModelCom->Set_Initialize();
-				m_bIsChange_State = false;
-				m_ePreState = m_eState;
-			}
+			Safe_AddRef(pTerrain);
+			vPositionPicking = pTerrain->Get_PickingPosition();
+			Safe_Release(pTerrain);
 		}
-		else
-			m_pModelCom->SetUp_AnimationIndex(40);
-		break;
 
-	case STATE_MOVE:
-			m_pModelCom->SetUp_AnimationIndex(16);
-		break;
+		m_vMovePos = XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f);
+		m_pTransformCom->LookAt(m_vMovePos);
 
-	default:
-		break;
+		m_pModelCom->SetUp_AnimationIndex(m_iAnimationIndex);
 	}
-
 }
 
 void CPlayer::Change_State()
 {
-	if (m_eState != m_ePreState)
+	if (m_ePreState != m_eState)
 	{
-		if(m_eState != STATE_MOVE)
-			m_bIsChange_State = true;
-		else
-			m_ePreState = m_eState;
+		switch (m_eState)
+		{
+		case STATE_ATTACK:
+			if (m_iAnimationIndex == 3)
+				m_iAnimationIndex = 0;
+			else
+				m_iAnimationIndex++;
+			m_pModelCom->Set_Initialize();
+			break;
+		}
 	}
-	else
-		m_ePreState = m_eState;
+	m_ePreState = m_eState;
 }
 
 void CPlayer::Update_State(_float fTimeDelta)
@@ -206,12 +197,17 @@ void CPlayer::Update_State(_float fTimeDelta)
 	switch (m_eState)
 	{
 	case STATE_IDLE:
+		m_pModelCom->SetUp_AnimationIndex(40);
+		m_pModelCom->Play_Animation(fTimeDelta);
 		break;
 
 	case STATE_MOVE:
 		Move(fTimeDelta);
 		break;
 
+	case STATE_ATTACK:
+		Attack(fTimeDelta);
+		break;
 	default:
 		break;
 	}
@@ -221,24 +217,59 @@ void CPlayer::Move(_float fTimeDelta)
 {
 	if (m_fMoveDistTotal > m_fMoveDist)
 	{
+		m_pModelCom->SetUp_AnimationIndex(16);
 		m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * fTimeDelta));
 		m_fMoveDist += m_fMoveSpeed * fTimeDelta;
 	}
 
 	else
 	{
-		if (16 == m_pModelCom->Get_KeyFrame())
+		if (m_bMove_Stop == true)
 		{
-			m_eState = STATE_IDLE;
 			m_pModelCom->SetUp_AnimationIndex(43);
-			m_pModelCom->Set_Initialize();
+			if (m_pModelCom->Get_Finished())
+			{
+				m_pModelCom->SetUp_AnimationIndex(40);
+				m_pModelCom->Set_Initialize();
+				m_eState = STATE_IDLE;
+				m_bMove_Stop = false;
+			}
 		}
-
 		else
 		{
-			m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * 0.5f * fTimeDelta));
+			if (16 == m_pModelCom->Get_KeyFrame())
+			{
+				m_bMove_Stop = true;
+				m_pModelCom->SetUp_AnimationIndex(43);
+				m_pModelCom->Set_Initialize();
+			}
+
+			else
+			{
+				m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * 0.5f * fTimeDelta));
+			}
 		}
 	}
+
+	m_pModelCom->Play_Animation(fTimeDelta);
+}
+
+void CPlayer::Attack(_float fTimeDelta)
+{
+	if (m_pModelCom->Get_Finished())
+	{
+		m_pModelCom->Set_Initialize();
+
+		if (m_iAnimationIndex == 3)
+			m_iAnimationIndex = 0;
+		else
+			m_iAnimationIndex++;
+
+		m_pModelCom->SetUp_AnimationIndex(m_iAnimationIndex);
+		m_pModelCom->Set_Initialize();
+	}
+
+	m_pModelCom->Play_Animation(fTimeDelta);
 }
 
 CPlayer * CPlayer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const CTransform::TRANSFORMDESC & TransformDesc)
