@@ -58,7 +58,7 @@ HRESULT CVIBuffer_Terrain::NativeConstruct_Prototype(const _tchar* pHeightMapFil
 		{
 			_uint		iIndex = i * m_iNumVerticesX + j;
 
-			pVertices[iIndex].vPosition = m_pVerticesPos[iIndex] =  _float3(j, (pPixel[iIndex] & 0x000000ff) / 15.f, i);
+			pVertices[iIndex].vPosition = m_pVerticesPos[iIndex] = _float3(j, 0.f / 15.f, i);  //_float3(j, (pPixel[iIndex] & 0x000000ff) / 15.f, i);
 			pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
 			pVertices[iIndex].vTexUV = _float2(j / (m_iNumVerticesX - 1.f), i / (m_iNumVerticesZ - 1.f));
 		}

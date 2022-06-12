@@ -29,7 +29,7 @@ HRESULT CAnimation::NativeConstruct(aiAnimation * pAIAnimation, CModel * pModel)
 	return S_OK;
 }
 
-void CAnimation::Update_TransformationMatrices(_double TimeDelta)
+void CAnimation::Check_Looped(_double TimeDelta)
 {
 	m_TimeAcc += m_TickPerSecond * TimeDelta;
 
@@ -38,7 +38,10 @@ void CAnimation::Update_TransformationMatrices(_double TimeDelta)
 		m_TimeAcc = 0.0;
 		m_isFinished = true;
 	}
+}
 
+void CAnimation::Update_TransformationMatrices(_double TimeDelta)
+{
 	for (_uint i = 0; i < m_iNumChannels; ++i)
 	{
 		if (true == m_isFinished)
@@ -49,6 +52,7 @@ void CAnimation::Update_TransformationMatrices(_double TimeDelta)
 
 	if (true == m_isFinished)
 		m_isFinished = false;
+
 }
 
 void CAnimation::Set_Initialize()
@@ -57,7 +61,7 @@ void CAnimation::Set_Initialize()
 	{
 		m_Channels[i]->Set_CurrentKeyFrameIndex(0);
 		m_TimeAcc = 0.0;
-		m_Channels[i]->Update_TransformationMatrix(m_TimeAcc);
+		m_isFinished = false;
 	}
 }
 

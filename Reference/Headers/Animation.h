@@ -11,10 +11,15 @@ private:
 
 public:
 	HRESULT NativeConstruct(aiAnimation * pAIAnimation, class CModel* pModel);
+	void Check_Looped(_double TimeDelta);
 	void Update_TransformationMatrices(_double TimeDelta);
 
 public:
 	void			Set_Initialize();
+	_bool			Get_Finished()
+	{
+		return m_isFinished;
+	};
 
 private:
 	char			m_szName[MAX_PATH] = "";

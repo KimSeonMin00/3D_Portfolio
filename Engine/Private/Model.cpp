@@ -78,6 +78,11 @@ HRESULT CModel::SetUp_BoneMatrices_OnShader(CShader * pShader, const char * pCon
 	return S_OK;
 }
 
+void CModel::Check_Looped(_double TimeDelta)
+{
+	m_Animations[m_iCurrentAnimIndex]->Check_Looped(TimeDelta);
+}
+
 void CModel::Play_Animation(_double TimeDelta)
 {
 	m_Animations[m_iCurrentAnimIndex]->Update_TransformationMatrices(TimeDelta);
@@ -99,6 +104,11 @@ CHierarchyNode * CModel::Find_HierarcyNodes(const char * pBoneName)
 		return nullptr;
 
 	return *iter;
+}
+
+_bool CModel::Get_Finished()
+{
+	return m_Animations[m_iCurrentAnimIndex]->Get_Finished();
 }
 
 HRESULT CModel::NativeConstruct_Prototype(const char * pModelFilePath, const char * pModelFileName, TYPE eType, _fmatrix PivotMatrix)

@@ -110,7 +110,7 @@ _uint CLoader::Loading_ForGamePlay()
 
 	///*For.Prototype_GameObject_Player*/
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"),
-		CPlayer::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(7.f, XMConvertToRadians(60.f))))))
+		CPlayer::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
 	///* For.Prototype_GameObject_Camera_Free */

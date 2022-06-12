@@ -20,6 +20,8 @@ public:
 		return m_iNumMeshes;
 	}
 
+	_bool	Get_Finished();
+
 public:
 	virtual HRESULT NativeConstruct_Prototype(const char* pModelFilePath, const char* pModelFileName, TYPE eType, _fmatrix PivotMatrix);
 	virtual HRESULT NativeConstruct(void* pArg);
@@ -31,6 +33,7 @@ public:
 	HRESULT SetUp_Material_OnShader(class CShader* pShader, const char* pConstantName, _uint iMeshIndex, aiTextureType eTextureType);
 	HRESULT SetUp_AnimationIndex(_uint iAnimIndex);
 	HRESULT SetUp_BoneMatrices_OnShader(class CShader* pShader, const char* pConstantName, _uint iMeshIndex);
+	void Check_Looped(_double TimeDelta);
 	void Play_Animation(_double TimeDelta);
 
 public:
