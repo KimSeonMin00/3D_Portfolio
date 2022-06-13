@@ -15,7 +15,7 @@ class CPlayer final
 	: public CGameObject
 {
 public:
-	enum STATE {STATE_IDLE, STATE_MOVE, STATE_ATTACK, STATE_END};
+	enum STATE {STATE_IDLE, STATE_MOVE, STATE_ATTACK, STATE_Q, STATE_E, STATE_R, STATE_END};
 
 public:
 	explicit CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
@@ -43,17 +43,20 @@ public:
 
 private:
 	void	Key_Input(_float fTimeDelta);
-	void	SetUp_Animation_Index(_float fTimeDelta);
 
 	void	Change_State();
 	void	Update_State(_float fTimeDelta);
 
 	void	Move(_float fTimeDelta);
 	void	Attack(_float fTimeDelta);
+	void	Q_Skill(_float fTimeDelta);
+	void	E_Skill(_float fTimeDelta);
+	void	R_Skill(_float fTimeDelta);
 
 private:
 	STATE			m_ePreState = STATE_END;
 	STATE			m_eState = STATE_END;
+	_bool			m_bWeapon_Out = false;
 	_bool			m_bIsChanneling = false;
 
 	_float			m_fKeyInputTimeAcc = 0;
@@ -72,6 +75,16 @@ private://For Move
 
 private://For Attack
 	_uint			m_iAttackAnimation_Index = 0;
+
+private:
+	_uint			m_iQAnimation_Index = 27;
+	_uint			m_iQ_Time = 0;
+
+private:
+	_uint			m_iEAnimation_Index = 35;
+	_bool			m_bE_Q_Used = false;
+
+	_float			m_fDashDist = 0.f;
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const CTransform::TRANSFORMDESC& TransformDesc);

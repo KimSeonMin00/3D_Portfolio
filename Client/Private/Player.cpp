@@ -120,6 +120,10 @@ void CPlayer::Change_AnimtionIndex(_uint iIndex)
 
 void CPlayer::Key_Input(_float fTimeDelta)
 {
+	if (m_bIsChanneling == true)
+		return;
+
+
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 
 	if (nullptr == pGameInstance)
@@ -155,6 +159,7 @@ void CPlayer::Key_Input(_float fTimeDelta)
 	if (pGameInstance->Get_DIMButtonState(CInput_Device::DIMB_LBUTTON) & 0x80)
 	{
 		m_eState = STATE_ATTACK;
+		m_bWeapon_Out = true;
 
 		_float3 vPositionPicking = { 0.f, 0.f, 0.f };
 
@@ -171,6 +176,95 @@ void CPlayer::Key_Input(_float fTimeDelta)
 		m_pTransformCom->LookAt(m_vMovePos);
 
 		m_pModelCom->SetUp_AnimationIndex(m_iAnimationIndex);
+		m_pModelCom->Set_Initialize();
+	}
+
+	if (pGameInstance->Get_DIKeyState(DIK_Q) & 0x80)
+	{
+		m_eState = STATE_Q;
+		m_bWeapon_Out = true;
+		m_bIsChanneling = true;
+
+		_float3 vPositionPicking = { 0.f, 0.f, 0.f };
+
+		CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
+
+		if (nullptr != pTerrain)
+		{
+			Safe_AddRef(pTerrain);
+			vPositionPicking = pTerrain->Get_PickingPosition();
+			Safe_Release(pTerrain);
+		}
+
+		m_vMovePos = XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f);
+		m_pTransformCom->LookAt(m_vMovePos);
+
+		m_iQ_Time++;
+
+		if (m_iQ_Time == 1)
+			m_iQAnimation_Index = 27;
+
+		else if (m_iQ_Time == 2)
+			m_iQAnimation_Index = 28;
+
+		else if (m_iQ_Time == 3)
+			m_iQAnimation_Index = 29;
+
+		if (m_iQ_Time == 3)
+			m_iQ_Time = 0;
+
+		m_pModelCom->SetUp_AnimationIndex(m_iQAnimation_Index);
+		m_pModelCom->Set_Initialize();
+	}
+
+	if (pGameInstance->Get_DIKeyState(DIK_E) & 0x80)
+	{
+		m_eState = STATE_E;
+		m_bWeapon_Out = true;
+		m_bIsChanneling = true;
+		m_fDashDist = 0.f;
+
+		_float3 vPositionPicking = { 0.f, 0.f, 0.f };
+
+		CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
+
+		if (nullptr != pTerrain)
+		{
+			Safe_AddRef(pTerrain);
+			vPositionPicking = pTerrain->Get_PickingPosition();
+			Safe_Release(pTerrain);
+		}
+
+		m_vMovePos = XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f);
+		m_pTransformCom->LookAt(m_vMovePos);
+
+		m_iEAnimation_Index = 35;
+		m_pModelCom->SetUp_AnimationIndex(m_iEAnimation_Index);
+		m_pModelCom->Set_Initialize();
+	}
+
+	if (pGameInstance->Get_DIKeyState(DIK_R) & 0x80)
+	{
+		m_eState = STATE_R;
+		m_bWeapon_Out = true;
+		m_bIsChanneling = true;
+
+		_float3 vPositionPicking = { 0.f, 0.f, 0.f };
+
+		CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
+
+		if (nullptr != pTerrain)
+		{
+			Safe_AddRef(pTerrain);
+			vPositionPicking = pTerrain->Get_PickingPosition();
+			Safe_Release(pTerrain);
+		}
+
+		m_vMovePos = XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vMovePos);
+
+		m_pModelCom->SetUp_AnimationIndex(36);
+		m_pModelCom->Set_Initialize();
 	}
 }
 
@@ -180,6 +274,14 @@ void CPlayer::Change_State()
 	{
 		switch (m_eState)
 		{
+		case STATE_IDLE:
+			if(m_bWeapon_Out == true)
+				m_pModelCom->SetUp_AnimationIndex(13);
+			else
+				m_pModelCom->SetUp_AnimationIndex(40);
+			break;
+
+
 		case STATE_ATTACK:
 			if (m_iAnimationIndex == 3)
 				m_iAnimationIndex = 0;
@@ -197,7 +299,6 @@ void CPlayer::Update_State(_float fTimeDelta)
 	switch (m_eState)
 	{
 	case STATE_IDLE:
-		m_pModelCom->SetUp_AnimationIndex(40);
 		m_pModelCom->Play_Animation(fTimeDelta);
 		break;
 
@@ -208,6 +309,19 @@ void CPlayer::Update_State(_float fTimeDelta)
 	case STATE_ATTACK:
 		Attack(fTimeDelta);
 		break;
+
+	case STATE_Q:
+		Q_Skill(fTimeDelta);
+		break;
+
+	case STATE_E:
+		E_Skill(fTimeDelta);
+		break;
+
+	case STATE_R:
+		R_Skill(fTimeDelta);
+		break;
+
 	default:
 		break;
 	}
@@ -217,7 +331,10 @@ void CPlayer::Move(_float fTimeDelta)
 {
 	if (m_fMoveDistTotal > m_fMoveDist)
 	{
-		m_pModelCom->SetUp_AnimationIndex(16);
+		if (m_bWeapon_Out == true)
+			m_pModelCom->SetUp_AnimationIndex(19);
+		else
+			m_pModelCom->SetUp_AnimationIndex(16);
 		m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * fTimeDelta));
 		m_fMoveDist += m_fMoveSpeed * fTimeDelta;
 	}
@@ -226,13 +343,12 @@ void CPlayer::Move(_float fTimeDelta)
 	{
 		if (m_bMove_Stop == true)
 		{
-			m_pModelCom->SetUp_AnimationIndex(43);
 			if (m_pModelCom->Get_Finished())
 			{
-				m_pModelCom->SetUp_AnimationIndex(40);
-				m_pModelCom->Set_Initialize();
 				m_eState = STATE_IDLE;
 				m_bMove_Stop = false;
+				m_pModelCom->SetUp_AnimationIndex(40);
+				m_pModelCom->Set_Initialize();
 			}
 		}
 		else
@@ -240,8 +356,19 @@ void CPlayer::Move(_float fTimeDelta)
 			if (16 == m_pModelCom->Get_KeyFrame())
 			{
 				m_bMove_Stop = true;
-				m_pModelCom->SetUp_AnimationIndex(43);
-				m_pModelCom->Set_Initialize();
+				if (m_bWeapon_Out == false)
+				{
+					m_pModelCom->SetUp_AnimationIndex(43);
+					m_pModelCom->Set_Initialize();
+				}
+				else
+				{
+					m_eState = STATE_IDLE;
+					m_bMove_Stop = false;
+					m_pModelCom->SetUp_AnimationIndex(13);
+					m_pModelCom->Set_Initialize();
+				}
+
 			}
 
 			else
@@ -258,8 +385,6 @@ void CPlayer::Attack(_float fTimeDelta)
 {
 	if (m_pModelCom->Get_Finished())
 	{
-		m_pModelCom->Set_Initialize();
-
 		if (m_iAnimationIndex == 3)
 			m_iAnimationIndex = 0;
 		else
@@ -267,6 +392,93 @@ void CPlayer::Attack(_float fTimeDelta)
 
 		m_pModelCom->SetUp_AnimationIndex(m_iAnimationIndex);
 		m_pModelCom->Set_Initialize();
+	}
+
+	m_pModelCom->Play_Animation(fTimeDelta);
+}
+
+void CPlayer::Q_Skill(_float fTimeDelta)
+{
+	if (m_pModelCom->Get_Finished())
+	{
+		m_pModelCom->Set_Initialize();
+
+		if (m_iQAnimation_Index == 29)
+			m_iQAnimation_Index = 27;
+		else
+			m_iQAnimation_Index++;
+
+		m_pModelCom->SetUp_AnimationIndex(m_iQAnimation_Index);
+		m_pModelCom->Set_Initialize();
+
+		m_eState = STATE_IDLE;
+		m_bIsChanneling = false;
+		m_pModelCom->SetUp_AnimationIndex(13);
+		m_pModelCom->Set_Initialize();
+	}
+
+	m_pModelCom->Play_Animation(fTimeDelta);
+}
+
+void CPlayer::E_Skill(_float fTimeDelta)
+{
+	if (m_pModelCom->Get_Finished())
+	{
+		m_eState = STATE_IDLE;
+		m_bIsChanneling = false;
+		m_bE_Q_Used = false;
+
+		m_pModelCom->SetUp_AnimationIndex(40);
+		m_pModelCom->Set_Initialize();
+	}
+
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+
+	if (nullptr == pGameInstance)
+		return;
+
+	Safe_AddRef(pGameInstance);
+
+	if (m_bE_Q_Used == false)
+	{
+		if (pGameInstance->Get_DIKeyState(DIK_Q) & 0x80)
+		{
+			m_iQ_Time++;
+
+			if (m_iQ_Time == 3)
+				m_iQ_Time = 0;
+
+			m_bE_Q_Used = true;
+			m_pModelCom->SetUp_AnimationIndex(25);
+			m_pModelCom->Set_Initialize();
+		}
+	}
+
+	Safe_Release(pGameInstance);
+
+	if (m_fDashDist <= 3.f)
+	{
+		m_pTransformCom->Go_Straight(_double(5.f * fTimeDelta));
+		m_fDashDist += 5.f * fTimeDelta;
+	}
+
+	else if (m_bE_Q_Used == false)
+	{
+		m_eState = STATE_IDLE;
+		m_bIsChanneling = false;
+		m_bE_Q_Used = false;
+	}
+
+
+	m_pModelCom->Play_Animation(fTimeDelta);
+}
+
+void CPlayer::R_Skill(_float fTimeDelta)
+{
+	if (m_pModelCom->Get_Finished())
+	{
+		m_eState = STATE_IDLE;
+		m_bIsChanneling = false;
 	}
 
 	m_pModelCom->Play_Animation(fTimeDelta);
