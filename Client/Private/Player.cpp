@@ -353,7 +353,7 @@ void CPlayer::Move(_float fTimeDelta)
 		}
 		else
 		{
-			if (16 == m_pModelCom->Get_KeyFrame())
+			if (13 == m_pModelCom->Get_KeyFrame())
 			{
 				m_bMove_Stop = true;
 				if (m_bWeapon_Out == false)
