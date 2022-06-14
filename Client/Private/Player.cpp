@@ -41,9 +41,10 @@ void CPlayer::Tick(_float fTimeDelta)
 {
 	Key_Input(fTimeDelta);
 
-	Change_State();
+	Change_State(fTimeDelta);
 
-	m_pModelCom->Check_Looped(fTimeDelta);
+	if(m_pModelCom->Get_IsChange() == false)
+		m_pModelCom->Check_Looped(fTimeDelta);
 
 	Update_State(fTimeDelta);
 }
@@ -268,17 +269,22 @@ void CPlayer::Key_Input(_float fTimeDelta)
 	}
 }
 
-void CPlayer::Change_State()
+void CPlayer::Change_State(_float fTimeDelta)
 {
 	if (m_ePreState != m_eState)
 	{
 		switch (m_eState)
 		{
 		case STATE_IDLE:
-			if(m_bWeapon_Out == true)
+			if (m_bWeapon_Out == true)
+			{
 				m_pModelCom->SetUp_AnimationIndex(13);
+				m_bSeathing = false;
+			}
 			else
 				m_pModelCom->SetUp_AnimationIndex(40);
+
+			m_pModelCom->Set_Initialize();
 			break;
 
 
@@ -288,6 +294,15 @@ void CPlayer::Change_State()
 			else
 				m_iAnimationIndex++;
 			m_pModelCom->Set_Initialize();
+			break;
+
+		case STATE_MOVE:
+			if (m_bWeapon_Out == true)
+			{
+				m_bIsMotionChange = true;
+				m_pModelCom->SetUp_AnimationIndex(21);
+				m_pModelCom->Set_Initialize();
+			}
 			break;
 		}
 	}
@@ -299,6 +314,31 @@ void CPlayer::Update_State(_float fTimeDelta)
 	switch (m_eState)
 	{
 	case STATE_IDLE:
+		if (m_bWeapon_Out == true)
+		{
+			if (m_pModelCom->Get_Finished() == true)
+			{
+				if (m_bSeathing == false)
+				{
+					m_bSeathing = true;
+					m_pModelCom->SetUp_AnimationIndex(42);
+					m_pModelCom->Set_Initialize();
+				}
+
+				else
+				{
+					m_bWeapon_Out = false;
+					m_pModelCom->SetUp_AnimationIndex(40);
+					m_pModelCom->Set_Initialize();
+				}
+			}
+		}
+
+		else
+		{
+			m_pModelCom->SetUp_AnimationIndex(40);
+		}
+
 		m_pModelCom->Play_Animation(fTimeDelta);
 		break;
 
@@ -332,53 +372,58 @@ void CPlayer::Move(_float fTimeDelta)
 	if (m_fMoveDistTotal > m_fMoveDist)
 	{
 		if (m_bWeapon_Out == true)
-			m_pModelCom->SetUp_AnimationIndex(19);
+		{
+			if (m_pModelCom->Get_Finished() == true)
+			{
+				if (m_bIsMotionChange == true)
+				{
+					m_pModelCom->Change_Animation(fTimeDelta, 24, 1.5);
+					if (m_pModelCom->Get_IsChange() == false)
+					{
+						m_bIsMotionChange = false;
+						m_pModelCom->SetUp_AnimationIndex(24);
+						m_pModelCom->Set_Initialize();
+					}					
+				}
+
+				else if (m_bIsMotionChange == false)
+				{
+					m_pModelCom->Change_Animation(fTimeDelta, 16, 1.5);
+					if (m_pModelCom->Get_IsChange() == false)
+					{
+						m_bWeapon_Out = false;
+						m_pModelCom->SetUp_AnimationIndex(16);
+						m_pModelCom->Set_Initialize();
+					}			
+				}
+			}
+		}
 		else
 			m_pModelCom->SetUp_AnimationIndex(16);
+
 		m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * fTimeDelta));
 		m_fMoveDist += m_fMoveSpeed * fTimeDelta;
+
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Play_Animation(fTimeDelta);
 	}
 
 	else
 	{
-		if (m_bMove_Stop == true)
-		{
-			if (m_pModelCom->Get_Finished())
-			{
-				m_eState = STATE_IDLE;
-				m_bMove_Stop = false;
-				m_pModelCom->SetUp_AnimationIndex(40);
-				m_pModelCom->Set_Initialize();
-			}
-		}
+		if (m_bWeapon_Out == true)
+			m_pModelCom->Change_Animation(fTimeDelta, 13, 3.0);
 		else
+			m_pModelCom->Change_Animation(fTimeDelta, 40, 3.0);
+		
+		if (m_pModelCom->Get_IsChange() == false)
 		{
-			if (13 == m_pModelCom->Get_KeyFrame())
-			{
-				m_bMove_Stop = true;
-				if (m_bWeapon_Out == false)
-				{
-					m_pModelCom->SetUp_AnimationIndex(43);
-					m_pModelCom->Set_Initialize();
-				}
-				else
-				{
-					m_eState = STATE_IDLE;
-					m_bMove_Stop = false;
-					m_pModelCom->SetUp_AnimationIndex(13);
-					m_pModelCom->Set_Initialize();
-				}
-
-			}
-
+			m_eState = STATE_IDLE;
+			if (m_bWeapon_Out == true)
+				m_pModelCom->SetUp_AnimationIndex(13);
 			else
-			{
-				m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * 0.5f * fTimeDelta));
-			}
+				m_pModelCom->SetUp_AnimationIndex(40);
 		}
 	}
-
-	m_pModelCom->Play_Animation(fTimeDelta);
 }
 
 void CPlayer::Attack(_float fTimeDelta)
@@ -401,35 +446,34 @@ void CPlayer::Q_Skill(_float fTimeDelta)
 {
 	if (m_pModelCom->Get_Finished())
 	{
-		m_pModelCom->Set_Initialize();
+		m_pModelCom->Change_Animation(fTimeDelta, 13, 3.0);
+		if (m_pModelCom->Get_IsChange() == false)
+		{
+			m_eState = STATE_IDLE;
+			m_bIsChanneling = false;
+			m_pModelCom->SetUp_AnimationIndex(13);
+			m_pModelCom->Set_Initialize();
+		}
 
-		if (m_iQAnimation_Index == 29)
-			m_iQAnimation_Index = 27;
-		else
-			m_iQAnimation_Index++;
-
-		m_pModelCom->SetUp_AnimationIndex(m_iQAnimation_Index);
-		m_pModelCom->Set_Initialize();
-
-		m_eState = STATE_IDLE;
-		m_bIsChanneling = false;
-		m_pModelCom->SetUp_AnimationIndex(13);
-		m_pModelCom->Set_Initialize();
 	}
 
-	m_pModelCom->Play_Animation(fTimeDelta);
+	if(m_pModelCom->Get_IsChange()==false)
+		m_pModelCom->Play_Animation(fTimeDelta);
 }
 
 void CPlayer::E_Skill(_float fTimeDelta)
 {
 	if (m_pModelCom->Get_Finished())
 	{
-		m_eState = STATE_IDLE;
-		m_bIsChanneling = false;
-		m_bE_Q_Used = false;
-
-		m_pModelCom->SetUp_AnimationIndex(40);
-		m_pModelCom->Set_Initialize();
+		m_pModelCom->Change_Animation(fTimeDelta, 13, 3.0);
+		if (m_pModelCom->Get_IsChange() == false)
+		{
+			m_eState = STATE_IDLE;
+			m_bIsChanneling = false;
+			m_bE_Q_Used = false;
+			m_pModelCom->SetUp_AnimationIndex(13);
+			m_pModelCom->Set_Initialize();
+		}
 	}
 
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
@@ -469,8 +513,8 @@ void CPlayer::E_Skill(_float fTimeDelta)
 		m_bE_Q_Used = false;
 	}
 
-
-	m_pModelCom->Play_Animation(fTimeDelta);
+	if (m_pModelCom->Get_IsChange() == false)
+		m_pModelCom->Play_Animation(fTimeDelta);
 }
 
 void CPlayer::R_Skill(_float fTimeDelta)

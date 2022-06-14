@@ -79,6 +79,17 @@ _uint CAnimation::Get_KeyFrame()
 	return m_iCurrentFrame;
 }
 
+KEYFRAME * CAnimation::Get_CurrentKeyFrameInfo(_uint ChannelIndex)
+{
+	return m_Channels[ChannelIndex]->Get_CurrentKeyFrameInfo();
+}
+
+CHierarchyNode * CAnimation::Get_Bone(_uint iChannelIndex)
+{
+	return m_Channels[iChannelIndex]->Get_Bone();
+}
+
+
 CAnimation * CAnimation::Create(aiAnimation * pAIAnimation, CModel * pModel)
 {
 	CAnimation*		pInstance = new CAnimation();

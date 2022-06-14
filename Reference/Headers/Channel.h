@@ -19,6 +19,15 @@ public:
 		return m_iCurrentKeyFrame;
 	};
 
+	KEYFRAME* Get_CurrentKeyFrameInfo()
+	{
+		return m_KeyFrames[m_iCurrentKeyFrame];
+	};
+	class CHierarchyNode* Get_Bone()
+	{
+		return m_pHierarchyNode;
+	};
+
 public:
 	HRESULT NativeConstruct(aiNodeAnim* pChannel, class CHierarchyNode* pHierarchyNode);
 	void Update_TransformationMatrix(_double TimeAcc);

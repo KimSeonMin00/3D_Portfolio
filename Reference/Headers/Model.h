@@ -22,6 +22,10 @@ public:
 
 	_bool	Get_Finished();
 	_uint	Get_KeyFrame();
+	_bool	Get_IsChange()
+	{
+		return m_bIsChange;
+	};
 
 public:
 	virtual HRESULT NativeConstruct_Prototype(const char* pModelFilePath, const char* pModelFileName, TYPE eType, _fmatrix PivotMatrix);
@@ -36,6 +40,7 @@ public:
 	HRESULT SetUp_BoneMatrices_OnShader(class CShader* pShader, const char* pConstantName, _uint iMeshIndex);
 	void Check_Looped(_double TimeDelta);
 	void Play_Animation(_double TimeDelta);
+	void Change_Animation(_double TimeDelta, _uint iNextAnimationIndex, _double	m_Duration);
 
 public:
 	class CHierarchyNode* Find_HierarcyNodes(const char* pBoneName);
@@ -67,6 +72,12 @@ private:
 	_uint									m_iNumAnimations = 0;
 	vector<class CAnimation*>				m_Animations;
 	typedef vector<class CAnimation*>		ANIMATIONS;
+
+private:
+	_double			m_TimeAcc = 0.0;
+	_double			m_Duration = 0.0;
+
+	_bool			m_bIsChange = false;
 
 public:
 	void		Set_Initialize();

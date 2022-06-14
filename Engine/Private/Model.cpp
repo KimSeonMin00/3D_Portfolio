@@ -93,6 +93,71 @@ void CModel::Play_Animation(_double TimeDelta)
 	}
 }
 
+void CModel::Change_Animation(_double TimeDelta, _uint iNextAnimationIndex, _double	m_Duration)
+{
+	if (m_bIsChange == false)
+	{
+		m_Animations[iNextAnimationIndex]->Set_Initialize();
+		m_TimeAcc = 0.0;
+		m_bIsChange = true;
+	}
+
+	m_TimeAcc += 24.0 * TimeDelta;
+
+	if (m_Duration <= m_TimeAcc)
+	{
+		m_iCurrentAnimIndex = iNextAnimationIndex;
+		m_bIsChange = false;
+		return;
+	}
+	_vector		vScale, vRotation, vPosition;
+
+	for (_uint i = 0; i < m_Animations[m_iCurrentAnimIndex]->Get_NumChannels(); i++)
+	{
+		KEYFRAME* pCurrentKeyFrame = m_Animations[m_iCurrentAnimIndex]->Get_CurrentKeyFrameInfo(i);
+		if (pCurrentKeyFrame == nullptr)
+			return;
+		KEYFRAME* pNextKeyFrame = m_Animations[iNextAnimationIndex]->Get_CurrentKeyFrameInfo(i);
+		if (pNextKeyFrame == nullptr)
+			return;
+		CHierarchyNode* pHierarchyNode = m_Animations[m_iCurrentAnimIndex]->Get_Bone(i);
+		if (pHierarchyNode == nullptr)
+			return;
+
+		Safe_AddRef(pHierarchyNode);
+
+		_vector		vSourScale, vDestScale;
+		_vector		vSourRotation, vDestRotation;
+		_vector		vSourPosition, vDestPosition;
+
+		_double		Ratio = m_TimeAcc/ m_Duration;
+
+		vSourScale = XMLoadFloat3(&pCurrentKeyFrame->vScale);
+		vSourRotation = XMLoadFloat4(&pCurrentKeyFrame->vRotation);
+		vSourPosition = XMLoadFloat3(&pCurrentKeyFrame->vPosition);
+
+		vDestScale = XMLoadFloat3(&pNextKeyFrame->vScale);
+		vDestRotation = XMLoadFloat4(&pNextKeyFrame->vRotation);
+		vDestPosition = XMLoadFloat3(&pNextKeyFrame->vPosition);
+
+		vScale = XMVectorLerp(vSourScale, vDestScale, (_float)Ratio);
+		vRotation = XMQuaternionSlerp(vSourRotation, vDestRotation, (_float)Ratio);
+		vPosition = XMVectorLerp(vSourPosition, vDestPosition, (_float)Ratio);
+		vPosition = XMVectorSetW(vPosition, 1.f);
+
+		_matrix		TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
+
+		pHierarchyNode->Set_TransformationMatrix(TransformationMatrix);
+
+		Safe_Release(pHierarchyNode);		
+	}
+
+	for (auto& pHierarchyNode : m_HierarchyNodes)
+	{
+		pHierarchyNode->Update_CombinedTransformationMatrix();
+	}
+}
+
 CHierarchyNode * CModel::Find_HierarcyNodes(const char * pBoneName)
 {
 	auto	iter = find_if(m_HierarchyNodes.begin(), m_HierarchyNodes.end(), [&](CHierarchyNode* pNode)

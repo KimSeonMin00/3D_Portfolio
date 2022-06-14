@@ -44,7 +44,7 @@ public:
 private:
 	void	Key_Input(_float fTimeDelta);
 
-	void	Change_State();
+	void	Change_State(_float fTimeDelta);
 	void	Update_State(_float fTimeDelta);
 
 	void	Move(_float fTimeDelta);
@@ -58,11 +58,15 @@ private:
 	STATE			m_eState = STATE_END;
 	_bool			m_bWeapon_Out = false;
 	_bool			m_bIsChanneling = false;
+	_bool			m_bIsMotionChange = false;
 
 	_float			m_fKeyInputTimeAcc = 0;
 	_float			m_fKeyInputTime = 0.2f;
 
 	_uint m_iAnimationIndex = 0;
+
+private:
+	_bool		m_bSeathing = false;
 
 private://For Move
 	_vector		m_vMovePos;

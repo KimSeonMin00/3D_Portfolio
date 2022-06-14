@@ -21,6 +21,13 @@ public:
 		return m_isFinished;
 	};
 	_uint			Get_KeyFrame();
+	KEYFRAME*		Get_CurrentKeyFrameInfo(_uint ChannelIndex);
+	_uint			Get_NumChannels()
+	{
+		return m_iNumChannels;
+	};
+
+	class CHierarchyNode* Get_Bone(_uint iChannelIndex);
 
 private:
 	char			m_szName[MAX_PATH] = "";
