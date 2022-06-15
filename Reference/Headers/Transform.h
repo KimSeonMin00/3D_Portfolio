@@ -58,6 +58,8 @@ public:
 	HRESULT Go_Backward(_double TimeDelta);
 	HRESULT Go_Right(_double TimeDelta);
 	HRESULT Go_Left(_double TimeDelta);
+	HRESULT Go_Direction(_fvector vDirection, _double TimeDelta);
+
 	HRESULT Turn(_fvector vAxis, _double TimeDelta);
 	HRESULT LookAt(_fvector vAt);
 

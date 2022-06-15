@@ -15,9 +15,9 @@ class CPlayer final
 	: public CGameObject
 {
 public:
-	enum STATE {STATE_IDLE, STATE_MOVE, STATE_ATTACK, STATE_Q, STATE_E, STATE_R, STATE_END};
+	enum STATE {STATE_IDLE, STATE_MOVE, STATE_ATTACK, STATE_Q, STATE_W, STATE_E, STATE_R, STATE_END};
 
-public:
+protected:
 	explicit CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
 	explicit CPlayer(const CPlayer& rhs);
 	virtual ~CPlayer() = default;
@@ -50,15 +50,19 @@ private:
 	void	Move(_float fTimeDelta);
 	void	Attack(_float fTimeDelta);
 	void	Q_Skill(_float fTimeDelta);
+	void	W_Skill(_float fTimeDelta);
 	void	E_Skill(_float fTimeDelta);
 	void	R_Skill(_float fTimeDelta);
 
 private:
 	STATE			m_ePreState = STATE_END;
 	STATE			m_eState = STATE_END;
+	STATE			m_eDoingState = STATE_END;
+
 	_bool			m_bWeapon_Out = false;
 	_bool			m_bIsChanneling = false;
 	_bool			m_bIsMotionChange = false;
+	_bool			m_bStateChange = false;
 
 	_float			m_fKeyInputTimeAcc = 0;
 	_float			m_fKeyInputTime = 0.2f;

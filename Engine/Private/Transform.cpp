@@ -104,6 +104,17 @@ HRESULT CTransform::Go_Left(_double TimeDelta)
 	return S_OK;
 }
 
+HRESULT CTransform::Go_Direction(_fvector vDirection, _double TimeDelta)
+{
+	_vector		vPosition = Get_State(CTransform::STATE_POSITION);
+
+	vPosition += XMVector3Normalize(vDirection) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
+
+	Set_State(CTransform::STATE_POSITION, vPosition);
+
+	return S_OK;
+}
+
 HRESULT CTransform::Turn(_fvector vAxis, _double TimeDelta)
 {
 	_vector		vRight = Get_State(CTransform::STATE_RIGHT);

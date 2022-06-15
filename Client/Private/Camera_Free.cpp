@@ -38,11 +38,11 @@ void CCamera_Free::Tick(_float fTimeDelta)
 
 	Safe_AddRef(pGameInstance);
 
-	if (pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
+	/*if (pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
 	{
 		m_pTransformCom->Go_Straight(fTimeDelta);
 	}
-
+*/
 
 
 

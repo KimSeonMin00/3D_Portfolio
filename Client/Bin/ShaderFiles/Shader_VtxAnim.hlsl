@@ -16,8 +16,8 @@ vector			g_vLightAmbient = vector(1.f, 1.f, 1.f, 1.f);
 vector			g_vLightSpecular = vector(1.f, 1.f, 1.f, 1.f);
 
 vector			g_vMtrlDiffuse;
-vector			g_vMtrlAmbient = vector(0.2f, 0.2f, 0.2f, 1.f);
-vector			g_vMtrlSpecular = vector(1.f, 1.f, 1.f, 1.f);
+vector			g_vMtrlAmbient = vector(0.7f, 0.7f, 0.7f, 1.f);
+vector			g_vMtrlSpecular = vector(0.f, 0.f, 0.f, 1.f);
 
 vector			g_vCamPosition;
 
