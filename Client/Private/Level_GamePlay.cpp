@@ -137,7 +137,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 
 	Safe_AddRef(pGameInstance);
 
-	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Player"))))
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Boss"))))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
