@@ -184,6 +184,22 @@ _uint CLoader::Loading_ForGamePlay()
 		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/", "Volibear.fbx", CModel::TYPE_ANIM, PivotMatrix))))
 		return E_FAIL;
 
+	lstrcpy(m_szLoadingText, TEXT("콜라이더를 생성 중입니다. "));
+	/* For.Prototype_Component_Collider_AABB. */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"),
+		CCollider::Create(m_pDevice, m_pDeviceContext, CCollider::TYPE_AABB))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Collider_OBB. */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
+		CCollider::Create(m_pDevice, m_pDeviceContext, CCollider::TYPE_OBB))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Collider_SPHERE. */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"),
+		CCollider::Create(m_pDevice, m_pDeviceContext, CCollider::TYPE_SPHERE))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("셰이더을 생성 중입니다. "));
 	/* For.Prototype_Component_Shader_Cube */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxNonAnim"),

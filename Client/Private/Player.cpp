@@ -44,6 +44,8 @@ void CPlayer::Tick(_float fTimeDelta)
 	Change_State(fTimeDelta);
 
 	Update_State(fTimeDelta);
+
+	m_pAABBCom->Update(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CPlayer::Late_Tick(_float fTimeDelta)
@@ -76,6 +78,8 @@ HRESULT CPlayer::Render()
 		m_pModelCom->Render(i);
 	}
 
+	m_pAABBCom->Render();
+
 	return S_OK;
 }
 
@@ -91,6 +95,16 @@ HRESULT CPlayer::SetUp_Components()
 
 	/* For.Com_Model*/
 	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Yasuo"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+		return E_FAIL;
+
+	/* For.Com_AABB*/
+	CCollider::COLLIDERDESC		ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+
+	ColliderDesc.vScale = _float3(1.f, 2.f, 1.f);
+	ColliderDesc.vPosition = _float3(0.f, 1.f, 0.f);
+
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_AABB"), (CComponent**)&m_pAABBCom, &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -128,6 +142,8 @@ void CPlayer::Key_Input(_float fTimeDelta)
 
 	if (nullptr == pGameInstance)
 		return;
+
+	Safe_AddRef(pGameInstance);
 
 	if (pGameInstance->Get_DIMButtonState(CInput_Device::DIMB_RBUTTON) & 0x80)
 	{
@@ -282,6 +298,8 @@ void CPlayer::Key_Input(_float fTimeDelta)
 		m_pModelCom->SetUp_AnimationIndex(36);
 		m_pModelCom->Set_Initialize();
 	}
+
+	Safe_Release(pGameInstance);
 }
 
 void CPlayer::Change_State(_float fTimeDelta)
@@ -342,7 +360,7 @@ void CPlayer::Update_State(_float fTimeDelta)
 				if (m_pModelCom->Get_IsChange() == false)
 				{
 					m_bStateChange = false;
-					m_pModelCom->SetUp_AnimationIndex(13);
+					m_pModelCom->SetUp_AnimationIndex(40);
 					m_pModelCom->Set_Initialize();
 				}
 			}
@@ -368,6 +386,7 @@ void CPlayer::Update_State(_float fTimeDelta)
 
 					else
 					{
+						m_bSeathing = false;
 						m_bWeapon_Out = false;
 						m_pModelCom->SetUp_AnimationIndex(40);
 						m_pModelCom->Set_Initialize();

@@ -5,6 +5,10 @@
 class CVolibear
 	final : public CMonster
 {
+public:
+	enum STATE { STATE_IDLE, STATE_MOVE, STATE_ATTACK, STATE_Q, STATE_W, STATE_E, STATE_R, STATE_END };
+
+
 protected:
 	explicit CVolibear(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
 	explicit CVolibear(const CVolibear& rhs);
@@ -21,11 +25,43 @@ public:
 	HRESULT SetUp_Components();
 	HRESULT SetUp_ConstantTable();
 
+private:
+	void	Key_Input(_float fTimeDelta);
+
+	void	Change_State(_float fTimeDelta);
+	void	Update_State(_float fTimeDelta);
+
+	void	Move(_float fTimeDelta);
+	void	Attack(_float fTimeDelta);
 
 private:
-	_float	m_fTimeAcc = 0.f;
+	STATE			m_ePreState = STATE_END;
+	STATE			m_eState = STATE_END;
+	STATE			m_eDoingState = STATE_END;
 
-	_uint	m_iIndex = 0;
+	_bool			m_bIsChanneling = false;
+	_bool			m_bStateChange = false;
+	_bool			m_bIsState_In = false;
+
+	_uint			m_iCurrentIndex = 0;
+
+private://For Move
+	_vector			m_vMovePos;
+	_vector			m_vMoveDir;
+	_float			m_fMoveDistTotal = 0.f;
+	_float			m_fMoveDist = 0.f;
+
+	_float			m_fMoveSpeed = 2.f;
+
+private://For Attack
+	_uint			m_iAttackIndex = 3;
+
+private://For Q
+	_bool			m_bQState = false;
+	_bool			m_bQState_Pre = false;
+
+	_float			m_fQTime = 0.f;
+
 public:
 	static CVolibear* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const CTransform::TRANSFORMDESC& TransformDesc);
 	virtual CGameObject* Clone(void* pArg);

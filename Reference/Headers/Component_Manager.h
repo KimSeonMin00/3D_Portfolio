@@ -4,6 +4,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "Renderer.h"
+#include "Collider.h"
 #include "Transform.h"
 #include "VIBuffer_Rect.h"
 //#include "VIBuffer_Cube.h"
