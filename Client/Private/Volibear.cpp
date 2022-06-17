@@ -432,30 +432,47 @@ void CVolibear::Move(_float fTimeDelta)
 }
 
 void CVolibear::Attack(_float fTimeDelta)
-{
+{	
 	if (m_bStateChange == true)
 	{
-		m_pModelCom->Change_Animation(fTimeDelta, m_iAttackIndex, 3.0);
-		if (m_pModelCom->Get_IsChange() == false)
+		if (m_bQState == true)
 		{
 			m_bStateChange = false;
-			m_pModelCom->SetUp_AnimationIndex(m_iAttackIndex);
+			m_pModelCom->SetUp_AnimationIndex(26);
 			m_pModelCom->Set_Initialize();
+			m_pModelCom->Play_Animation(fTimeDelta);
 		}
-
+		else
+		{
+			m_pModelCom->Change_Animation(fTimeDelta, m_iAttackIndex, 3.0);
+			if (m_pModelCom->Get_IsChange() == false)
+			{
+				m_bStateChange = false;
+				m_pModelCom->SetUp_AnimationIndex(m_iAttackIndex);
+				m_pModelCom->Set_Initialize();
+			}
+		}
 	}
 
 	else
 	{
 		if (m_pModelCom->Get_Finished())
 		{
-			if (m_iAttackIndex == 4)
-				m_iAttackIndex = 3;
-			else
-				m_iAttackIndex++;
+			if (m_bQState == true)
+			{
+				m_bQState = false;
+			}
 
-			m_pModelCom->SetUp_AnimationIndex(m_iAttackIndex);
-			m_pModelCom->Set_Initialize();
+			else
+			{
+				if (m_iAttackIndex == 4)
+					m_iAttackIndex = 3;
+				else
+					m_iAttackIndex++;
+
+				m_pModelCom->SetUp_AnimationIndex(m_iAttackIndex);
+				m_pModelCom->Set_Initialize();
+			}
 		}
 
 		m_pModelCom->Play_Animation(fTimeDelta);
