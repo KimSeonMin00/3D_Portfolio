@@ -33,6 +33,7 @@ private:
 
 	void	Move(_float fTimeDelta);
 	void	Attack(_float fTimeDelta);
+	void	W_Skill(_float fTimeDelta);
 
 private:
 	STATE			m_ePreState = STATE_END;
@@ -59,6 +60,7 @@ private://For Attack
 private://For Q
 	_bool			m_bQState = false;
 	_bool			m_bQState_Pre = false;
+	_bool			m_bQAttack = false;
 
 	_float			m_fQTime = 0.f;
 
