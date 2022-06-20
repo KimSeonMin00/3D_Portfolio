@@ -34,6 +34,8 @@ private:
 	void	Move(_float fTimeDelta);
 	void	Attack(_float fTimeDelta);
 	void	W_Skill(_float fTimeDelta);
+	void	E_Skill(_float fTimeDelta);
+	void	R_Skill(_float fTimeDelta);
 
 private:
 	STATE			m_ePreState = STATE_END;
