@@ -28,6 +28,10 @@ public:
 public:
 	void Update(_fmatrix WorldMatrix);
 
+public:
+	_bool Collision_AABB(CCollider* pTargetCollider);
+	_bool Collision_OBB(CCollider* pTargetCollider);
+
 #ifdef _DEBUG
 public:
 	HRESULT Render();
@@ -46,6 +50,8 @@ private:
 	BoundingOrientedBox*	m_pOBB = nullptr;
 	BoundingSphere*			m_pSPHERE = nullptr;
 
+	_bool					m_isCollision = false;
+
 #ifdef _DEBUG
 private:
 	PrimitiveBatch<VertexPositionColor>*			m_pBatch = nullptr;
@@ -55,6 +61,8 @@ private:
 
 private:
 	_matrix Remove_Rotation(_fmatrix Transform);
+	_matrix Remove_Translation(_fmatrix Transform);
+	_matrix Make_Rotation(_fmatrix Transform);
 
 
 public:

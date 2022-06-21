@@ -31,6 +31,8 @@ HRESULT CVolibear::NativeConstruct(void * pArg)
 
 	m_pModelCom->SetUp_AnimationIndex(14);
 	m_eState = STATE_IDLE;
+	m_ePreState = STATE_IDLE;
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 0.f, 5.f, 1.f));
 
 	return S_OK;
 }
@@ -41,15 +43,15 @@ void CVolibear::Tick(_float fTimeDelta)
 
 	m_fQTime += fTimeDelta;
 	m_fRTime += fTimeDelta;
-	if (m_fQTime >= 3.0f)
+	if (m_bQState == true && m_fQTime >= 3.0f)
 		m_bQState = false;
-	if (m_fRTime >= 10.f)
+	if (m_bRState == true && m_fRTime >= 10.f)
 	{
 		m_bRState = false;
 		m_pTransformCom->Set_Scaled(XMLoadFloat3(&m_vOriginScale));
 	}
 
-	Key_Input(fTimeDelta);
+	//Key_Input(fTimeDelta);
 
 	Change_State(fTimeDelta);
 

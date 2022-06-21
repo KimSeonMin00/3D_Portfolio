@@ -35,6 +35,8 @@ private:
 	CRenderer*						m_pRendererCom = nullptr;
 	CModel*							m_pModelCom = nullptr;
 	CCollider*						m_pAABBCom = nullptr;
+	CCollider*						m_pOBBCom = nullptr;
+	CCollider*						m_pSPHERECom = nullptr;
 
 public:
 	HRESULT SetUp_Components();
@@ -89,6 +91,8 @@ private://For Attack
 private:
 	_uint			m_iQAnimation_Index = 27;
 	_uint			m_iQ_Time = 0;
+
+	_float			m_fQDistance = 3.f;
 
 private:
 	_uint			m_iEAnimation_Index = 35;

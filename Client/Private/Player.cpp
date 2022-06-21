@@ -33,6 +33,7 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	m_ePreState = STATE_IDLE;
 	m_eState = STATE_IDLE;
 	m_pModelCom->SetUp_AnimationIndex(40);
+	m_fQDistance = 3.f;
 
 	return S_OK;
 }
@@ -46,6 +47,12 @@ void CPlayer::Tick(_float fTimeDelta)
 	Update_State(fTimeDelta);
 
 	m_pAABBCom->Update(m_pTransformCom->Get_WorldMatrix());
+
+	_matrix OffsetMat = m_pTransformCom->Get_WorldMatrix();
+	OffsetMat.r[3] += m_fQDistance / 2.f * m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+	m_pOBBCom->Update(OffsetMat);
+	m_pSPHERECom->Update(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CPlayer::Late_Tick(_float fTimeDelta)
@@ -79,6 +86,8 @@ HRESULT CPlayer::Render()
 	}
 
 	m_pAABBCom->Render();
+	m_pOBBCom->Render();
+	m_pSPHERECom->Render();
 
 	return S_OK;
 }
@@ -105,6 +114,24 @@ HRESULT CPlayer::SetUp_Components()
 	ColliderDesc.vPosition = _float3(0.f, 1.f, 0.f);
 
 	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_AABB"), (CComponent**)&m_pAABBCom, &ColliderDesc)))
+		return E_FAIL;
+
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+
+	ColliderDesc.vScale = _float3(1.f, 1.f, m_fQDistance);
+	ColliderDesc.vPosition = _float3(0.f, 1.f, 0.f);
+	ColliderDesc.vAngle = _float3(0.f, 0.f, 0.f);
+
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"), TEXT("Com_OBB"), (CComponent**)&m_pOBBCom, &ColliderDesc)))
+		return E_FAIL;
+
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+
+	ColliderDesc.vScale = _float3(m_fQDistance * 2.f, m_fQDistance * 2.f, m_fQDistance * 2.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vAngle = _float3(0.f, 0.0f, 0.0f);
+
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_SPHERE"), (CComponent**)&m_pSPHERECom, &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;
