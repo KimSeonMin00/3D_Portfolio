@@ -44,7 +44,10 @@ void CVolibear::Tick(_float fTimeDelta)
 	if (m_fQTime >= 3.0f)
 		m_bQState = false;
 	if (m_fRTime >= 10.f)
+	{
 		m_bRState = false;
+		m_pTransformCom->Set_Scaled(XMLoadFloat3(&m_vOriginScale));
+	}
 
 	Key_Input(fTimeDelta);
 
@@ -209,12 +212,39 @@ void CVolibear::Key_Input(_float fTimeDelta)
 		m_bIsChanneling = true;
 	}
 
-	if (pGameInstance->Get_DIKeyState(DIK_R) & 0x80)
+	if (m_bRState == false)
 	{
-		m_eState = STATE_R;
-		m_bRState = true;
-		m_bIsChanneling = true;
-		m_fRTime = 0.f;
+		if (pGameInstance->Get_DIKeyState(DIK_R) & 0x80)
+		{
+			m_eState = STATE_R;
+			m_bRState = true;
+			m_bIsChanneling = true;
+			m_fRTime = 0.f;
+
+			_float3 vPositionPicking = { 0.f, 0.f, 0.f };
+			_float3 vMoveDist = { 0.f, 0.f, 0.f };
+
+			CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
+
+			if (nullptr != pTerrain)
+			{
+				Safe_AddRef(pTerrain);
+				vPositionPicking = pTerrain->Get_PickingPosition();
+				Safe_Release(pTerrain);
+			}
+
+			m_vMovePos = XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f);
+			m_pTransformCom->LookAt(m_vMovePos);
+
+			m_vMoveDir = m_vMovePos - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			XMStoreFloat3(&vMoveDist, XMVector3Length(m_vMoveDir));
+			m_fMoveDistTotal = vMoveDist.x;
+			m_vMoveDir = XMVector3Normalize(m_vMoveDir);
+			m_fMoveDist = 0.f;
+
+			m_vOriginScale = m_pTransformCom->Get_Scaled();
+			m_pTransformCom->Set_Scaled(XMLoadFloat3(&m_vOriginScale) * 1.5);
+		}
 	}
 
 	Safe_Release(pGameInstance);
@@ -728,6 +758,12 @@ void CVolibear::E_Skill(_float fTimeDelta)
 
 void CVolibear::R_Skill(_float fTimeDelta)
 {
+	if (m_fMoveDistTotal > m_fMoveDist)
+	{
+		m_pTransformCom->Go_Straight(_double(m_fMoveDistTotal * fTimeDelta));
+		m_fMoveDist += m_fMoveDistTotal * fTimeDelta;
+	}
+
 	if (m_bStateChange == true)
 	{
 		m_iCurrentIndex = 32;

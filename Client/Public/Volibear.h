@@ -72,6 +72,8 @@ private:
 	_float			m_fRTime = 0.f;
 
 	_float			m_fTime = 0.f;
+
+	_float3			m_vOriginScale;
 public:
 	static CVolibear* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const CTransform::TRANSFORMDESC& TransformDesc);
 	virtual CGameObject* Clone(void* pArg);
