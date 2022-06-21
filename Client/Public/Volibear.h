@@ -66,6 +66,12 @@ private://For Q
 
 	_float			m_fQTime = 0.f;
 
+private:
+	_bool			m_bRState = false;
+
+	_float			m_fRTime = 0.f;
+
+	_float			m_fTime = 0.f;
 public:
 	static CVolibear* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const CTransform::TRANSFORMDESC& TransformDesc);
 	virtual CGameObject* Clone(void* pArg);

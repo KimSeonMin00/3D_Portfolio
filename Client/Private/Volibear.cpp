@@ -40,8 +40,11 @@ void CVolibear::Tick(_float fTimeDelta)
 	__super::Tick(fTimeDelta);
 
 	m_fQTime += fTimeDelta;
-	if (m_fQTime >= 10.0f)
+	m_fRTime += fTimeDelta;
+	if (m_fQTime >= 3.0f)
 		m_bQState = false;
+	if (m_fRTime >= 10.f)
+		m_bRState = false;
 
 	Key_Input(fTimeDelta);
 
@@ -209,7 +212,9 @@ void CVolibear::Key_Input(_float fTimeDelta)
 	if (pGameInstance->Get_DIKeyState(DIK_R) & 0x80)
 	{
 		m_eState = STATE_R;
+		m_bRState = true;
 		m_bIsChanneling = true;
+		m_fRTime = 0.f;
 	}
 
 	Safe_Release(pGameInstance);
@@ -255,9 +260,15 @@ void CVolibear::Update_State(_float fTimeDelta)
 			if (m_eDoingState == STATE_MOVE)
 			{
 				if (m_bQState == true)
-					m_iCurrentIndex = 60;
+					if (m_bRState == true)
+						m_iCurrentIndex = 41;
+					else
+						m_iCurrentIndex = 60;
 				else
-					m_iCurrentIndex = 15;
+					if (m_bRState == true)
+						m_iCurrentIndex = 33;
+					else
+						m_iCurrentIndex = 15;
 
 				m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
 				if (m_pModelCom->Get_IsChange() == false)
@@ -318,26 +329,44 @@ void CVolibear::Update_State(_float fTimeDelta)
 					{
 						if (m_pModelCom->Get_Finished() == true)
 						{
-							m_iCurrentIndex = 27;
+							if (m_bRState == true)
+								m_iCurrentIndex = 41;
+							else
+								m_iCurrentIndex = 27;
 							m_bIsState_In = false;
 							m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 							m_pModelCom->Set_Initialize();
 						}
 					}
 
-					if (m_iCurrentIndex == 28 && m_pModelCom->Get_Finished() == true)
+					if (m_bRState == true)
 					{
-						m_iCurrentIndex = 27;
-						m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
-						m_pModelCom->Set_Initialize();
+						if (m_iCurrentIndex == 81 && m_pModelCom->Get_Finished() == true)
+						{
+							m_iCurrentIndex = 41;
+							m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+							m_pModelCom->Set_Initialize();
+						}
+					}
+
+					else
+					{
+						if (m_iCurrentIndex == 28 && m_pModelCom->Get_Finished() == true)
+						{
+							m_iCurrentIndex = 27;
+							m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+							m_pModelCom->Set_Initialize();
+						}
 					}
 					m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 				}
 
 				else if (m_bQState_Pre == false)
-				{
-					
-					m_iCurrentIndex = 28;
+				{				
+					if (m_bRState == true)
+						m_iCurrentIndex = 81;
+					else
+						m_iCurrentIndex = 28;
 					m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
 					if (m_pModelCom->Get_IsChange() == false)
 					{
@@ -352,7 +381,10 @@ void CVolibear::Update_State(_float fTimeDelta)
 			{
 				if (m_bQState_Pre == true)
 				{
-					m_iCurrentIndex = 64;
+					if (m_bRState == true)
+						m_iCurrentIndex = 82;
+					else
+						m_iCurrentIndex = 64;
 					m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
 					if (m_pModelCom->Get_IsChange() == false)
 					{
@@ -368,10 +400,21 @@ void CVolibear::Update_State(_float fTimeDelta)
 					if (m_bIsState_In == true)
 					{
 						if (m_pModelCom->Get_Finished() == true)
-						{
-							m_bIsState_In = false;
-							m_pModelCom->SetUp_AnimationIndex(14);
-							m_pModelCom->Set_Initialize();
+						{			
+							if (m_bRState == true)
+								m_iCurrentIndex = 33;
+
+							else
+								m_iCurrentIndex = 14; 
+
+							m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
+							if (m_pModelCom->Get_IsChange() == false)
+							{
+								m_bIsState_In = false;
+								m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+								m_pModelCom->Set_Initialize();
+							}
+							
 						}
 					}
 				}
@@ -426,12 +469,18 @@ void CVolibear::Move(_float fTimeDelta)
 
 		if (m_bStateChange == true)
 		{
-			if (m_eDoingState == STATE_IDLE || m_eDoingState)
+			if (m_eDoingState == STATE_IDLE)
 			{
 				if (m_bQState == true)
-					m_iCurrentIndex = 61;
+					if (m_bRState == true)
+						m_iCurrentIndex = 85;
+					else
+						m_iCurrentIndex = 61;
 				else
-					m_iCurrentIndex = 23;
+					if (m_bRState == true)
+						m_iCurrentIndex = 34;
+					else
+						m_iCurrentIndex = 23;
 
 				m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
 				if (m_pModelCom->Get_IsChange() == false)
@@ -454,7 +503,10 @@ void CVolibear::Move(_float fTimeDelta)
 				if (m_bQAttack == true)
 				{
 					m_bQAttack = false;
-					m_iCurrentIndex = 59;
+					if (m_bRState == true)
+						m_iCurrentIndex = 80;
+					else
+						m_iCurrentIndex = 59;
 				}
 				m_bStateChange = false;
 				m_bIsState_In = true;
@@ -469,18 +521,35 @@ void CVolibear::Move(_float fTimeDelta)
 			{
 				if (m_bQState_Pre == true)
 				{
-					if ((m_iCurrentIndex == 63 || m_iCurrentIndex == 61) && m_pModelCom->Get_Finished() == true)
+					if (m_bRState == true)
 					{
-						m_iCurrentIndex = 65;
-						m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
-						m_pModelCom->Set_Initialize();
+						if (m_iCurrentIndex == 85 && m_pModelCom->Get_Finished() == true)
+						{
+							m_iCurrentIndex = 39;
+							m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+							m_pModelCom->Set_Initialize();
+						}
 					}
+
+					else
+					{
+						if ((m_iCurrentIndex == 63 || m_iCurrentIndex == 61) && m_pModelCom->Get_Finished() == true)
+						{
+							m_iCurrentIndex = 65;
+							m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+							m_pModelCom->Set_Initialize();
+						}
+					}
+
 					m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 				}
 
 				else if (m_bQState_Pre == false)
 				{
-					m_iCurrentIndex = 63;
+					if (m_bRState == true)
+						m_iCurrentIndex = 85;
+					else
+						m_iCurrentIndex = 63;
 					m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
 					if (m_pModelCom->Get_IsChange() == false)
 					{
@@ -495,7 +564,11 @@ void CVolibear::Move(_float fTimeDelta)
 			{
 				if (m_bQState_Pre == true)
 				{
-					m_iCurrentIndex = 66;
+					if(m_bRState == true)
+						m_iCurrentIndex = 40;
+
+					else
+						m_iCurrentIndex = 66;
 					m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
 					if (m_pModelCom->Get_IsChange() == false)
 					{
@@ -512,8 +585,12 @@ void CVolibear::Move(_float fTimeDelta)
 					{
 						if (m_pModelCom->Get_Finished() == true)
 						{
-							m_bIsState_In = false;
-							m_pModelCom->SetUp_AnimationIndex(23);
+							if (m_bRState == true)
+								m_iCurrentIndex = 34;
+
+							else
+								m_iCurrentIndex = 23;
+							m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 							m_pModelCom->Set_Initialize();
 						}
 					}
