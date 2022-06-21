@@ -7,6 +7,7 @@ BEGIN(Engine)
 class CShader;
 class CRenderer;
 class CModel;
+class CCollider;
 END
 
 BEGIN(Client)
@@ -27,6 +28,7 @@ public:
 	virtual HRESULT Render();
 
 protected:
+	CCollider*						m_pAABBCom = nullptr;
 	CShader*						m_pShaderCom = nullptr;
 	CRenderer*						m_pRendererCom = nullptr;
 	CModel*							m_pModelCom = nullptr;

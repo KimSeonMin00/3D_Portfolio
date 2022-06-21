@@ -56,6 +56,8 @@ void CVolibear::Tick(_float fTimeDelta)
 	Change_State(fTimeDelta);
 
 	Update_State(fTimeDelta);
+
+	m_pAABBCom->Update(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CVolibear::Late_Tick(_float fTimeDelta)
@@ -90,6 +92,8 @@ HRESULT CVolibear::Render()
 		m_pModelCom->Render(i);
 	}
 
+	m_pAABBCom->Render();
+
 	return S_OK;
 }
 
@@ -105,6 +109,15 @@ HRESULT CVolibear::SetUp_Components()
 
 	/* For.Com_Model*/
 	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Volibear"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+		return E_FAIL;
+
+	CCollider::COLLIDERDESC		ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+
+	ColliderDesc.vScale = _float3(1.5f, 3.f, 1.5f);
+	ColliderDesc.vPosition = _float3(0.f, 1.5f, 0.f);
+
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_AABB"), (CComponent**)&m_pAABBCom, &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;

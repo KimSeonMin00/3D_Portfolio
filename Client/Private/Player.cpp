@@ -119,7 +119,7 @@ HRESULT CPlayer::SetUp_Components()
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 
 	ColliderDesc.vScale = _float3(1.f, 1.f, m_fQDistance);
-	ColliderDesc.vPosition = _float3(0.f, 1.f, 0.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	ColliderDesc.vAngle = _float3(0.f, 0.f, 0.f);
 
 	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"), TEXT("Com_OBB"), (CComponent**)&m_pOBBCom, &ColliderDesc)))
