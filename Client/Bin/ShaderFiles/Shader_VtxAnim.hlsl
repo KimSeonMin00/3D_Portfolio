@@ -111,6 +111,31 @@ PS_OUT PS_MAIN(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_HIT(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	vector		vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+	vector		vHitColor = vector(1.f, 0.f, 0.f, 1.f);
+
+	float		fShade = max(dot(normalize(g_vLightDir.xyz) * -1.f, In.vNormal), 0.f);
+
+	vector		vLook = In.vWorldPos - g_vCamPosition;
+	vector		vReflect = reflect(normalize(g_vLightDir), vector(In.vNormal, 0.f));
+
+	float		fSpecular = pow(max(dot(normalize(vLook) * -1.f, normalize(vReflect)), 0.f), 30.f);
+
+	Out.vColor.xyz = ((vHitColor * g_vLightDiffuse * vMtrlDiffuse) * (fShade + g_vLightAmbient * g_vMtrlAmbient)
+		+ (g_vLightSpecular * g_vMtrlSpecular) * fSpecular).xyz;
+
+	Out.vColor.a = vMtrlDiffuse.a;
+
+	if (Out.vColor.a < 0.1f)
+		discard;
+
+	return Out;
+}
+
 
 
 technique11 DefaultTechinque
@@ -122,4 +147,10 @@ technique11 DefaultTechinque
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
+	pass Hit
+	{
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_HIT();
+	}
 }

@@ -29,6 +29,8 @@ HRESULT CMonster::NativeConstruct(void * pArg)
 
 void CMonster::Tick(_float fTimeDelta)
 {
+	if (m_bAirborne == true)
+		Airborne(fTimeDelta);
 }
 
 void CMonster::Late_Tick(_float fTimeDelta)
@@ -38,6 +40,31 @@ void CMonster::Late_Tick(_float fTimeDelta)
 HRESULT CMonster::Render()
 {
 	return S_OK;
+}
+
+void CMonster::Airborne(_float fTimeDelta)
+{
+	if (m_bAirborne == false)
+	{
+		m_bAirborne = true;
+		m_fAirborneTime = 0.f;
+	}
+
+	m_fAirborneTime += fTimeDelta;
+
+	if(m_fAirborneTime <= 0.5f)
+		m_pTransformCom->Go_Direction(XMVectorSet(0.f, 1.f, 0.f, 0.f), 4.f * fTimeDelta);
+	else
+	{
+		m_pTransformCom->Go_Direction(XMVectorSet(0.f, -1.f, 0.f, 0.f), 4.f * fTimeDelta);
+
+		if (XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)) <= 0.f)
+		{
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f));
+			m_bAirborne = false;
+		}
+	}
+	
 }
 
 void CMonster::Free()

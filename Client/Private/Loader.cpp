@@ -7,6 +7,8 @@
 #include "Camera_Free.h"
 #include "UI.h"
 #include "Player.h"
+#include "WhirlWind_Normal.h"
+#include "WhirlWind_EQ.h"
 #include "Volibear.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -112,6 +114,14 @@ _uint CLoader::Loading_ForGamePlay()
 	///*For.Prototype_GameObject_Player*/
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"),
 		CPlayer::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_WhirlWind_Normal"),
+		CWhirlWind_Normal::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_WhirlWind_EQ"),
+		CWhirlWind_EQ::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Boss"),

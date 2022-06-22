@@ -22,6 +22,12 @@ public:
 	virtual void Late_Tick(_float fTimeDelta);
 	virtual HRESULT Render();
 
+public:
+	_bool			Check_Dead()
+	{
+		return m_bDead;
+	}
+
 protected:
 	ID3D11Device*				m_pDevice = nullptr;
 	ID3D11DeviceContext*		m_pDeviceContext = nullptr;
@@ -38,8 +44,8 @@ public:
 	/* 부모의 컨테이너에도 보관. 자식의 멤버변수에도 보관. */
 	HRESULT Add_Components(_uint iLevelID, const _tchar * pPrototypeTag, const _tchar* pComponentTag, CComponent ** ppOut, void * pArg = nullptr);
 
-
-	
+protected:
+	_bool	m_bDead = false;
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

@@ -160,11 +160,35 @@ void CCollider::Update(_fmatrix WorldMatrix)
 		m_pSPHERE->Transform(*m_pSPHERE_World, WorldMatrix);
 		break;
 	}
+
+	m_isCollision = false;
 }
 
 _bool CCollider::Collision_AABB(CCollider * pTargetCollider)
 {
-	if (true == m_pAABB_World->Intersects(*pTargetCollider->m_pAABB_World))
+	_bool	bIsCollision = false;
+
+	switch(pTargetCollider->Get_ColliderType())
+	{
+	case TYPE_AABB:
+		bIsCollision = m_pAABB_World->Intersects(*pTargetCollider->m_pAABB_World);
+		break;
+
+	case TYPE_OBB:
+		bIsCollision = m_pAABB_World->Intersects(*pTargetCollider->m_pOBB_World);
+		break;
+
+	case TYPE_SPHERE:
+		bIsCollision = m_pAABB_World->Intersects(*pTargetCollider->m_pSPHERE_World);
+		break;
+
+	default:
+		bIsCollision = false;
+		break;
+
+	}
+
+	if (bIsCollision == true)
 	{
 		m_isCollision = true;
 	}
@@ -176,7 +200,29 @@ _bool CCollider::Collision_AABB(CCollider * pTargetCollider)
 
 _bool CCollider::Collision_OBB(CCollider * pTargetCollider)
 {
-	if (true == m_pOBB_World->Intersects(*pTargetCollider->m_pSPHERE_World))
+	_bool	bIsCollision = false;
+
+	switch (pTargetCollider->Get_ColliderType())
+	{
+	case TYPE_AABB:
+		bIsCollision = m_pOBB_World->Intersects(*pTargetCollider->m_pAABB_World);
+		break;
+
+	case TYPE_OBB:
+		bIsCollision = m_pOBB_World->Intersects(*pTargetCollider->m_pOBB_World);
+		break;
+
+	case TYPE_SPHERE:
+		bIsCollision = m_pOBB_World->Intersects(*pTargetCollider->m_pSPHERE_World);
+		break;
+
+	default:
+		bIsCollision = false;
+		break;
+
+	}
+
+	if (bIsCollision == true)
 	{
 		m_isCollision = true;
 	}
@@ -185,6 +231,41 @@ _bool CCollider::Collision_OBB(CCollider * pTargetCollider)
 
 	return m_isCollision;
 }
+
+_bool CCollider::Collision_Sphere(CCollider * pTargetCollider)
+{
+	_bool	bIsCollision = false;
+
+	switch (pTargetCollider->Get_ColliderType())
+	{
+	case TYPE_AABB:
+		bIsCollision = m_pSPHERE_World->Intersects(*pTargetCollider->m_pAABB_World);
+		break;
+
+	case TYPE_OBB:
+		bIsCollision = m_pSPHERE_World->Intersects(*pTargetCollider->m_pOBB_World);
+		break;
+
+	case TYPE_SPHERE:
+		bIsCollision = m_pSPHERE_World->Intersects(*pTargetCollider->m_pSPHERE_World);
+		break;
+
+	default:
+		bIsCollision = false;
+		break;
+
+	}
+
+	if (bIsCollision == true)
+	{
+		m_isCollision = true;
+	}
+	else
+		m_isCollision = false;
+
+	return m_isCollision;
+}
+
 
 #ifdef _DEBUG
 HRESULT CCollider::Render()

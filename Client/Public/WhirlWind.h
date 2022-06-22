@@ -4,21 +4,17 @@
 #include "GameObject.h"
 
 BEGIN(Engine)
-class CShader;
 class CRenderer;
-class CModel;
 class CCollider;
 END
 
-BEGIN(Client)
-
-class CMonster
+class CWhirlWind abstract
 	:public CGameObject
 {
 protected:
-	explicit CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
-	explicit CMonster(const CMonster& rhs);
-	virtual ~CMonster() = default;
+	explicit CWhirlWind(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
+	explicit CWhirlWind(const CWhirlWind& rhs);
+	virtual ~CWhirlWind() = default;
 
 public:
 	virtual HRESULT NativeConstruct_Prototype(const CTransform::TRANSFORMDESC& TransformDesc);
@@ -27,23 +23,12 @@ public:
 	virtual void Late_Tick(_float fTimeDelta);
 	virtual HRESULT Render();
 
-public:
-	void		Airborne(_float fTimeDelta);
-
 protected:
-	_bool		m_bAirborne = false;
-	_float		m_fAirborneTime = 0.f;
-
-protected:
-	CCollider*						m_pAABBCom = nullptr;
-	CCollider*						m_pSphereCom = nullptr;
-	CShader*						m_pShaderCom = nullptr;
 	CRenderer*						m_pRendererCom = nullptr;
-	CModel*							m_pModelCom = nullptr;
+	CCollider*						m_pSPHERECom = nullptr;
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;
 	virtual void Free() override;
 };
 
-END

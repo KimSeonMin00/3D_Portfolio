@@ -58,6 +58,15 @@
     <Filter Include="02.GameObjects\Monster\Boss">
       <UniqueIdentifier>{90545bd1-965e-4e81-b81f-2e2e16a2d830}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Player\WhirlWind">
+      <UniqueIdentifier>{51f36e24-dc72-4f36-84ee-9c05d825f651}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Player\WhirlWind\WhirlWind_Normal">
+      <UniqueIdentifier>{d4b6c240-fd34-44b0-b9fc-e912db682295}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Player\WhirlWind\WhirlWind_EQ">
+      <UniqueIdentifier>{bc2fe5c2-e63a-4a3d-9305-26fbdde98e98}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -138,6 +147,15 @@
     <ClInclude Include="..\Public\Volibear.h">
       <Filter>02.GameObjects\Monster\Boss</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\WhirlWind.h">
+      <Filter>02.GameObjects\Player\WhirlWind</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\WhirlWind_Normal.h">
+      <Filter>02.GameObjects\Player\WhirlWind\WhirlWind_Normal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\WhirlWind_EQ.h">
+      <Filter>02.GameObjects\Player\WhirlWind\WhirlWind_EQ</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -205,6 +223,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Volibear.cpp">
       <Filter>02.GameObjects\Monster\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\WhirlWind.cpp">
+      <Filter>02.GameObjects\Player\WhirlWind</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\WhirlWind_Normal.cpp">
+      <Filter>02.GameObjects\Player\WhirlWind\WhirlWind_Normal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\WhirlWind_EQ.cpp">
+      <Filter>02.GameObjects\Player\WhirlWind\WhirlWind_EQ</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

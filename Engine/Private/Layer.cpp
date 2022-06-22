@@ -55,7 +55,12 @@ void CLayer::Late_Tick(_float fTimeDelta)
 	for (auto& pGameObject : m_GameObjects)
 	{
 		if (nullptr != pGameObject)
-			pGameObject->Late_Tick(fTimeDelta);
+		{
+			if (pGameObject->Check_Dead())
+				Safe_Release(pGameObject);
+			else
+				pGameObject->Late_Tick(fTimeDelta);		
+		}
 	}
 }
 

@@ -26,11 +26,23 @@ public:
 	virtual HRESULT NativeConstruct(void* pArg) override;
 
 public:
+	TYPE			Get_ColliderType()
+	{
+		return m_eType;
+	}
+
+	_bool			Get_IsCollision()
+	{
+		return m_isCollision;
+	}
+
+public:
 	void Update(_fmatrix WorldMatrix);
 
 public:
 	_bool Collision_AABB(CCollider* pTargetCollider);
 	_bool Collision_OBB(CCollider* pTargetCollider);
+	_bool Collision_Sphere(CCollider* pTargetCollider);
 
 #ifdef _DEBUG
 public:

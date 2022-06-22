@@ -58,6 +58,7 @@ void CVolibear::Tick(_float fTimeDelta)
 	Update_State(fTimeDelta);
 
 	m_pAABBCom->Update(m_pTransformCom->Get_WorldMatrix());
+	m_pSphereCom->Update(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CVolibear::Late_Tick(_float fTimeDelta)
@@ -87,12 +88,17 @@ HRESULT CVolibear::Render()
 
 		m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 
-		m_pShaderCom->Begin(0);
+		if (m_pAABBCom->Get_IsCollision() == true)
+			m_pShaderCom->Begin(1);
+
+		else
+			m_pShaderCom->Begin(0);
 
 		m_pModelCom->Render(i);
 	}
 
 	m_pAABBCom->Render();
+	m_pSphereCom->Render();
 
 	return S_OK;
 }
@@ -117,7 +123,15 @@ HRESULT CVolibear::SetUp_Components()
 	ColliderDesc.vScale = _float3(1.5f, 3.f, 1.5f);
 	ColliderDesc.vPosition = _float3(0.f, 1.5f, 0.f);
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_AABB"), (CComponent**)&m_pAABBCom, &ColliderDesc)))
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_HitBox"), (CComponent**)&m_pAABBCom, &ColliderDesc)))
+		return E_FAIL;
+
+	ColliderDesc.vScale = _float3(3.f, 3.f, 3.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vAngle = _float3(0.f, 0.0f, 0.0f);
+
+
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_HitSphere"), (CComponent**)&m_pSphereCom, &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -842,6 +856,8 @@ void CVolibear::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pSphereCom);
+	Safe_Release(m_pAABBCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
