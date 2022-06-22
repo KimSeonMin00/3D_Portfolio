@@ -18,6 +18,7 @@ vector			g_vLightSpecular = vector(1.f, 1.f, 1.f, 1.f);
 vector			g_vMtrlDiffuse;
 vector			g_vMtrlAmbient = vector(0.7f, 0.7f, 0.7f, 1.f);
 vector			g_vMtrlSpecular = vector(0.f, 0.f, 0.f, 1.f);
+vector			g_vHitColor = vector(1.f, 1.f, 1.f, 1.f);
 
 vector			g_vCamPosition;
 
@@ -116,7 +117,6 @@ PS_OUT PS_HIT(PS_IN In)
 	PS_OUT		Out = (PS_OUT)0;
 
 	vector		vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
-	vector		vHitColor = vector(1.f, 0.f, 0.f, 1.f);
 
 	float		fShade = max(dot(normalize(g_vLightDir.xyz) * -1.f, In.vNormal), 0.f);
 
@@ -125,7 +125,7 @@ PS_OUT PS_HIT(PS_IN In)
 
 	float		fSpecular = pow(max(dot(normalize(vLook) * -1.f, normalize(vReflect)), 0.f), 30.f);
 
-	Out.vColor.xyz = ((vHitColor * g_vLightDiffuse * vMtrlDiffuse) * (fShade + g_vLightAmbient * g_vMtrlAmbient)
+	Out.vColor.xyz = ((g_vHitColor * g_vLightDiffuse * vMtrlDiffuse) * (fShade + g_vLightAmbient * g_vMtrlAmbient)
 		+ (g_vLightSpecular * g_vMtrlSpecular) * fSpecular).xyz;
 
 	Out.vColor.a = vMtrlDiffuse.a;
