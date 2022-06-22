@@ -33,6 +33,7 @@ HRESULT CVolibear::NativeConstruct(void * pArg)
 	m_eState = STATE_IDLE;
 	m_ePreState = STATE_IDLE;
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 0.f, 5.f, 1.f));
+	m_pTransformCom->LookAt(XMVectorSet(0.f, 0.f, 0.f, 1.f));
 
 	return S_OK;
 }
@@ -51,7 +52,7 @@ void CVolibear::Tick(_float fTimeDelta)
 		m_pTransformCom->Set_Scaled(XMLoadFloat3(&m_vOriginScale));
 	}
 
-	//Key_Input(fTimeDelta);
+	Key_Input(fTimeDelta);
 
 	Change_State(fTimeDelta);
 
@@ -779,7 +780,7 @@ void CVolibear::E_Skill(_float fTimeDelta)
 		if (m_pModelCom->Get_Finished())
 		{
 			m_bIsChanneling = false;
-			m_eState = m_eDoingState;
+			m_eState = STATE_IDLE;
 			return;
 		}
 
