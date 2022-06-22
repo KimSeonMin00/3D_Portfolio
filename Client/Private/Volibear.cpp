@@ -128,7 +128,7 @@ HRESULT CVolibear::SetUp_Components()
 	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_HitBox"), (CComponent**)&m_pAABBCom, &ColliderDesc)))
 		return E_FAIL;
 
-	ColliderDesc.vScale = _float3(3.f, 3.f, 3.f);
+	ColliderDesc.vScale = _float3(2.f, 2.f, 2.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	ColliderDesc.vAngle = _float3(0.f, 0.0f, 0.0f);
 
