@@ -52,7 +52,7 @@ void CVolibear::Tick(_float fTimeDelta)
 		m_pTransformCom->Set_Scaled(XMLoadFloat3(&m_vOriginScale));
 	}
 
-	Key_Input(fTimeDelta);
+	//Key_Input(fTimeDelta);
 
 	Change_State(fTimeDelta);
 
@@ -97,7 +97,8 @@ HRESULT CVolibear::Render()
 		else
 			m_pShaderCom->Begin(0);
 
-		m_pModelCom->Render(i);
+		if(i != 7)//포로 메쉬 제외
+			m_pModelCom->Render(i);
 	}
 
 	m_pAABBCom->Render();

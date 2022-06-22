@@ -100,7 +100,8 @@ HRESULT CPlayer::Render()
 		else
 			m_pShaderCom->Begin(0);
 
-		m_pModelCom->Render(i);
+		if (i != 0)//피리 메쉬 제외
+			m_pModelCom->Render(i);
 	}
 
 	m_pAABBCom->Render();
