@@ -4,6 +4,7 @@
 
 #include "Terrain.h"
 #include "WhirlWind_Normal.h"
+#include "HierarchyNode.h"
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
 	:CGameObject(pDevice, pDevice_Context)
@@ -31,6 +32,12 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
+	m_pSwordNode = m_pModelCom->Find_HierarcyNodes("Sword_World");
+	if (m_pSwordNode == nullptr)
+		return E_FAIL;
+
+	m_PivotMatrix = m_pModelCom->Get_PivotMatrix();
+
 	m_ePreState = STATE_IDLE;
 	m_eState = STATE_IDLE;
 	m_pModelCom->SetUp_AnimationIndex(40);
@@ -48,11 +55,7 @@ void CPlayer::Tick(_float fTimeDelta)
 	Update_State(fTimeDelta);
 
 	m_pAABBCom->Update(m_pTransformCom->Get_WorldMatrix());
-
-	_matrix OffsetMat = m_pTransformCom->Get_WorldMatrix();
-	OffsetMat.r[3] += m_fQDistance / 2.f * m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-
-	m_pOBBCom->Update(OffsetMat);
+	Update_SwordCollider();
 	m_pSPHERECom->Update(m_pTransformCom->Get_WorldMatrix());
 }
 
@@ -137,7 +140,7 @@ HRESULT CPlayer::SetUp_Components()
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 
-	ColliderDesc.vScale = _float3(1.f, 1.f, m_fQDistance);
+	ColliderDesc.vScale = _float3(0.3f, 0.3f, 0.3f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	ColliderDesc.vAngle = _float3(0.f, 0.f, 0.f);
 
@@ -491,6 +494,24 @@ void CPlayer::Update_State(_float fTimeDelta)
 	default:
 		break;
 	}
+}
+
+void CPlayer::Update_SwordCollider()
+{
+	_float4x4  SocketMatrix;
+
+	XMStoreFloat4x4(&SocketMatrix, m_pSwordNode->Get_OffsetMatrix() * m_pSwordNode->Get_CombinedTransformationMatrix());
+
+	XMStoreFloat4x4(&SocketMatrix, XMLoadFloat4x4(&SocketMatrix) * XMLoadFloat4x4(&m_PivotMatrix));
+
+	XMStoreFloat3((_float3*)&SocketMatrix.m[0], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[0])));
+	XMStoreFloat3((_float3*)&SocketMatrix.m[1], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[1])));
+	XMStoreFloat3((_float3*)&SocketMatrix.m[2], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[2])));
+
+	XMStoreFloat4x4(&SocketMatrix, XMLoadFloat4x4(&SocketMatrix) * m_pTransformCom->Get_WorldMatrix());
+
+	//m_pOBBCom->Update(m_pTransformCom->Get_WorldMatrix());
+	m_pOBBCom->Update(XMLoadFloat4x4(&SocketMatrix));
 }
 
 void CPlayer::Move(_float fTimeDelta)

@@ -150,7 +150,8 @@ void CCollider::Update(_fmatrix WorldMatrix)
 
 	case TYPE_OBB:
 		m_pOBB->Transform(*m_pOBB_World, Make_Rotation(WorldMatrix));
-		XMStoreFloat3(&m_pOBB_World->Center, XMLoadFloat3(&m_pOBB->Center) + WorldMatrix.r[3]);
+		XMStoreFloat3(&m_pOBB_World->Center, 
+			XMVector3TransformCoord(XMLoadFloat3(&m_pOBB->Center), Remove_Translation(WorldMatrix)) + WorldMatrix.r[3]);
 		m_pOBB_World->Extents.x *= XMVectorGetX(XMVector3Length(WorldMatrix.r[0]));
 		m_pOBB_World->Extents.y *= XMVectorGetX(XMVector3Length(WorldMatrix.r[1]));
 		m_pOBB_World->Extents.z *= XMVectorGetX(XMVector3Length(WorldMatrix.r[2]));
@@ -322,7 +323,11 @@ _matrix CCollider::Remove_Rotation(_fmatrix Transform)
 
 _matrix CCollider::Remove_Translation(_fmatrix Transform)
 {
-	return _matrix();
+	_matrix Result = Transform;
+	
+	Result.r[3] = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+
+	return Result;
 }
 
 _matrix CCollider::Make_Rotation(_fmatrix Transform)

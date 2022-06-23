@@ -1,4 +1,5 @@
 matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+matrix			g_SocketMatrix;
 
 struct BoneDesc
 {
@@ -69,6 +70,27 @@ VS_OUT VS_MAIN(VS_IN In)
 
 	Out.vPosition = vPosition;
 	Out.vNormal = mul(vNormal, g_WorldMatrix).xyz;
+	Out.vTexUV = In.vTexUV;
+	Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+
+	return Out;
+}
+
+VS_OUT VS_MAIN_SOCKET(VS_IN In)
+{
+	VS_OUT		Out = (VS_OUT)0;
+
+	matrix		matVP;
+
+
+	matVP = mul(g_ViewMatrix, g_ProjMatrix);
+
+	vector		vPosition = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
+	vPosition = mul(vPosition, g_SocketMatrix);
+	vPosition = mul(vPosition, matVP);
+
+	Out.vPosition = vPosition;
+	Out.vNormal = mul(vector(In.vNormal, 0.f), g_WorldMatrix).xyz;
 	Out.vTexUV = In.vTexUV;
 	Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
 
@@ -152,5 +174,12 @@ technique11 DefaultTechinque
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_HIT();
+	}
+
+	pass Socket
+	{
+		VertexShader = compile vs_5_0 VS_MAIN_SOCKET();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 }

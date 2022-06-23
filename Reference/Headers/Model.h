@@ -20,6 +20,10 @@ public:
 		return m_iNumMeshes;
 	}
 
+	_float4x4	Get_PivotMatrix() const {
+		return m_PivotMatrix;
+	}
+
 	_bool	Get_Finished();
 	_uint	Get_KeyFrame();
 	_bool	Get_IsChange()

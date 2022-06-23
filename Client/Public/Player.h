@@ -8,6 +8,7 @@ class CShader;
 class CRenderer;
 class CModel;
 class CCollider;
+class CHierarchyNode;
 END
 
 BEGIN(Client)
@@ -36,6 +37,7 @@ private:
 	CModel*							m_pModelCom = nullptr;
 	CCollider*						m_pAABBCom = nullptr;
 	CCollider*						m_pOBBCom = nullptr;
+	CCollider*						m_pTestCom = nullptr;
 	CCollider*						m_pSPHERECom = nullptr;
 
 public:
@@ -50,6 +52,7 @@ private:
 
 	void	Change_State(_float fTimeDelta);
 	void	Update_State(_float fTimeDelta);
+	void	Update_SwordCollider();
 
 	void	Move(_float fTimeDelta);
 	void	Attack(_float fTimeDelta);
@@ -72,6 +75,11 @@ private:
 	_float			m_fKeyInputTime = 0.2f;
 
 	_uint m_iAnimationIndex = 0;
+
+private://For Attack Collider
+	_float4x4		m_PivotMatrix;
+
+	CHierarchyNode*	m_pSwordNode = nullptr;
 
 private:
 	_bool		m_bSeathing = false;
