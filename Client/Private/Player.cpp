@@ -140,7 +140,7 @@ HRESULT CPlayer::SetUp_Components()
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 
-	ColliderDesc.vScale = _float3(0.3f, 0.3f, 0.3f);
+	ColliderDesc.vScale = _float3(1.f, 1.f, 3.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	ColliderDesc.vAngle = _float3(0.f, 0.f, 0.f);
 
@@ -498,20 +498,25 @@ void CPlayer::Update_State(_float fTimeDelta)
 
 void CPlayer::Update_SwordCollider()
 {
-	_float4x4  SocketMatrix;
+	//_float4x4  SocketMatrix;
 
-	XMStoreFloat4x4(&SocketMatrix, m_pSwordNode->Get_OffsetMatrix() * m_pSwordNode->Get_CombinedTransformationMatrix());
+	//XMStoreFloat4x4(&SocketMatrix, m_pSwordNode->Get_OffsetMatrix() * m_pSwordNode->Get_CombinedTransformationMatrix());
 
-	XMStoreFloat4x4(&SocketMatrix, XMLoadFloat4x4(&SocketMatrix) * XMLoadFloat4x4(&m_PivotMatrix));
+	//XMStoreFloat4x4(&SocketMatrix, XMLoadFloat4x4(&SocketMatrix) * XMLoadFloat4x4(&m_PivotMatrix));
 
-	XMStoreFloat3((_float3*)&SocketMatrix.m[0], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[0])));
-	XMStoreFloat3((_float3*)&SocketMatrix.m[1], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[1])));
-	XMStoreFloat3((_float3*)&SocketMatrix.m[2], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[2])));
+	//XMStoreFloat3((_float3*)&SocketMatrix.m[0], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[0])));
+	//XMStoreFloat3((_float3*)&SocketMatrix.m[1], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[1])));
+	//XMStoreFloat3((_float3*)&SocketMatrix.m[2], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[2])));
 
-	XMStoreFloat4x4(&SocketMatrix, XMLoadFloat4x4(&SocketMatrix) * m_pTransformCom->Get_WorldMatrix());
+	//XMStoreFloat4x4(&SocketMatrix, XMLoadFloat4x4(&SocketMatrix) * m_pTransformCom->Get_WorldMatrix());
 
-	//m_pOBBCom->Update(m_pTransformCom->Get_WorldMatrix());
-	m_pOBBCom->Update(XMLoadFloat4x4(&SocketMatrix));
+	////m_pOBBCom->Update(m_pTransformCom->Get_WorldMatrix());
+	//m_pOBBCom->Update(XMLoadFloat4x4(&SocketMatrix));
+
+	_matrix OffsetMat = m_pTransformCom->Get_WorldMatrix();
+	OffsetMat.r[3] += m_fQDistance / 2.f * m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+	m_pOBBCom->Update(OffsetMat);
 }
 
 void CPlayer::Move(_float fTimeDelta)
