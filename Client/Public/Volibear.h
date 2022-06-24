@@ -25,6 +25,18 @@ public:
 	HRESULT SetUp_Components();
 	HRESULT SetUp_ConstantTable();
 
+
+private:
+	void			Update_HandCollider();
+private:
+	CCollider*						m_pOBBRightHand = nullptr;
+	CCollider*						m_pOBBLeftHand = nullptr;
+
+	_float4x4		m_PivotMatrix;
+
+	CHierarchyNode*	m_pRHNode = nullptr;
+	CHierarchyNode*	m_pLHNode = nullptr;
+
 private:
 	void	Key_Input(_float fTimeDelta);
 
@@ -36,6 +48,10 @@ private:
 	void	W_Skill(_float fTimeDelta);
 	void	E_Skill(_float fTimeDelta);
 	void	R_Skill(_float fTimeDelta);
+
+	void	Chase_Player(_float fTimeDelta);
+
+	_float	m_fInitTime = 0.f;
 
 private:
 	STATE			m_ePreState = STATE_END;

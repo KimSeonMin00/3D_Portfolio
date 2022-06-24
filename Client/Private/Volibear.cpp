@@ -2,6 +2,7 @@
 #include "..\Public\Volibear.h"
 #include "GameInstance.h"
 #include "Terrain.h"
+#include "HierarchyNode.h"
 
 CVolibear::CVolibear(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
 	:CMonster(pDevice, pDevice_Context)
@@ -29,6 +30,16 @@ HRESULT CVolibear::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
+	m_pRHNode = m_pModelCom->Find_HierarcyNodes("R_Buffbone_Glb_Hand_Loc");
+	if (m_pRHNode == nullptr)
+		return E_FAIL;
+
+	m_pLHNode = m_pModelCom->Find_HierarcyNodes("L_Buffbone_Glb_Hand_Loc");
+	if (m_pLHNode == nullptr)
+		return E_FAIL;
+
+	m_PivotMatrix = m_pModelCom->Get_PivotMatrix();
+
 	m_pModelCom->SetUp_AnimationIndex(14);
 	m_eState = STATE_IDLE;
 	m_ePreState = STATE_IDLE;
@@ -42,6 +53,8 @@ void CVolibear::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
+	if (m_fTime < 3.f)
+		m_fInitTime += fTimeDelta;
 	m_fQTime += fTimeDelta;
 	m_fRTime += fTimeDelta;
 	if (m_bQState == true && m_fQTime >= 3.0f)
@@ -54,12 +67,20 @@ void CVolibear::Tick(_float fTimeDelta)
 
 	//Key_Input(fTimeDelta);
 
-	Change_State(fTimeDelta);
 
-	Update_State(fTimeDelta);
+		if (m_fInitTime >= 3.f)
+		{
+			if (m_bAirborne == false)			
+				Chase_Player(fTimeDelta);
+		}
 
+		Change_State(fTimeDelta);
+
+		Update_State(fTimeDelta);
+	
 	m_pAABBCom->Update(m_pTransformCom->Get_WorldMatrix());
 	m_pSphereCom->Update(m_pTransformCom->Get_WorldMatrix());
+	Update_HandCollider();
 }
 
 void CVolibear::Late_Tick(_float fTimeDelta)
@@ -103,6 +124,8 @@ HRESULT CVolibear::Render()
 
 	m_pAABBCom->Render();
 	m_pSphereCom->Render();
+	m_pOBBRightHand->Render();
+	m_pOBBLeftHand->Render();
 
 	return S_OK;
 }
@@ -138,6 +161,15 @@ HRESULT CVolibear::SetUp_Components()
 	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_HitSphere"), (CComponent**)&m_pSphereCom, &ColliderDesc)))
 		return E_FAIL;
 
+	ColliderDesc.vScale = _float3(0.5f, 0.5f, 0.5f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vAngle = _float3(0.f, 0.0f, 0.0f);
+
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"), TEXT("Com_RightHand"), (CComponent**)&m_pOBBRightHand, &ColliderDesc)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"), TEXT("Com_LeftHand"), (CComponent**)&m_pOBBLeftHand, &ColliderDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -152,6 +184,33 @@ HRESULT CVolibear::SetUp_ConstantTable()
 	m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_PROJ), sizeof(_float4x4));
 
 	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CVolibear::Update_HandCollider()
+{
+	_float4x4  SocketMatrix;
+
+	XMStoreFloat4x4(&SocketMatrix, m_pRHNode->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&m_PivotMatrix));
+
+	XMStoreFloat3((_float3*)&SocketMatrix.m[0], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[0])));
+	XMStoreFloat3((_float3*)&SocketMatrix.m[1], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[1])));
+	XMStoreFloat3((_float3*)&SocketMatrix.m[2], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[2])));
+
+	XMStoreFloat4x4(&SocketMatrix, XMLoadFloat4x4(&SocketMatrix) * m_pTransformCom->Get_WorldMatrix());
+
+	//m_pOBBCom->Update(m_pTransformCom->Get_WorldMatrix());
+	m_pOBBRightHand->Update(XMLoadFloat4x4(&SocketMatrix));
+
+	XMStoreFloat4x4(&SocketMatrix, m_pLHNode->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&m_PivotMatrix));
+
+	XMStoreFloat3((_float3*)&SocketMatrix.m[0], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[0])));
+	XMStoreFloat3((_float3*)&SocketMatrix.m[1], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[1])));
+	XMStoreFloat3((_float3*)&SocketMatrix.m[2], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[2])));
+
+	XMStoreFloat4x4(&SocketMatrix, XMLoadFloat4x4(&SocketMatrix) * m_pTransformCom->Get_WorldMatrix());
+
+	//m_pOBBCom->Update(m_pTransformCom->Get_WorldMatrix());
+	m_pOBBLeftHand->Update(XMLoadFloat4x4(&SocketMatrix));
 }
 
 void CVolibear::Key_Input(_float fTimeDelta)
@@ -524,150 +583,142 @@ void CVolibear::Update_State(_float fTimeDelta)
 }
 
 void CVolibear::Move(_float fTimeDelta)
-{
-	if (m_fMoveDistTotal > m_fMoveDist)
-	{
+{	
+	if (m_bAirborne == false)
 		m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * fTimeDelta));
-		m_fMoveDist += m_fMoveSpeed * fTimeDelta;
 
-		if (m_bStateChange == true)
+	if (m_bStateChange == true)
+	{
+		if (m_eDoingState == STATE_IDLE)
 		{
-			if (m_eDoingState == STATE_IDLE)
-			{
-				if (m_bQState == true)
-					if (m_bRState == true)
-						m_iCurrentIndex = 85;
-					else
-						m_iCurrentIndex = 61;
+			if (m_bQState == true)
+				if (m_bRState == true)
+					m_iCurrentIndex = 85;
 				else
-					if (m_bRState == true)
-						m_iCurrentIndex = 34;
-					else
-						m_iCurrentIndex = 23;
+					m_iCurrentIndex = 61;
+			else
+				if (m_bRState == true)
+					m_iCurrentIndex = 34;
+				else
+					m_iCurrentIndex = 23;
 
-				m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
-				if (m_pModelCom->Get_IsChange() == false)
-				{
-					m_bStateChange = false;
-					m_bIsState_In = true;
-					m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
-					m_pModelCom->Set_Initialize();
-				};
-			}
-
-			else if (m_eDoingState == STATE_ATTACK)
+			m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
+			if (m_pModelCom->Get_IsChange() == false)
 			{
-				if (m_iAttackIndex == 3)
-					m_iCurrentIndex = 37;
-
-				else if (m_iAttackIndex == 4)
-					m_iCurrentIndex = 38;
-
-				if (m_bQAttack == true)
-				{
-					m_bQAttack = false;
-					if (m_bRState == true)
-						m_iCurrentIndex = 80;
-					else
-						m_iCurrentIndex = 59;
-				}
 				m_bStateChange = false;
 				m_bIsState_In = true;
 				m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 				m_pModelCom->Set_Initialize();
-			}
+			};
 		}
 
-		else
+		else if (m_eDoingState == STATE_ATTACK)
 		{
-			if (m_bQState == true)
+			if (m_iAttackIndex == 3)
+				m_iCurrentIndex = 37;
+
+			else if (m_iAttackIndex == 4)
+				m_iCurrentIndex = 38;
+
+			if (m_bQAttack == true)
 			{
-				if (m_bQState_Pre == true)
-				{
-					if (m_bRState == true)
-					{
-						if (m_iCurrentIndex == 85 && m_pModelCom->Get_Finished() == true)
-						{
-							m_iCurrentIndex = 39;
-							m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
-							m_pModelCom->Set_Initialize();
-						}
-					}
-
-					else
-					{
-						if ((m_iCurrentIndex == 63 || m_iCurrentIndex == 61) && m_pModelCom->Get_Finished() == true)
-						{
-							m_iCurrentIndex = 65;
-							m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
-							m_pModelCom->Set_Initialize();
-						}
-					}
-
-					m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
-				}
-
-				else if (m_bQState_Pre == false)
-				{
-					if (m_bRState == true)
-						m_iCurrentIndex = 85;
-					else
-						m_iCurrentIndex = 63;
-					m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
-					if (m_pModelCom->Get_IsChange() == false)
-					{
-						m_bQState_Pre = m_bQState;
-						m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
-						m_pModelCom->Set_Initialize();
-					}
-				}
-			}
-
-			else
-			{
-				if (m_bQState_Pre == true)
-				{
-					if(m_bRState == true)
-						m_iCurrentIndex = 40;
-
-					else
-						m_iCurrentIndex = 66;
-					m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
-					if (m_pModelCom->Get_IsChange() == false)
-					{
-						m_bQState_Pre = m_bQState;
-						m_bIsState_In = true;
-						m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
-						m_pModelCom->Set_Initialize();
-					}
-				}
-
+				m_bQAttack = false;
+				if (m_bRState == true)
+					m_iCurrentIndex = 80;
 				else
-				{
-					if (m_bIsState_In == true)
-					{
-						if (m_pModelCom->Get_Finished() == true)
-						{
-							if (m_bRState == true)
-								m_iCurrentIndex = 34;
-
-							else
-								m_iCurrentIndex = 23;
-							m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
-							m_pModelCom->Set_Initialize();
-						}
-					}
-				}
+					m_iCurrentIndex = 59;
 			}
-
-			if (m_pModelCom->Get_IsChange() == false)
-				m_pModelCom->Play_Animation(fTimeDelta);
+			m_bStateChange = false;
+			m_bIsState_In = true;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
 		}
 	}
 
 	else
 	{
-		m_eState = STATE_IDLE;
+		if (m_bQState == true)
+		{
+			if (m_bQState_Pre == true)
+			{
+				if (m_bRState == true)
+				{
+					if (m_iCurrentIndex == 85 && m_pModelCom->Get_Finished() == true)
+					{
+						m_iCurrentIndex = 39;
+						m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+						m_pModelCom->Set_Initialize();
+					}
+				}
+
+				else
+				{
+					if ((m_iCurrentIndex == 63 || m_iCurrentIndex == 61) && m_pModelCom->Get_Finished() == true)
+					{
+						m_iCurrentIndex = 65;
+						m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+						m_pModelCom->Set_Initialize();
+					}
+				}
+
+				m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			}
+
+			else if (m_bQState_Pre == false)
+			{
+				if (m_bRState == true)
+					m_iCurrentIndex = 85;
+				else
+					m_iCurrentIndex = 63;
+				m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
+				if (m_pModelCom->Get_IsChange() == false)
+				{
+					m_bQState_Pre = m_bQState;
+					m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+					m_pModelCom->Set_Initialize();
+				}
+			}
+		}
+
+		else
+		{
+			if (m_bQState_Pre == true)
+			{
+				if (m_bRState == true)
+					m_iCurrentIndex = 40;
+
+				else
+					m_iCurrentIndex = 66;
+				m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
+				if (m_pModelCom->Get_IsChange() == false)
+				{
+					m_bQState_Pre = m_bQState;
+					m_bIsState_In = true;
+					m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+					m_pModelCom->Set_Initialize();
+				}
+			}
+
+			else
+			{
+				if (m_bIsState_In == true)
+				{
+					if (m_pModelCom->Get_Finished() == true)
+					{
+						if (m_bRState == true)
+							m_iCurrentIndex = 34;
+
+						else
+							m_iCurrentIndex = 23;
+						m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+						m_pModelCom->Set_Initialize();
+					}
+				}
+			}
+		}
+
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Play_Animation(fTimeDelta);
 	}
 }
 
@@ -830,6 +881,47 @@ void CVolibear::R_Skill(_float fTimeDelta)
 
 		m_pModelCom->Play_Animation(fTimeDelta);
 	}
+}
+
+void CVolibear::Chase_Player(_float fTimeDelta)
+{
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+
+	if (pGameInstance == nullptr)
+		return;
+
+	Safe_AddRef(pGameInstance);
+
+	CTransform* pPlayer_Transform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"));
+
+	if (pPlayer_Transform == nullptr)
+	{
+		Safe_Release(pGameInstance);
+		return;
+	}
+
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vPlayerPos = pPlayer_Transform->Get_State(CTransform::STATE_POSITION);
+
+	m_vMovePos = vPlayerPos;
+
+	m_pTransformCom->LookAt(vPlayerPos);
+
+	_float fDist = XMVectorGetX(XMVector3Length(vPlayerPos - vPos));
+
+
+	if (fDist >= 3.f)
+	{
+		m_eState = STATE_MOVE;
+	}
+
+	else
+	{
+		m_eState = STATE_IDLE;
+	}
+
+	Safe_Release(pGameInstance);
+
 }
 
 CVolibear * CVolibear::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const CTransform::TRANSFORMDESC & TransformDesc)

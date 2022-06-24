@@ -90,7 +90,7 @@ private://For Move
 	_float			m_fMoveDistTotal = 0.f;
 	_float			m_fMoveDist = 0.f;
 
-	_float			m_fMoveSpeed = 2.f;
+	_float			m_fMoveSpeed = 4.f;
 	_bool			m_bMove_Stop = false;
 
 private://For Attack

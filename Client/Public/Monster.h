@@ -8,6 +8,7 @@ class CShader;
 class CRenderer;
 class CModel;
 class CCollider;
+class CHierarchyNode;
 END
 
 BEGIN(Client)
