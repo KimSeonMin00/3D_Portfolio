@@ -67,6 +67,9 @@
     <Filter Include="02.GameObjects\Player\WhirlWind\WhirlWind_EQ">
       <UniqueIdentifier>{bc2fe5c2-e63a-4a3d-9305-26fbdde98e98}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\MapObject">
+      <UniqueIdentifier>{d9d8ad1e-a3b0-44af-b7c7-f562d13ba276}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -156,6 +159,9 @@
     <ClInclude Include="..\Public\WhirlWind_EQ.h">
       <Filter>02.GameObjects\Player\WhirlWind\WhirlWind_EQ</Filter>
     </ClInclude>
+    <ClInclude Include="MapObject.h">
+      <Filter>02.GameObjects\MapObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -232,6 +238,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\WhirlWind_EQ.cpp">
       <Filter>02.GameObjects\Player\WhirlWind\WhirlWind_EQ</Filter>
+    </ClCompile>
+    <ClCompile Include="MapObject.cpp">
+      <Filter>02.GameObjects\MapObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

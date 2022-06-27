@@ -181,6 +181,7 @@
     <ClInclude Include="..\Public\WhirlWind_EQ.h" />
     <ClInclude Include="..\Public\WhirlWind_Normal.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="MapObject.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -210,6 +211,7 @@
     <ClCompile Include="..\Private\WhirlWind_EQ.cpp" />
     <ClCompile Include="..\Private\WhirlWind_Normal.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="MapObject.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

@@ -220,7 +220,6 @@ HRESULT CModel::NativeConstruct_Prototype(const char * pModelFilePath, const cha
 
 	if (FAILED(Ready_Animation()))
 		return E_FAIL;
-	return S_OK;
 
 	return S_OK;
 }
