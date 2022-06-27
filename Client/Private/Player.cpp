@@ -502,9 +502,12 @@ void CPlayer::Update_SwordCollider()
 
 	XMStoreFloat4x4(&SocketMatrix, m_pSwordNode->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&m_PivotMatrix));
 
+	_vector a = XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[1]));
+	_vector b = XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[2]));
+
 	XMStoreFloat3((_float3*)&SocketMatrix.m[0], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[0])));
-	XMStoreFloat3((_float3*)&SocketMatrix.m[1], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[1])));
-	XMStoreFloat3((_float3*)&SocketMatrix.m[2], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[2])));
+	XMStoreFloat3((_float3*)&SocketMatrix.m[1], b);
+	XMStoreFloat3((_float3*)&SocketMatrix.m[2], a);
 
 	XMStoreFloat4x4(&SocketMatrix, XMLoadFloat4x4(&SocketMatrix) * m_pTransformCom->Get_WorldMatrix());
 
