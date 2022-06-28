@@ -28,6 +28,11 @@ public:
 		return m_bDead;
 	}
 
+	void			Set_Dead()
+	{
+		m_bDead = true;
+	}
+
 protected:
 	ID3D11Device*				m_pDevice = nullptr;
 	ID3D11DeviceContext*		m_pDeviceContext = nullptr;

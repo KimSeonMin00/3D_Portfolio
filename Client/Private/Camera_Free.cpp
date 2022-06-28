@@ -38,15 +38,12 @@ void CCamera_Free::Tick(_float fTimeDelta)
 
 	Safe_AddRef(pGameInstance);
 
-	/*if (pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
+	if (pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
 	{
 		m_pTransformCom->Go_Straight(fTimeDelta);
 	}
-*/
 
-
-
-	/*if (pGameInstance->Get_DIKeyState(DIK_S) & 0x80)
+	if (pGameInstance->Get_DIKeyState(DIK_S) & 0x80)
 	{
 		m_pTransformCom->Go_Backward(fTimeDelta);
 	}
@@ -74,9 +71,9 @@ void CCamera_Free::Tick(_float fTimeDelta)
 		{
 			m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), fTimeDelta * MouseMove * 0.1f);
 		}
-	}*/
+	}
 
-	CTransform* pPlayerTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"));
+	/*CTransform* pPlayerTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"));
 
 	if (pPlayerTransform == nullptr)
 	{
@@ -91,7 +88,7 @@ void CCamera_Free::Tick(_float fTimeDelta)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION,vCamPosition);
 	m_pTransformCom->LookAt(pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 
-	Safe_Release(pPlayerTransform);
+	Safe_Release(pPlayerTransform);*/
 
 	if (FAILED(__super::Bind_TransformMatrices()))
 		return;

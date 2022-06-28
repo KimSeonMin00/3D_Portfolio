@@ -129,7 +129,7 @@ _uint CLoader::Loading_ForGamePlay()
 		CVolibear::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MapObject_0"),
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MapObject"),
 		CMapObject::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 

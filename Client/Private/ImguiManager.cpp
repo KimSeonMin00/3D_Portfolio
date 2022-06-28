@@ -381,145 +381,169 @@ void CImguiManager::UI_Tool()
 
 void CImguiManager::Object_Tool()
 {
+	ImGui::Text("MapObject_Number");
+	ImGui::PushItemWidth(100);
+	ImGui::InputInt("MapObject_Index", &m_iObjectIndex, 1, 10);
+	if (m_iObjectIndex >= m_iNumMapObject)
+		m_iObjectIndex = m_iNumMapObject - 1;
+
 	if (ImGui::Button("Create"))
 	{
-		m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Prototype_GameObject_Player"));
+		_tchar	szPrototypeName[256] = TEXT("");
+		wsprintf(szPrototypeName, TEXT("Prototype_GameObject_MapObject_0"), m_iObjectIndex);
+
+		m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Map"), TEXT("Prototype_GameObject_MapObject"));
 		m_iNumObject++;
+	}
+
+	if (ImGui::Button("Delete"))
+	{
+		if (m_iNumObject > 0)
+		{
+			CGameObject* pGameObject = m_pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_Map"), m_iCurrentItemIndex);
+
+			if (pGameObject != nullptr)
+			{
+				Safe_AddRef(pGameObject);
+				pGameObject->Set_Dead();
+				Safe_Release(pGameObject);
+				m_iNumObject--;
+			}
+		}
 	}
 
 	if (m_iNumObject > 0)
 	{
 		char Item[256] = "";
-		sprintf_s(Item, "Player_%d", m_iCurrentItemIndex);
+		sprintf_s(Item, "MapObject_%d", m_iCurrentItemIndex);
 
 		CurrentItem = Item;
-	}
 
-	if (ImGui::BeginCombo("Player", CurrentItem))
-	{
-		for (int n = 0; n < m_iNumObject; n++)
+
+		if (ImGui::BeginCombo("MapObject", CurrentItem))
 		{
-			char Item[256] = "";
-			sprintf_s(Item, "Player_%d", n);
-
-			bool is_selected = (CurrentItem == Item); // You can store your selection however you want, outside or inside your objects
-
-			if (ImGui::Selectable(Item, is_selected))
+			for (int n = 0; n < m_iNumObject; n++)
 			{
-				CurrentItem = Item;
-				m_iCurrentItemIndex = n;
-			}
+				char Item[256] = "";
+				sprintf_s(Item, "MapObject_%d", n);
 
-			if (is_selected)
+				bool is_selected = (CurrentItem == Item); // You can store your selection however you want, outside or inside your objects
+
+				if (ImGui::Selectable(Item, is_selected))
+				{
+					CurrentItem = Item;
+					m_iCurrentItemIndex = n;
+				}
+
+				if (is_selected)
+				{
+					ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
+				}
+			}
+			ImGui::EndCombo();
+		}
+
+		_float3 fScale = { 0.f, 0.f, 0.f };
+		_float3 fRotation = { 0.f ,0.f ,0.f };
+		_float3 fPosition = { 0.f, 0.f, 0.f };
+
+		m_pTransform = (CTransform*)m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Map"), TEXT("Com_Transform"), m_iCurrentItemIndex);
+
+		if (nullptr == m_pTransform)
+			return;
+
+		Safe_AddRef(m_pTransform);
+
+		fScale = m_pTransform->Get_Scaled();
+
+		ImGui::Text("Scale");
+		ImGui::PushItemWidth(50);
+		ImGui::InputFloat("Scale.x", &fScale.x); ImGui::SameLine();
+		ImGui::InputFloat("Scale.y", &fScale.y); ImGui::SameLine();
+		ImGui::InputFloat("Scale.z", &fScale.z);
+
+		if (ImGui::Button("Apply"))
+			m_pTransform->Set_Scaled(XMLoadFloat3(&fScale));
+
+		ImGui::Text("Rotation");
+
+		_vector vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+		_vector vUp = m_pTransform->Get_State(CTransform::STATE_UP);
+		_vector vLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
+
+		static int e = 0;
+		ImGui::RadioButton("Right_Axis", &e, 0); ImGui::SameLine();
+		ImGui::RadioButton("Up_Axis", &e, 1); ImGui::SameLine();
+		ImGui::RadioButton("Look_Axis", &e, 2);
+
+		_float mousemove = 0.f;
+
+		if (ImGui::SliderFloat("Rotate", &mousemove, -1.f, 1.f, "%.2f", 1.f))
+		{
+			if (e == 0)
+				m_pTransform->Turn(vRight, XMConvertToRadians(1) * mousemove);
+
+			else if (e == 1)
+				m_pTransform->Turn(vUp, XMConvertToRadians(1) * mousemove);
+
+			else if (e == 2)
+				m_pTransform->Turn(vLook, XMConvertToRadians(1) * mousemove);
+		}
+
+		if (ImGui::Button("Rotate +1"))
+		{
+			if (e == 0)
+				m_pTransform->Turn(vRight, XMConvertToRadians(1));
+
+			else if (e == 1)
+				m_pTransform->Turn(vUp, XMConvertToRadians(1));
+
+			else if (e == 2)
+				m_pTransform->Turn(vLook, XMConvertToRadians(1));
+		}
+
+		if (ImGui::Button("Rotate -1"))
+		{
+			if (e == 0)
+				m_pTransform->Turn(vRight, XMConvertToRadians(-1));
+
+			else if (e == 1)
+				m_pTransform->Turn(vUp, XMConvertToRadians(-1));
+
+			else if (e == 2)
+				m_pTransform->Turn(vLook, XMConvertToRadians(-1));
+		}
+
+		XMStoreFloat3(&fPosition, m_pTransform->Get_State(CTransform::STATE_POSITION));
+
+		ImGui::Text("Position");
+		ImGui::PushItemWidth(50);
+		ImGui::InputFloat("Position.x", &fPosition.x); ImGui::SameLine();
+		ImGui::InputFloat("Position.y", &fPosition.y); ImGui::SameLine();
+		ImGui::InputFloat("Position.z", &fPosition.z);
+
+		if (m_pGameInstance->Get_DIMButtonState(CInput_Device::DIMB_RBUTTON))
+		{
+			CTerrain* pTerrain = (CTerrain*)m_pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
+
+			if (nullptr != pTerrain)
 			{
-				ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
+				Safe_AddRef(pTerrain);
+				fPosition = pTerrain->Get_PickingPosition();
+				Safe_Release(pTerrain);
 			}
 		}
-		ImGui::EndCombo();
-	}
 
-	_float3 fPosition = { 0.f, 0.f, 0.f };
+		m_pTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(fPosition.x, fPosition.y, fPosition.z, 1.f));
 
-	m_pTransform = (CTransform*)m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"), m_iCurrentItemIndex);
-
-	if (nullptr == m_pTransform)
-		return;
-
-	Safe_AddRef(m_pTransform);
-	XMStoreFloat3(&fPosition, m_pTransform->Get_State(CTransform::STATE_POSITION));
-
-	ImGui::Text("Position");
-	ImGui::PushItemWidth(50);
-	ImGui::InputFloat("Position.x", &fPosition.x); ImGui::SameLine();
-	ImGui::InputFloat("Position.y", &fPosition.y); ImGui::SameLine();
-	ImGui::InputFloat("Position.z", &fPosition.z);
-
-	if (m_pGameInstance->Get_DIMButtonState(CInput_Device::DIMB_RBUTTON))
-	{
-		CTerrain* pTerrain = (CTerrain*)m_pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
-
-		if (nullptr != pTerrain)
+		if (ImGui::Button("Initialize"))
 		{
-			Safe_AddRef(pTerrain);
-			fPosition = pTerrain->Get_PickingPosition();
-			Safe_Release(pTerrain);
+			m_pTransform->Set_State(CTransform::STATE_RIGHT, XMVectorSet(1.f, 0.f, 0.f, 0.f));
+			m_pTransform->Set_State(CTransform::STATE_UP, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+			m_pTransform->Set_State(CTransform::STATE_LOOK, XMVectorSet(0.f, 0.f, 1.f, 0.f));
 		}
-	}
 
-	_float3 fRotation = { 0.f ,0.f ,0.f };
-
-	ImGui::Text("Rotation");
-
-	_vector vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
-	_vector vUp = m_pTransform->Get_State(CTransform::STATE_UP);
-	_vector vLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
-
-	static int e = 0;
-	ImGui::RadioButton("Right_Axis", &e, 0); ImGui::SameLine();
-	ImGui::RadioButton("Up_Axis", &e, 1); ImGui::SameLine();
-	ImGui::RadioButton("Look_Axis", &e, 2);
-
-	_float mousemove = 0.f;
-
-	if (ImGui::SliderFloat("Rotate", &mousemove, -1.f, 1.f, "%.2f", 1.f))
-	{
-		if (e == 0)
-			m_pTransform->Turn(vRight, XMConvertToRadians(1) * mousemove);
-
-		else if (e == 1)
-			m_pTransform->Turn(vUp, XMConvertToRadians(1) * mousemove);
-
-		else if (e == 2)
-			m_pTransform->Turn(vLook, XMConvertToRadians(1) * mousemove);
-	}
-
-	if (ImGui::Button("Rotate +1"))
-	{
-		if (e == 0)
-			m_pTransform->Turn(vRight, XMConvertToRadians(1));
-
-		else if (e == 1)
-			m_pTransform->Turn(vUp, XMConvertToRadians(1));
-
-		else if (e == 2)
-			m_pTransform->Turn(vLook, XMConvertToRadians(1));
-	}
-
-	if (ImGui::Button("Rotate -1"))
-	{
-		if (e == 0)
-			m_pTransform->Turn(vRight, XMConvertToRadians(-1));
-
-		else if (e == 1)
-			m_pTransform->Turn(vUp, XMConvertToRadians(-1));
-
-		else if (e == 2)
-			m_pTransform->Turn(vLook, XMConvertToRadians(-1));
-	}
-
-	if (ImGui::Button("Initialize"))
-	{
-		m_pTransform->Set_State(CTransform::STATE_RIGHT, XMVectorSet(1.f, 0.f, 0.f, 0.f));
-		m_pTransform->Set_State(CTransform::STATE_UP, XMVectorSet(0.f, 1.f, 0.f, 0.f));
-		m_pTransform->Set_State(CTransform::STATE_LOOK, XMVectorSet(0.f, 0.f, 1.f, 0.f));
-	}
-
-	m_pTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(fPosition.x, fPosition.y, fPosition.z, 1.f));
-
-	Safe_Release(m_pTransform);
-
-	ImGui::PushItemWidth(100);
-	ImGui::InputInt("Index", &m_iIndex);
-
-	if (ImGui::Button("Set_Index"))
-	{
-		CPlayer* pPlayer = (CPlayer*)m_pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_Player"), 0);
-		if (nullptr != pPlayer)
-		{
-			Safe_AddRef(pPlayer);
-			pPlayer->Change_AnimtionIndex(m_iIndex);
-			Safe_Release(pPlayer);
-		}
+		Safe_Release(m_pTransform);
 	}
 }
 
