@@ -47,8 +47,6 @@ void CPicking::Transform_ToWorldSpace()
 
 	m_vWorldRayDir = XMVector3TransformNormal(vRayDir, ViewMatrix);
 	m_vWorldRayPos = XMVector3TransformCoord(vRayPos, ViewMatrix);
-
-	m_vWorldRayPos + m_vWorldRayDir;
 }
 
 bool CPicking::Picking(CVIBuffer * pVIBuffer, CTransform * pTransform, _float3 * pOut)

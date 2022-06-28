@@ -1,8 +1,9 @@
+#pragma once
+
 #include "stdafx.h"
 #include "..\Public\ImguiManager.h"
 #include "GameInstance.h"
 
-#include "Transform.h"
 #include "UI.h"
 #include "Terrain.h"
 #include "Player.h"
@@ -27,6 +28,9 @@ HRESULT CImguiManager::NativeConstruct(HWND hWnd, ID3D11Device * pDevice, ID3D11
 	ImGui_ImplWin32_Init(hWnd);
 	ImGui_ImplDX11_Init(pDevice, pDevice_Context);
 
+	m_pDevice = pDevice;
+	m_pDeviceContext = pDevice_Context;
+
 	return S_OK;
 }
 
@@ -50,6 +54,12 @@ void CImguiManager::Tick(_double TimeDelta)
 			m_eToolList = TOOL_OBJECT;
 		}
 
+		if (ImGui::Button("Navigation"))
+		{
+			m_iCurrentItemIndex = 0;
+			m_eToolList = TOOL_NAVIGATION;
+		}
+
 		switch (m_eToolList)
 		{
 		case TOOL_UI:
@@ -61,6 +71,12 @@ void CImguiManager::Tick(_double TimeDelta)
 		case TOOL_OBJECT:
 			ImGui::Begin("Object_Tool");
 			Object_Tool();
+			ImGui::End();
+			break;
+
+		case TOOL_NAVIGATION:
+			ImGui::Begin("Navigation_Tool");
+			Navigation_Tool();
 			ImGui::End();
 			break;
 
@@ -752,6 +768,15 @@ void CImguiManager::Object_Tool()
 			CoUninitialize();
 		}
 	}
+}
+
+void CImguiManager::Navigation_Tool()
+{
+	_float3 m_vPoint[3];
+
+	ZeroMemory(&m_vPoint, sizeof(_float3) * 3);
+
+	CVIBuffer_Triangle::Create(m_pDevice, m_pDeviceContext, m_vPoint);
 }
 
 CImguiManager * CImguiManager::Create(HWND hWnd, ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)

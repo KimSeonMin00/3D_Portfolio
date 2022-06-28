@@ -18,7 +18,6 @@ public:
 	void Transform_ToWorldSpace();
 	bool Picking(class CVIBuffer* pVIBuffer, class CTransform* pTransform, _float3* pOut);
 
-
 private:
 	HWND			m_hWnd;
 

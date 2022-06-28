@@ -18,7 +18,7 @@ class CImguiManager final
 	:public CBase
 {
 public:
-	enum ToolList {TOOL_UI, TOOL_OBJECT, TOOL_END};
+	enum ToolList {TOOL_UI, TOOL_OBJECT, TOOL_NAVIGATION, TOOL_END};
 
 public:
 	CImguiManager();
@@ -32,11 +32,14 @@ public:
 private:
 	void	UI_Tool();
 
-
 	void	Object_Tool();
+
+	void	Navigation_Tool();
 
 private:
 	CGameInstance* m_pGameInstance = nullptr;
+	ID3D11Device*				m_pDevice = nullptr;
+	ID3D11DeviceContext*		m_pDeviceContext = nullptr;
 
 	ToolList			  m_eToolList = TOOL_END;
 	//For UI Tool
@@ -49,6 +52,9 @@ private:
 	_uint	m_iNumObject = 0;
 	_int	m_iObjectIndex = 0;
 	_uint	m_iNumObjectIndex = 6;
+
+	//For Navigation Tool
+
 
 	_bool					m_bEnableImgui = true;
 
