@@ -25,6 +25,15 @@ public:
 	virtual void Late_Tick(_float fTimeDelta);
 	virtual HRESULT Render();
 
+public:
+	_int Get_ModelIndex()
+	{
+		return m_iModelIndex;
+	}
+
+private:
+	_int m_iModelIndex = 0;
+
 private:
 	CShader*						m_pShaderCom = nullptr;
 	CRenderer*						m_pRendererCom = nullptr;

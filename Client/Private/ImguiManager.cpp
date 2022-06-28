@@ -6,6 +6,7 @@
 #include "UI.h"
 #include "Terrain.h"
 #include "Player.h"
+#include "MapObject.h"
 
 const char* CImguiManager::CurrentItem = nullptr;
 
@@ -384,16 +385,14 @@ void CImguiManager::Object_Tool()
 	ImGui::Text("MapObject_Number");
 	ImGui::PushItemWidth(100);
 	ImGui::InputInt("MapObject_Index", &m_iObjectIndex, 1, 10);
-	if (m_iObjectIndex >= m_iNumMapObject)
-		m_iObjectIndex = m_iNumMapObject - 1;
+	if (m_iObjectIndex >= m_iNumObjectIndex)
+		m_iObjectIndex = m_iNumObjectIndex - 1;
 
 	if (ImGui::Button("Create"))
 	{
-		_tchar	szPrototypeName[256] = TEXT("");
-		wsprintf(szPrototypeName, TEXT("Prototype_GameObject_MapObject_0"), m_iObjectIndex);
-
-		m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Map"), TEXT("Prototype_GameObject_MapObject"));
+		m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Map"), TEXT("Prototype_GameObject_MapObject"), &m_iObjectIndex);
 		m_iNumObject++;
+		m_iCurrentItemIndex = m_iNumObject - 1;
 	}
 
 	if (ImGui::Button("Delete"))
@@ -408,6 +407,12 @@ void CImguiManager::Object_Tool()
 				pGameObject->Set_Dead();
 				Safe_Release(pGameObject);
 				m_iNumObject--;
+
+				if (m_iCurrentItemIndex == 0)
+					m_iCurrentItemIndex = 0;
+
+				else
+					m_iCurrentItemIndex--;
 			}
 		}
 	}
@@ -462,8 +467,16 @@ void CImguiManager::Object_Tool()
 		ImGui::InputFloat("Scale.y", &fScale.y); ImGui::SameLine();
 		ImGui::InputFloat("Scale.z", &fScale.z);
 
-		if (ImGui::Button("Apply"))
-			m_pTransform->Set_Scaled(XMLoadFloat3(&fScale));
+		if (fScale.x <= 0.1f)
+			fScale.x = 0.1f;
+
+		if (fScale.y <= 0.1f)
+			fScale.y = 0.1f;
+
+		if (fScale.z <= 0.1f)
+			fScale.z = 0.1f;
+
+		m_pTransform->Set_Scaled(XMLoadFloat3(&fScale));
 
 		ImGui::Text("Rotation");
 
@@ -544,6 +557,200 @@ void CImguiManager::Object_Tool()
 		}
 
 		Safe_Release(m_pTransform);
+	}
+
+	if (ImGui::Button("Save"))
+	{
+		HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
+			COINIT_DISABLE_OLE1DDE);
+		if (SUCCEEDED(hr))
+		{
+			IFileSaveDialog *pFileSave;
+
+			// Create the FileOpenDialog object.
+			hr = CoCreateInstance(CLSID_FileSaveDialog, NULL, CLSCTX_ALL,
+				IID_IFileSaveDialog, reinterpret_cast<void**>(&pFileSave));
+
+			if (SUCCEEDED(hr))
+			{
+
+				DWORD dwFlags;
+
+				hr = pFileSave->GetOptions(&dwFlags);
+
+				if (SUCCEEDED(hr))
+				{
+					COMDLG_FILTERSPEC rgSpec[] =
+					{
+						{ L"DataFiles(*.dat)", L"*.dat" }
+					};
+
+					hr = pFileSave->SetFileTypes(ARRAYSIZE(rgSpec), rgSpec);
+
+					if (SUCCEEDED(hr))
+					{
+						hr = pFileSave->SetDefaultExtension(L"dat");
+
+						if (SUCCEEDED(hr))
+						{
+							// Show the Open dialog box.
+							hr = pFileSave->Show(NULL);
+
+							// Get the file name from the dialog box.
+							if (SUCCEEDED(hr))
+							{
+								IShellItem *pItem;
+								hr = pFileSave->GetResult(&pItem);
+								if (SUCCEEDED(hr))
+								{
+									PWSTR pszFilePath;
+									hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+									// Display the file name to the user.
+									if (SUCCEEDED(hr))
+									{
+										HANDLE		hFile = CreateFile(pszFilePath, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+
+										if (INVALID_HANDLE_VALUE == hFile)
+											return;
+
+										DWORD	dwByte = 0;
+
+										for (_uint i = 0; i < m_iNumObject; i++)
+										{
+											CMapObject* pMapObject = (CMapObject*)m_pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_Map"), i);
+											if (pMapObject != nullptr)
+											{
+												Safe_AddRef(pMapObject);
+												m_pTransform = (CTransform*)m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Map"), TEXT("Com_Transform"), i);
+												if (nullptr != m_pTransform)
+												{									
+													_int	iMapModelIndex;
+													_float4x4 WorldMat;
+
+													iMapModelIndex = pMapObject->Get_ModelIndex();
+
+													Safe_AddRef(m_pTransform);
+													XMStoreFloat4x4(&WorldMat, m_pTransform->Get_WorldMatrix());
+													Safe_Release(m_pTransform);
+
+													WriteFile(hFile, &iMapModelIndex, sizeof(_int), &dwByte, nullptr);
+													WriteFile(hFile, &WorldMat, sizeof(_float4x4), &dwByte, nullptr);									
+												}
+												Safe_Release(pMapObject);
+											}
+
+										}
+
+										CloseHandle(hFile);
+									}
+									pItem->Release();
+								}
+							}
+						}
+					}
+				}
+				pFileSave->Release();
+			}
+			CoUninitialize();
+		}
+	}
+
+	if (ImGui::Button("Load"))
+	{
+		HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
+			COINIT_DISABLE_OLE1DDE);
+		if (SUCCEEDED(hr))
+		{
+			IFileSaveDialog *pFileOpen;
+
+			// Create the FileOpenDialog object.
+			hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
+				IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+
+			if (SUCCEEDED(hr))
+			{
+
+				DWORD dwFlags;
+
+				hr = pFileOpen->GetOptions(&dwFlags);
+
+				if (SUCCEEDED(hr))
+				{
+					COMDLG_FILTERSPEC rgSpec[] =
+					{
+						{ L"DataFiles(*.dat)", L"*.dat" }
+					};
+
+					hr = pFileOpen->SetFileTypes(ARRAYSIZE(rgSpec), rgSpec);
+
+					if (SUCCEEDED(hr))
+					{
+						hr = pFileOpen->SetDefaultExtension(L"dat");
+
+						if (SUCCEEDED(hr))
+						{
+							// Show the Open dialog box.
+							hr = pFileOpen->Show(NULL);
+
+							// Get the file name from the dialog box.
+							if (SUCCEEDED(hr))
+							{
+								IShellItem *pItem;
+								hr = pFileOpen->GetResult(&pItem);
+								if (SUCCEEDED(hr))
+								{
+									PWSTR pszFilePath;
+									hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+									// Display the file name to the user.
+									if (SUCCEEDED(hr))
+									{
+										HANDLE		hFile = CreateFile(pszFilePath, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+										m_iNumObject = 0;
+
+										if (INVALID_HANDLE_VALUE == hFile)
+											return;
+
+										DWORD	dwByte = 0;
+
+										while (true)
+										{
+											_int	iMapModelIndex;
+											_float4x4 WorldMat;
+
+											ReadFile(hFile, &iMapModelIndex, sizeof(_int), &dwByte, nullptr);
+											ReadFile(hFile, &WorldMat, sizeof(_float4x4), &dwByte, nullptr);
+
+											if (0 == dwByte)
+											{
+												break;
+											}
+
+											m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Map"), TEXT("Prototype_GameObject_MapObject"), &iMapModelIndex);
+
+											m_pTransform = (CTransform*)m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Map"), TEXT("Com_Transform"), m_iNumObject);
+											Safe_AddRef(m_pTransform);
+
+											m_pTransform->Set_State(CTransform::STATE_RIGHT, XMLoadFloat4x4(&WorldMat).r[0]);
+											m_pTransform->Set_State(CTransform::STATE_UP, XMLoadFloat4x4(&WorldMat).r[1]);
+											m_pTransform->Set_State(CTransform::STATE_LOOK, XMLoadFloat4x4(&WorldMat).r[2]);
+											m_pTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat4x4(&WorldMat).r[3]);
+
+											Safe_Release(m_pTransform);
+
+											m_iNumObject++;
+										}
+									}
+									pItem->Release();
+								}
+							}
+						}
+					}
+				}
+				pFileOpen->Release();
+			}
+			CoUninitialize();
+		}
 	}
 }
 

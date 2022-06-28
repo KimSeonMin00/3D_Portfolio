@@ -47,9 +47,8 @@ private:
 
 	//For Object Tool
 	_uint	m_iNumObject = 0;
-	_int	m_iIndex = 0;
 	_int	m_iObjectIndex = 0;
-	_uint	m_iNumMapObject = 6;
+	_uint	m_iNumObjectIndex = 6;
 
 	_bool					m_bEnableImgui = true;
 
