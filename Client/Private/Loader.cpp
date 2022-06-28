@@ -241,6 +241,13 @@ _uint CLoader::Loading_ForGamePlay()
 		CCollider::Create(m_pDevice, m_pDeviceContext, CCollider::TYPE_SPHERE))))
 		return E_FAIL;
 
+	lstrcpy(m_szLoadingText, TEXT("네비게이션을 생성 중입니다. "));
+
+	/* For.Prototype_Component_Navigation*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Data/Navigation.dat")))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("셰이더을 생성 중입니다. "));
 	/* For.Prototype_Component_Shader_Cube */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxNonAnim"),

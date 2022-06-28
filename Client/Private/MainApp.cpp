@@ -28,6 +28,9 @@ HRESULT CMainApp::NativeConstruct()
 	if (FAILED(m_pGameInstance->Initialize_Engine(g_hInst, LEVEL_END, GraphicDevDesc, &m_pDevice, &m_pDeviceContext)))
 		return E_FAIL;
 
+	if (FAILED(Ready_Gara()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Prototype_Component_Static()))
 		return E_FAIL;
 
@@ -100,6 +103,42 @@ HRESULT CMainApp::Ready_Prototype_Component_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
 		CVIBuffer_Rect::Create(m_pDevice, m_pDeviceContext))))
 		return E_FAIL;
+}
+
+HRESULT CMainApp::Ready_Gara()
+{
+	_ulong			dwByte = 0;
+
+	HANDLE			hFile = CreateFile(TEXT("../Bin/Data/Navigation.dat"), GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+	if (0 == hFile)
+		return E_FAIL;
+
+	_float3		vPoints[3];
+	ZeroMemory(vPoints, sizeof(_float3) * 3);
+
+	vPoints[0] = _float3(0.f, 0.2f, 5.f);
+	vPoints[1] = _float3(5.f, 0.2f, 0.f);
+	vPoints[2] = _float3(0.f, 0.2f, 0.f);
+	WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
+
+	vPoints[0] = _float3(0.f, 0.2f, 5.f);
+	vPoints[1] = _float3(5.f, 0.2f, 5.f);
+	vPoints[2] = _float3(5.f, 0.2f, 0.f);
+	WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
+
+	vPoints[0] = _float3(0.f, 0.2f, 10.f);
+	vPoints[1] = _float3(5.f, 0.2f, 5.f);
+	vPoints[2] = _float3(0.f, 0.2f, 5.f);
+	WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
+
+	vPoints[0] = _float3(5.f, 0.2f, 5.f);
+	vPoints[1] = _float3(10.f, 0.2f, 0.f);
+	vPoints[2] = _float3(5.f, 0.2f, 0.f);
+	WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
+
+	CloseHandle(hFile);
+
+	return S_OK;
 }
 
 CMainApp * CMainApp::Create()

@@ -31,6 +31,7 @@ private:
 public:
 	HRESULT Open_Level(LEVEL eLevel);
 	HRESULT Ready_Prototype_Component_Static();
+	HRESULT Ready_Gara();
 
 public:
 	static CMainApp* Create();
