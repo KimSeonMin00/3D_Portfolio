@@ -31,6 +31,15 @@ HRESULT CImguiManager::NativeConstruct(HWND hWnd, ID3D11Device * pDevice, ID3D11
 	m_pDevice = pDevice;
 	m_pDeviceContext = pDevice_Context;
 
+	Safe_AddRef(m_pDevice);
+	Safe_AddRef(m_pDeviceContext);
+
+	m_pShader = CShader::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_Navigation.hlsl"), VTXCOL_DECLARATION::Elements, VTXCOL_DECLARATION::iNumElement);
+	if (nullptr == m_pShader)
+		return E_FAIL;
+
+	ZeroMemory(&m_vPoint, sizeof(_float3) * 3);
+
 	return S_OK;
 }
 
@@ -76,7 +85,7 @@ void CImguiManager::Tick(_double TimeDelta)
 
 		case TOOL_NAVIGATION:
 			ImGui::Begin("Navigation_Tool");
-			Navigation_Tool();
+			Navigation_Tool(TimeDelta);
 			ImGui::End();
 			break;
 
@@ -90,6 +99,30 @@ void CImguiManager::Tick(_double TimeDelta)
 
 HRESULT CImguiManager::Render()
 {
+	if (m_eToolList == TOOL_NAVIGATION)
+	{
+		if (nullptr == m_pShader)
+			return E_FAIL;
+
+		_float4x4		WorldMatrix;
+		XMStoreFloat4x4(&WorldMatrix, XMMatrixIdentity());
+
+
+		m_pShader->Set_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4));
+		m_pShader->Set_RawValue("g_vColor", &_float4(0.f, 1.f, 0.f, 1.f), sizeof(_float4));
+
+		for (auto& pTriangle : m_Triangle)
+		{
+			m_pShader->Set_RawValue("g_ViewMatrix", &m_pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_VIEW), sizeof(_float4x4));
+			m_pShader->Set_RawValue("g_ProjMatrix", &m_pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_PROJ), sizeof(_float4x4));
+
+			m_pShader->Begin(0);
+
+			if (pTriangle != nullptr)
+				pTriangle->Render();
+		}
+	}
+
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
@@ -770,13 +803,82 @@ void CImguiManager::Object_Tool()
 	}
 }
 
-void CImguiManager::Navigation_Tool()
+void CImguiManager::Navigation_Tool(_float TimeDelta)
 {
-	_float3 m_vPoint[3];
+	m_fInputDelay += TimeDelta;
 
-	ZeroMemory(&m_vPoint, sizeof(_float3) * 3);
+	ImGui::Text("Point Count : %d", m_iPointCount);
 
-	CVIBuffer_Triangle::Create(m_pDevice, m_pDeviceContext, m_vPoint);
+	if (m_pGameInstance->Get_DIMButtonState(CInput_Device::DIMB_RBUTTON))
+	{
+		if (m_fInputDelay >= 0.2f)
+		{
+
+			CTerrain* pTerrain = (CTerrain*)m_pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
+
+			_float3 fPosition = _float3(0.f, 0.f, 0.f);
+
+			if (nullptr != pTerrain)
+			{
+				Safe_AddRef(pTerrain);
+				fPosition = pTerrain->Get_PickingPosition();
+				fPosition.y = 0.2f;
+				Safe_Release(pTerrain);
+
+				Check_TrianglePoint(fPosition);
+
+				m_vPoint[m_iPointCount++] = fPosition;
+
+				if (m_iPointCount == 3)
+				{
+
+					TRIANGLE* TrianglePoints = new TRIANGLE;
+
+					TrianglePoints->vPos1 = m_vPoint[0];
+					TrianglePoints->vPos2 = m_vPoint[1];
+					TrianglePoints->vPos3 = m_vPoint[2];
+
+					m_TrianglePoints.push_back(TrianglePoints);
+
+					CVIBuffer_Triangle* pTriangle = CVIBuffer_Triangle::Create(m_pDevice, m_pDeviceContext, m_vPoint);
+
+					m_Triangle.push_back(pTriangle);
+					
+					m_iPointCount = 0;
+
+					ZeroMemory(&m_vPoint, sizeof(_float3) * 3);
+				}
+			}
+
+			m_fInputDelay = 0.f;
+		}
+	}
+}
+
+_bool CImguiManager::Check_TrianglePoint(_float3& fPos)
+{
+	for (auto& TrianglePoint : m_TrianglePoints)
+	{
+		if (XMVectorGetX(XMVector3Length(XMLoadFloat3(&fPos) - XMLoadFloat3(&(TrianglePoint->vPos1)))) <= 0.5f)
+		{
+			fPos = TrianglePoint->vPos1;
+			return true;
+		}
+
+		if (XMVectorGetX(XMVector3Length(XMLoadFloat3(&fPos) - XMLoadFloat3(&(TrianglePoint->vPos2)))) <= 0.5f)
+		{
+			fPos = TrianglePoint->vPos2;
+			return true;
+		}
+
+		if (XMVectorGetX(XMVector3Length(XMLoadFloat3(&fPos) - XMLoadFloat3(&(TrianglePoint->vPos3)))) <= 0.5f)
+		{
+			fPos = TrianglePoint->vPos3;
+			return true;
+		}
+	}
+
+	return false;
 }
 
 CImguiManager * CImguiManager::Create(HWND hWnd, ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
@@ -795,5 +897,22 @@ void CImguiManager::Free()
 	ImGui_ImplDX11_Shutdown();
 	ImGui::DestroyContext();
 
+	for (auto& pTrianglePoint : m_TrianglePoints)
+		Safe_Delete(pTrianglePoint);
+
+	m_TrianglePoints.clear();
+
+	for (auto& pTriangle : m_Triangle)
+		Safe_Release(pTriangle);
+
+	m_Triangle.clear();
+
+	if (m_pTransform != nullptr)
+		Safe_Release(m_pTransform);
+
+	Safe_Release(m_pShader);
 	Safe_Release(m_pGameInstance);
+
+	Safe_Release(m_pDeviceContext);
+	Safe_Release(m_pDevice);
 }

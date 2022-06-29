@@ -378,5 +378,24 @@ void CModel::Free()
 {
 	__super::Free();
 
+	for (auto& pHierarchyNodes : m_HierarchyNodes)
+		Safe_Release(pHierarchyNodes);
+	m_HierarchyNodes.clear();
+
+	for (auto& pAnimation : m_Animations)
+		Safe_Release(pAnimation);
+	m_Animations.clear();
+
+	for (auto& pMeshContainer : m_Meshes)
+		Safe_Release(pMeshContainer);
+	m_Meshes.clear();
+
+	for (auto& Material : m_Materials)
+	{
+		for (auto& pTexture : Material.pTexture)
+			Safe_Release(pTexture);
+	}
+	m_Materials.clear();
+
 	m_Importer.FreeScene();
 }
