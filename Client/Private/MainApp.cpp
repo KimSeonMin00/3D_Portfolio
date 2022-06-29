@@ -28,8 +28,8 @@ HRESULT CMainApp::NativeConstruct()
 	if (FAILED(m_pGameInstance->Initialize_Engine(g_hInst, LEVEL_END, GraphicDevDesc, &m_pDevice, &m_pDeviceContext)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Gara()))
-		return E_FAIL;
+	//if (FAILED(Ready_Gara()))
+	//	return E_FAIL;
 
 	if (FAILED(Ready_Prototype_Component_Static()))
 		return E_FAIL;

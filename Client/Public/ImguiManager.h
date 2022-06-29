@@ -45,6 +45,7 @@ private:
 
 	void	Navigation_Tool(_float TimeDelta);
 	_bool	Check_TrianglePoint(_float3& fPos);
+	void	Sort_TrianglePoint();
 
 private:
 	CGameInstance* m_pGameInstance = nullptr;

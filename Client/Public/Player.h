@@ -9,6 +9,7 @@ class CRenderer;
 class CModel;
 class CCollider;
 class CHierarchyNode;
+class CNavigation;
 END
 
 BEGIN(Client)
@@ -39,6 +40,7 @@ private:
 	CCollider*						m_pOBBCom = nullptr;
 	CCollider*						m_pTestCom = nullptr;
 	CCollider*						m_pSPHERECom = nullptr;
+	CNavigation*					m_pNavigationCom = nullptr;
 
 public:
 	HRESULT SetUp_Components();

@@ -32,6 +32,8 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(1.f, 0.f, 1.f, 1.f));
+
 	m_pSwordNode = m_pModelCom->Find_HierarcyNodes("Buffbone_Glb_Weapon_1");
 	if (m_pSwordNode == nullptr)
 		return E_FAIL;
@@ -154,6 +156,13 @@ HRESULT CPlayer::SetUp_Components()
 	ColliderDesc.vAngle = _float3(0.f, 0.0f, 0.0f);
 
 	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_Attack_Range"), (CComponent**)&m_pSPHERECom, &ColliderDesc)))
+		return E_FAIL;
+
+	/* For.Com_Navigation*/
+	CNavigation::NAVIGATIONDESC		NaviDesc;
+	NaviDesc.iCurrentIndex = 0;
+
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"), TEXT("Com_Navigation"), (CComponent**)&m_pNavigationCom, &NaviDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -524,7 +533,7 @@ void CPlayer::Move(_float fTimeDelta)
 {
 	if (m_fMoveDistTotal > m_fMoveDist)
 	{
-		m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * fTimeDelta));
+		m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * fTimeDelta), m_pNavigationCom);
 		m_fMoveDist += m_fMoveSpeed * fTimeDelta;
 
 		if (m_bStateChange == true)

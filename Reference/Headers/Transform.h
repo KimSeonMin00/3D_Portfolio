@@ -54,7 +54,7 @@ public:
 	virtual HRESULT NativeConstruct(void* pArg) override;
 
 public:
-	HRESULT Go_Straight(_double TimeDelta);
+	HRESULT Go_Straight(_double TimeDelta, class CNavigation* pNaviCom = nullptr);
 	HRESULT Go_Backward(_double TimeDelta);
 	HRESULT Go_Right(_double TimeDelta);
 	HRESULT Go_Left(_double TimeDelta);
