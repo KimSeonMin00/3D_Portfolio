@@ -29,6 +29,7 @@ public:
 private:
 	void			Update_HandCollider();
 private:
+	CCollider*						m_pSPHEREAttackRange = nullptr;
 	CCollider*						m_pOBBRightHand = nullptr;
 	CCollider*						m_pOBBLeftHand = nullptr;
 
@@ -41,6 +42,7 @@ private:
 	void	Key_Input(_float fTimeDelta);
 
 	void	Change_State(_float fTimeDelta);
+	void	Check_Loop(_float fTimeDelta);
 	void	Update_State(_float fTimeDelta);
 
 	void	Move(_float fTimeDelta);

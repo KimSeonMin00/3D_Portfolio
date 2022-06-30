@@ -63,6 +63,7 @@ void CPlayer::Tick(_float fTimeDelta)
 	m_pAABBCom->Update(m_pTransformCom->Get_WorldMatrix());
 	Update_SwordCollider();
 	m_pSPHERECom->Update(m_pTransformCom->Get_WorldMatrix());
+	m_pHitSphereCom->Update(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CPlayer::Late_Tick(_float fTimeDelta)
@@ -102,12 +103,19 @@ HRESULT CPlayer::Render()
 
 		m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 
-		m_pShaderCom->Set_RawValue("g_vHitColor", &_float4(100.f / 255.f, 1.f, 1.f, 1.f), sizeof(_float4));
-
 		if (m_iQ_Time == 2)
+		{
+			m_pShaderCom->Set_RawValue("g_vHitColor", &_float4(0.f, 0.f, 1.f, 1.f), sizeof(_float4));
 			m_pShaderCom->Begin(1);
+		}
 		else
 			m_pShaderCom->Begin(0);
+
+		if (m_pAABBCom->Get_IsCollision() == true)
+		{
+			m_pShaderCom->Set_RawValue("g_vHitColor", &_float4(1.f, 0.f, 0.f, 1.f), sizeof(_float4));
+			m_pShaderCom->Begin(1);
+		}
 
 		if (i != 0)//피리 메쉬 제외
 			m_pModelCom->Render(i);
@@ -116,6 +124,7 @@ HRESULT CPlayer::Render()
 	m_pAABBCom->Render();
 	m_pOBBCom->Render();
 	m_pSPHERECom->Render();
+	m_pHitSphereCom->Render();
 
 	return S_OK;
 }
@@ -142,6 +151,14 @@ HRESULT CPlayer::SetUp_Components()
 	ColliderDesc.vPosition = _float3(0.f, 1.f, 0.f);
 
 	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_HitBox"), (CComponent**)&m_pAABBCom, &ColliderDesc)))
+		return E_FAIL;
+
+	ColliderDesc.vScale = _float3(1.2f, 2.f, 1.2f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vAngle = _float3(0.f, 0.0f, 0.0f);
+
+
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_HitSphere"), (CComponent**)&m_pHitSphereCom, &ColliderDesc)))
 		return E_FAIL;
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));

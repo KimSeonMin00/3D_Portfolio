@@ -67,20 +67,22 @@ void CVolibear::Tick(_float fTimeDelta)
 
 	//Key_Input(fTimeDelta);
 
+	Check_Loop(fTimeDelta);
 
-		if (m_fInitTime >= 3.f)
-		{
-			if (m_bAirborne == false)			
-				Chase_Player(fTimeDelta);
-		}
+	if (m_fInitTime >= 3.f)
+	{
+		if (m_bAirborne == false && m_pModelCom->Get_IsChange() == false)
+			Chase_Player(fTimeDelta);
+	}
 
-		Change_State(fTimeDelta);
+	Change_State(fTimeDelta);
 
-		Update_State(fTimeDelta);
-	
+	Update_State(fTimeDelta);
+
 	m_pAABBCom->Update(m_pTransformCom->Get_WorldMatrix());
 	m_pSphereCom->Update(m_pTransformCom->Get_WorldMatrix());
 	Update_HandCollider();
+	m_pSPHEREAttackRange->Update(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CVolibear::Late_Tick(_float fTimeDelta)
@@ -89,6 +91,19 @@ void CVolibear::Late_Tick(_float fTimeDelta)
 
 	if (nullptr == m_pRendererCom)
 		return;
+
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_HitSphere")))->Collision_Sphere(m_pSPHEREAttackRange))
+	{
+		if (m_eState == STATE_ATTACK)
+		{
+			if (false == ((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBRightHand))
+				((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBLeftHand);
+		}
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	m_pRendererCom->Add_RenderList(CRenderer::RENDER_NONALPHABLEND, this);
 }
@@ -126,6 +141,7 @@ HRESULT CVolibear::Render()
 	m_pSphereCom->Render();
 	m_pOBBRightHand->Render();
 	m_pOBBLeftHand->Render();
+	m_pSPHEREAttackRange->Render();
 
 	return S_OK;
 }
@@ -153,6 +169,7 @@ HRESULT CVolibear::SetUp_Components()
 	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_HitBox"), (CComponent**)&m_pAABBCom, &ColliderDesc)))
 		return E_FAIL;
 
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.vScale = _float3(2.f, 2.f, 2.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	ColliderDesc.vAngle = _float3(0.f, 0.0f, 0.0f);
@@ -161,6 +178,15 @@ HRESULT CVolibear::SetUp_Components()
 	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_HitSphere"), (CComponent**)&m_pSphereCom, &ColliderDesc)))
 		return E_FAIL;
 
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vScale = _float3(4.f, 4.f, 4.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vAngle = _float3(0.f, 0.0f, 0.0f);
+
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_AttackRange"), (CComponent**)&m_pSPHEREAttackRange, &ColliderDesc)))
+		return E_FAIL;
+
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 	ColliderDesc.vScale = _float3(0.5f, 0.5f, 0.5f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	ColliderDesc.vAngle = _float3(0.f, 0.0f, 0.0f);
@@ -192,9 +218,14 @@ void CVolibear::Update_HandCollider()
 
 	XMStoreFloat4x4(&SocketMatrix, m_pRHNode->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&m_PivotMatrix));
 
+	_vector a, b;
+
+	a = XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[1]));
+	b = XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[2]));
+
 	XMStoreFloat3((_float3*)&SocketMatrix.m[0], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[0])));
-	XMStoreFloat3((_float3*)&SocketMatrix.m[1], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[1])));
-	XMStoreFloat3((_float3*)&SocketMatrix.m[2], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[2])));
+	XMStoreFloat3((_float3*)&SocketMatrix.m[1], b);
+	XMStoreFloat3((_float3*)&SocketMatrix.m[2], a);
 
 	XMStoreFloat4x4(&SocketMatrix, XMLoadFloat4x4(&SocketMatrix) * m_pTransformCom->Get_WorldMatrix());
 
@@ -203,9 +234,12 @@ void CVolibear::Update_HandCollider()
 
 	XMStoreFloat4x4(&SocketMatrix, m_pLHNode->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&m_PivotMatrix));
 
+	a = XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[1]));
+	b = XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[2]));
+
 	XMStoreFloat3((_float3*)&SocketMatrix.m[0], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[0])));
-	XMStoreFloat3((_float3*)&SocketMatrix.m[1], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[1])));
-	XMStoreFloat3((_float3*)&SocketMatrix.m[2], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[2])));
+	XMStoreFloat3((_float3*)&SocketMatrix.m[1], b);
+	XMStoreFloat3((_float3*)&SocketMatrix.m[2], a);
 
 	XMStoreFloat4x4(&SocketMatrix, XMLoadFloat4x4(&SocketMatrix) * m_pTransformCom->Get_WorldMatrix());
 
@@ -369,7 +403,7 @@ void CVolibear::Change_State(_float fTimeDelta)
 	m_ePreState = m_eState;
 }
 
-void CVolibear::Update_State(_float fTimeDelta)
+void CVolibear::Check_Loop(_float fTimeDelta)
 {
 	switch (m_eState)
 	{
@@ -377,6 +411,41 @@ void CVolibear::Update_State(_float fTimeDelta)
 		if (m_pModelCom->Get_IsChange() == false)
 			m_pModelCom->Check_Looped(fTimeDelta);
 
+	case STATE_MOVE:
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Check_Looped(fTimeDelta);
+		break;
+
+	case STATE_ATTACK:
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Check_Looped(fTimeDelta);
+		break;
+
+	case STATE_W:
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Check_Looped(1.5 * fTimeDelta);
+		break;
+
+	case STATE_E:
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Check_Looped(1.5 * fTimeDelta);
+		break;
+
+	case STATE_R:
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Check_Looped(fTimeDelta);
+		break;
+
+	default:
+		break;
+	}
+}
+
+void CVolibear::Update_State(_float fTimeDelta)
+{
+	switch (m_eState)
+	{
+	case STATE_IDLE:
 		if (m_bStateChange == true)
 		{
 			if (m_eDoingState == STATE_MOVE)
@@ -548,32 +617,22 @@ void CVolibear::Update_State(_float fTimeDelta)
 		break;
 
 	case STATE_MOVE:
-		if (m_pModelCom->Get_IsChange() == false)
-			m_pModelCom->Check_Looped(fTimeDelta);
 		Move(fTimeDelta);
 		break;
 
 	case STATE_ATTACK:
-		if (m_pModelCom->Get_IsChange() == false)
-			m_pModelCom->Check_Looped(fTimeDelta);
 		Attack(fTimeDelta);
 		break;
 
 	case STATE_W:
-		if (m_pModelCom->Get_IsChange() == false)
-			m_pModelCom->Check_Looped(1.5 * fTimeDelta);
 		W_Skill(fTimeDelta);
 		break;
 
 	case STATE_E:
-		if (m_pModelCom->Get_IsChange() == false)
-			m_pModelCom->Check_Looped(1.5 * fTimeDelta);
 		E_Skill(fTimeDelta);
 		break;
 
 	case STATE_R:
-		if (m_pModelCom->Get_IsChange() == false)
-			m_pModelCom->Check_Looped(fTimeDelta);
 		R_Skill(fTimeDelta);
 		break;
 
@@ -628,10 +687,16 @@ void CVolibear::Move(_float fTimeDelta)
 				else
 					m_iCurrentIndex = 59;
 			}
-			m_bStateChange = false;
-			m_bIsState_In = true;
-			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
-			m_pModelCom->Set_Initialize();
+
+			m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 1.5);
+			if (m_pModelCom->Get_IsChange() == false)
+			{
+				m_bStateChange = false;
+				m_bIsState_In = true;
+				m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+				m_pModelCom->Set_Initialize();
+			}
+
 		}
 	}
 
@@ -912,12 +977,19 @@ void CVolibear::Chase_Player(_float fTimeDelta)
 
 	if (fDist >= 3.f)
 	{
-		m_eState = STATE_MOVE;
+		/*if (m_eState == STATE_ATTACK)
+		{
+			if(m_pModelCom->Get_Finished() == true)
+
+				m_eState = STATE_MOVE;
+		}
+		else*/
+			m_eState = STATE_MOVE;
 	}
 
 	else
 	{
-		m_eState = STATE_IDLE;
+		m_eState = STATE_ATTACK;
 	}
 
 	Safe_Release(pGameInstance);

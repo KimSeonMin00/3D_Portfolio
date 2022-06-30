@@ -37,8 +37,8 @@ private:
 	CRenderer*						m_pRendererCom = nullptr;
 	CModel*							m_pModelCom = nullptr;
 	CCollider*						m_pAABBCom = nullptr;
+	CCollider*						m_pHitSphereCom = nullptr;
 	CCollider*						m_pOBBCom = nullptr;
-	CCollider*						m_pTestCom = nullptr;
 	CCollider*						m_pSPHERECom = nullptr;
 	CNavigation*					m_pNavigationCom = nullptr;
 
