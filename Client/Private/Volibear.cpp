@@ -688,7 +688,7 @@ void CVolibear::Move(_float fTimeDelta)
 					m_iCurrentIndex = 59;
 			}
 
-			m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 1.5);
+			m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 1.0);
 			if (m_pModelCom->Get_IsChange() == false)
 			{
 				m_bStateChange = false;
@@ -696,7 +696,6 @@ void CVolibear::Move(_float fTimeDelta)
 				m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 				m_pModelCom->Set_Initialize();
 			}
-
 		}
 	}
 
@@ -977,14 +976,15 @@ void CVolibear::Chase_Player(_float fTimeDelta)
 
 	if (fDist >= 3.f)
 	{
-		/*if (m_eState == STATE_ATTACK)
+		if (m_eState == STATE_ATTACK)
 		{
-			if(m_pModelCom->Get_Finished() == true)
-
+			if (m_pModelCom->Get_KeyFrame() == 10)
 				m_eState = STATE_MOVE;
 		}
-		else*/
+		else
+		{
 			m_eState = STATE_MOVE;
+		}
 	}
 
 	else
