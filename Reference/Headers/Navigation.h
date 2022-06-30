@@ -23,6 +23,7 @@ public:
 
 public:
 	_bool Move_OnNavigation(const _float3* pPosition);
+	_bool Check_isIn_Navigation(const _float3* pPosition);
 
 public:
 	HRESULT SetUp_Neighbor();

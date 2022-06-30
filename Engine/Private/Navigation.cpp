@@ -104,6 +104,34 @@ _bool CNavigation::Move_OnNavigation(const _float3 * pPosition)
 	return S_OK;
 }
 
+_bool CNavigation::Check_isIn_Navigation(const _float3 * pPosition)
+{
+	if (m_iCurrentCellIndex == -1)
+		return false;
+
+	else
+	{
+		_int iCellIndex = 0;
+		_int iNeighborIndex = -1;
+
+		for (auto& pCell : m_Cells)
+		{
+			if (pCell->isIn(pPosition, &iNeighborIndex))
+			{
+				m_iCurrentCellIndex = iCellIndex;
+				return true;
+			}
+
+			else
+			{
+				iCellIndex++;
+			}
+		}
+
+		return false;
+	}
+}
+
 HRESULT CNavigation::SetUp_Neighbor()
 {
 	for (auto& pSourCell : m_Cells)

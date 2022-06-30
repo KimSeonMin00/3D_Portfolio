@@ -25,6 +25,10 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Map(TEXT("Layer_Map"))))
+		return E_FAIL;
+
+
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
 
@@ -145,6 +149,54 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 
 	/*if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Map"), TEXT("Prototype_GameObject_MapObject"))))
 		return E_FAIL;*/
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_Map(const _tchar * pLayerTag)
+{
+	CGameInstance*	pGameInstance = CGameInstance::Get_Instance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	Safe_AddRef(pGameInstance);
+	HANDLE		hFile = CreateFile(TEXT("../Bin/Data/TestMap.dat"), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	DWORD	dwByte = 0;
+
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	_int iNumObject = 0;
+
+	while (true)
+	{
+		_int	iMapModelIndex;
+		_float4x4 WorldMat;
+
+		ReadFile(hFile, &iMapModelIndex, sizeof(_int), &dwByte, nullptr);
+		ReadFile(hFile, &WorldMat, sizeof(_float4x4), &dwByte, nullptr);
+
+		if (0 == dwByte)
+		{
+			break;
+		}
+
+		pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_MapObject"), &iMapModelIndex);
+
+		CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, pLayerTag, TEXT("Com_Transform"), iNumObject);
+		Safe_AddRef(pTransform);
+
+		pTransform->Set_State(CTransform::STATE_RIGHT, XMLoadFloat4x4(&WorldMat).r[0]);
+		pTransform->Set_State(CTransform::STATE_UP, XMLoadFloat4x4(&WorldMat).r[1]);
+		pTransform->Set_State(CTransform::STATE_LOOK, XMLoadFloat4x4(&WorldMat).r[2]);
+		pTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat4x4(&WorldMat).r[3]);
+
+		Safe_Release(pTransform);
+
+		iNumObject++;
+	}
 
 	Safe_Release(pGameInstance);
 

@@ -1077,8 +1077,8 @@ void CImguiManager::Sort_TrianglePoint()
 		{
 			if (m_vPoint[j].x >= vPosXmax.x)
 			{
-				vPosXmax = m_vPoint[j];
-				iXmaxIndex = j;
+					vPosXmax = m_vPoint[j];
+					iXmaxIndex = j;
 			}
 		}
 	}
@@ -1089,9 +1089,48 @@ void CImguiManager::Sort_TrianglePoint()
 			iLastIndex = k;
 	}
 
-	TrianglePoints->vPos1 = m_vPoint[iZmaxIndex];
-	TrianglePoints->vPos2 = m_vPoint[iXmaxIndex];
-	TrianglePoints->vPos3 = m_vPoint[iLastIndex];
+	_vector vSrc;
+	_vector vDest;
+
+	if (m_vPoint[iZmaxIndex].x > m_vPoint[iXmaxIndex].x)
+	{
+		vSrc = XMVector3Normalize(XMLoadFloat3(&m_vPoint[iXmaxIndex]) - XMLoadFloat3(&m_vPoint[iZmaxIndex]));
+		vDest = XMVector3Normalize(XMVectorSet(m_vPoint[iLastIndex].z - m_vPoint[iZmaxIndex].z, 0.f, -m_vPoint[iLastIndex].x + m_vPoint[iZmaxIndex].x, 0.f));
+
+		if (0 < XMVectorGetX(XMVector3Dot(vSrc, vDest)))
+		{
+			TrianglePoints->vPos1 = m_vPoint[iZmaxIndex];
+			TrianglePoints->vPos2 = m_vPoint[iLastIndex];
+			TrianglePoints->vPos3 = m_vPoint[iXmaxIndex];
+		}
+
+		else
+		{
+			TrianglePoints->vPos1 = m_vPoint[iZmaxIndex];
+			TrianglePoints->vPos2 = m_vPoint[iXmaxIndex];
+			TrianglePoints->vPos3 = m_vPoint[iLastIndex];
+		}
+	}
+
+	else
+	{
+		vSrc = XMVector3Normalize(XMLoadFloat3(&m_vPoint[iLastIndex]) - XMLoadFloat3(&m_vPoint[iZmaxIndex]));
+		vDest = XMVector3Normalize(XMVectorSet(-m_vPoint[iXmaxIndex].z + m_vPoint[iZmaxIndex].z, 0.f, m_vPoint[iXmaxIndex].x - m_vPoint[iZmaxIndex].x, 0.f));
+
+		if (0 < XMVectorGetX(XMVector3Dot(vSrc, vDest)))
+		{
+			TrianglePoints->vPos1 = m_vPoint[iZmaxIndex];
+			TrianglePoints->vPos2 = m_vPoint[iLastIndex];
+			TrianglePoints->vPos3 = m_vPoint[iXmaxIndex];
+		}
+
+		else
+		{
+			TrianglePoints->vPos1 = m_vPoint[iZmaxIndex];
+			TrianglePoints->vPos2 = m_vPoint[iXmaxIndex];
+			TrianglePoints->vPos3 = m_vPoint[iLastIndex];
+		}
+	}
 
 	m_TrianglePoints.push_back(TrianglePoints);
 }

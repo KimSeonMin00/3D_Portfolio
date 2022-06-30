@@ -32,7 +32,11 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(1.f, 0.f, 1.f, 1.f));
+	_float3 pPos;
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(10.f, 0.f, 3.f, 1.f));
+	XMStoreFloat3(&pPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	if (false == m_pNavigationCom->Check_isIn_Navigation(&pPos))
+		return E_FAIL;
 
 	m_pSwordNode = m_pModelCom->Find_HierarcyNodes("Buffbone_Glb_Weapon_1");
 	if (m_pSwordNode == nullptr)
