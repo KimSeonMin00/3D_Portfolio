@@ -53,27 +53,23 @@ void CVolibear::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
-	if (m_fTime < 3.f)
-		m_fInitTime += fTimeDelta;
-	m_fQTime += fTimeDelta;
-	m_fRTime += fTimeDelta;
-	if (m_bQState == true && m_fQTime >= 3.0f)
-		m_bQState = false;
-	if (m_bRState == true && m_fRTime >= 10.f)
+	if (m_bPattern1 == false)
 	{
-		m_bRState = false;
-		m_pTransformCom->Set_Scaled(XMLoadFloat3(&m_vOriginScale));
+		m_fDelayTime += fTimeDelta;
+		if (m_fDelayTime >= 3.f)
+			m_bPattern1 = true;
 	}
 
 	//Key_Input(fTimeDelta);
 
 	Check_Loop(fTimeDelta);
 
-	if (m_fInitTime >= 3.f)
+	if (m_bPattern1 == true)
 	{
 		if (m_bAirborne == false && m_pModelCom->Get_IsChange() == false)
-			Chase_Player(fTimeDelta);
+			Pattern_3(fTimeDelta);
 	}
+	
 
 	Change_State(fTimeDelta);
 
@@ -421,7 +417,17 @@ void CVolibear::Check_Loop(_float fTimeDelta)
 			m_pModelCom->Check_Looped(fTimeDelta);
 		break;
 
+	case STATE_Q:
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Check_Looped(fTimeDelta);
+		break;
+
 	case STATE_W:
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Check_Looped(1.5 * fTimeDelta);
+		break;
+
+	case STATE_W_BITE:
 		if (m_pModelCom->Get_IsChange() == false)
 			m_pModelCom->Check_Looped(1.5 * fTimeDelta);
 		break;
@@ -471,9 +477,35 @@ void CVolibear::Update_State(_float fTimeDelta)
 				}
 			}
 
+			else if (m_eDoingState == STATE_Q)
+			{
+				m_iCurrentIndex = 56;
+				m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 1.0);
+				if (m_pModelCom->Get_IsChange() == false)
+				{
+					m_bStateChange = false;
+					m_bIsState_In = true;
+					m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+					m_pModelCom->Set_Initialize();
+				}
+			}
+
 			else if (m_eDoingState == STATE_W)
 			{
 				m_iCurrentIndex = 69;
+				m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 1.0);
+				if (m_pModelCom->Get_IsChange() == false)
+				{
+					m_bStateChange = false;
+					m_bIsState_In = true;
+					m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+					m_pModelCom->Set_Initialize();
+				}
+			}
+
+			else if (m_eDoingState == STATE_W_BITE)
+			{
+				m_iCurrentIndex = 71;
 				m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 1.0);
 				if (m_pModelCom->Get_IsChange() == false)
 				{
@@ -624,8 +656,16 @@ void CVolibear::Update_State(_float fTimeDelta)
 		Attack(fTimeDelta);
 		break;
 
+	case STATE_Q:
+		Q_Skill(fTimeDelta); 
+		break;
+
 	case STATE_W:
 		W_Skill(fTimeDelta);
+		break;
+
+	case STATE_W_BITE:
+		W_Bite_Skill(fTimeDelta);
 		break;
 
 	case STATE_E:
@@ -679,15 +719,6 @@ void CVolibear::Move(_float fTimeDelta)
 			else if (m_iAttackIndex == 4)
 				m_iCurrentIndex = 38;
 
-			if (m_bQAttack == true)
-			{
-				m_bQAttack = false;
-				if (m_bRState == true)
-					m_iCurrentIndex = 80;
-				else
-					m_iCurrentIndex = 59;
-			}
-
 			m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 1.0);
 			if (m_pModelCom->Get_IsChange() == false)
 			{
@@ -697,6 +728,23 @@ void CVolibear::Move(_float fTimeDelta)
 				m_pModelCom->Set_Initialize();
 			}
 		}
+
+		else if (m_eDoingState == STATE_Q)
+		{
+			if (m_bRState == true)
+				m_iCurrentIndex = 80;
+
+			else
+				m_iCurrentIndex = 59;
+			m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 1.0);
+			if (m_pModelCom->Get_IsChange() == false)
+			{
+				m_bStateChange = false;
+				m_bIsState_In = true;
+				m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+				m_pModelCom->Set_Initialize();
+			}
+		}	
 	}
 
 	else
@@ -790,60 +838,58 @@ void CVolibear::Attack(_float fTimeDelta)
 {	
 	if (m_bStateChange == true)
 	{
-		if (m_bQState == true)
+		if (m_eDoingState == STATE_Q)
 		{
-			m_iCurrentIndex = 26;
-			m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
-			if (m_pModelCom->Get_IsChange() == false)
-			{
-				m_bStateChange = false;
-				m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
-				m_pModelCom->Set_Initialize();
-			}
+			m_iCurrentIndex = 58;
 		}
 		else
 		{
-			m_pModelCom->Change_Animation(fTimeDelta, m_iAttackIndex, 3.0);
-			if (m_pModelCom->Get_IsChange() == false)
-			{
-				m_bStateChange = false;
-				m_pModelCom->SetUp_AnimationIndex(m_iAttackIndex);
-				m_pModelCom->Set_Initialize();
-			}
+			m_iCurrentIndex = m_iAttackIndex;
+		}
+		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
+		if (m_pModelCom->Get_IsChange() == false)
+		{
+			m_bStateChange = false;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
 		}
 	}
 
 	else
 	{
-		if (m_bQState == true)
+		if (m_pModelCom->Get_Finished())
 		{
-			if (m_pModelCom->Get_Finished())
-			{
-				m_bQAttack = true;
-				m_bQState = false;
-				m_bQState_Pre = false;
-				m_iCurrentIndex = 58;
-				m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
-				m_pModelCom->Set_Initialize();
+			m_bQAttack = false;
+			if (m_iAttackIndex == 4)
 				m_iAttackIndex = 3;
-			}
+			else
+				m_iAttackIndex++;
+
+			m_pModelCom->SetUp_AnimationIndex(m_iAttackIndex);
+			m_pModelCom->Set_Initialize();
 		}
 
-		else
+		m_pModelCom->Play_Animation(fTimeDelta);
+	}
+}
+
+void CVolibear::Q_Skill(_float fTimeDelta)
+{
+	if (m_bStateChange == true)
+	{
+		m_iCurrentIndex = 26;
+		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
+		if (m_pModelCom->Get_IsChange() == false)
 		{
-			if (m_pModelCom->Get_Finished())
-			{			
-				m_bQAttack = false;
-				if (m_iAttackIndex == 4)
-					m_iAttackIndex = 3;
-				else
-					m_iAttackIndex++;
-
-				m_pModelCom->SetUp_AnimationIndex(m_iAttackIndex);
-				m_pModelCom->Set_Initialize();
-			}		
+			m_bQState = false;
+			m_bQState_Pre = false;
+			m_bStateChange = false;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
 		}
-
+	}
+	else
+	{
 		m_pModelCom->Play_Animation(fTimeDelta);
 	}
 }
@@ -867,6 +913,34 @@ void CVolibear::W_Skill(_float fTimeDelta)
 	{
 		if (m_pModelCom->Get_Finished())
 		{				
+			m_bIsChanneling = false;
+			m_eState = m_eDoingState;
+			return;
+		}
+
+		m_pModelCom->Play_Animation(fTimeDelta);
+	}
+}
+
+void CVolibear::W_Bite_Skill(_float fTimeDelta)
+{
+	if (m_bStateChange == true)
+	{
+		m_iCurrentIndex = 29;
+
+		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
+		if (m_pModelCom->Get_IsChange() == false)
+		{
+			m_bStateChange = false;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
+		}
+	}
+
+	else
+	{
+		if (m_pModelCom->Get_Finished())
+		{
 			m_bIsChanneling = false;
 			m_eState = m_eDoingState;
 			return;
@@ -994,6 +1068,153 @@ void CVolibear::Chase_Player(_float fTimeDelta)
 
 	Safe_Release(pGameInstance);
 
+}
+
+void CVolibear::Pattern_1(_float fTimeDelta)
+{
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+
+	if (pGameInstance == nullptr)
+		return;
+
+	Safe_AddRef(pGameInstance);
+
+	CTransform* pPlayer_Transform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"));
+
+	if (pPlayer_Transform == nullptr)
+	{
+		Safe_Release(pGameInstance);
+		return;
+	}
+
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vPlayerPos = pPlayer_Transform->Get_State(CTransform::STATE_POSITION);
+
+	m_vMovePos = vPlayerPos;
+
+	m_pTransformCom->LookAt(vPlayerPos);
+
+	_float fDist = XMVectorGetX(XMVector3Length(vPlayerPos - vPos));
+
+	if (m_bIsChanneling == false)
+	{
+		m_bQState = true;
+		m_ePreState = STATE_MOVE;
+
+		if (fDist >= 3.f)
+		{
+			m_eState = STATE_MOVE;
+			m_fMoveSpeed = 4.0f;
+		}
+
+		else
+		{
+			m_eState = STATE_Q;
+			m_bIsChanneling = true;
+		}
+	}
+
+	else
+	{
+		if (m_pModelCom->Get_Finished() == true)
+		{
+			m_bIsChanneling = false;
+			m_bQState = false;
+			m_bQState_Pre = false;
+			m_fDelayTime = 0.f;
+			m_bPattern1 = false;
+			m_eState = STATE_IDLE;
+			m_fMoveSpeed = 2.0f;
+		}
+	}
+
+	Safe_Release(pGameInstance);
+}
+
+void CVolibear::Pattern_2(_float fTimeDelta)
+{
+	if (m_bIsChanneling == false)
+	{
+		m_eState = STATE_ATTACK;
+		m_bIsChanneling = true;
+		m_iPattern_AttackTime++;
+	}
+
+	else
+	{
+		if (m_pModelCom->Get_Finished() == true)
+		{
+			if (m_iPattern_AttackTime < 2)
+			{
+				m_eState = STATE_ATTACK;
+				m_iPattern_AttackTime++;
+			}
+			else if (m_iPattern_AttackTime == 2)
+			{
+				m_eState = STATE_Q;
+				m_bQState = false;
+				m_bQState_Pre = false;
+				m_iPattern_AttackTime++;
+			}
+			else if (m_iPattern_AttackTime == 3)
+			{
+				m_eState = STATE_IDLE;
+				m_iPattern_AttackTime++;
+			}
+			else if (m_iPattern_AttackTime == 4)
+			{
+				m_eState = STATE_E;
+				m_iPattern_AttackTime++;
+			}
+			else if (m_iPattern_AttackTime == 5)
+			{
+				m_bIsChanneling = false;
+				m_bQState = false;
+				m_bQState_Pre = false;
+				m_fDelayTime = 0.f;
+				m_bPattern1 = false;
+				m_iPattern_AttackTime = 0;
+				m_eState = STATE_IDLE;
+			}
+		}
+	}
+}
+
+void CVolibear::Pattern_3(_float fTimeDelta)
+{
+	if (m_bIsChanneling == false)
+	{
+		m_eState = STATE_ATTACK;
+		m_bIsChanneling = true;
+		m_iPattern_AttackTime++;
+	}
+
+	else
+	{
+		if (m_pModelCom->Get_Finished() == true)
+		{
+			if (m_iPattern_AttackTime ==1)
+			{
+				m_eState = STATE_W;
+				m_iPattern_AttackTime++;
+			}
+			else if (m_iPattern_AttackTime == 2)
+			{
+				m_eState = STATE_W_BITE;
+				m_iPattern_AttackTime++;
+			}
+			else if (m_iPattern_AttackTime == 3)
+			{
+				m_bIsChanneling = false;
+				m_bQState = false;
+				m_bQState_Pre = false;
+				m_fDelayTime = 0.f;
+				m_bPattern1 = false;
+				m_iPattern_AttackTime = 0;
+				m_eState = STATE_IDLE;
+			}
+		}
+	}
 }
 
 CVolibear * CVolibear::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const CTransform::TRANSFORMDESC & TransformDesc)

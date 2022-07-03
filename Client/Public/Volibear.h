@@ -6,7 +6,7 @@ class CVolibear
 	final : public CMonster
 {
 public:
-	enum STATE { STATE_IDLE, STATE_MOVE, STATE_ATTACK, STATE_Q, STATE_W, STATE_E, STATE_R, STATE_END };
+	enum STATE { STATE_IDLE, STATE_MOVE, STATE_ATTACK, STATE_Q, STATE_W, STATE_W_BITE, STATE_E, STATE_R, STATE_END };
 
 
 protected:
@@ -47,11 +47,16 @@ private:
 
 	void	Move(_float fTimeDelta);
 	void	Attack(_float fTimeDelta);
+	void	Q_Skill(_float fTimeDelta);
 	void	W_Skill(_float fTimeDelta);
+	void	W_Bite_Skill(_float fTimeDelta);
 	void	E_Skill(_float fTimeDelta);
 	void	R_Skill(_float fTimeDelta);
 
 	void	Chase_Player(_float fTimeDelta);
+	void	Pattern_1(_float fTimeDelta);
+	void	Pattern_2(_float fTimeDelta);
+	void	Pattern_3(_float fTimeDelta);
 
 	_float	m_fInitTime = 0.f;
 
@@ -84,7 +89,7 @@ private://For Q
 
 	_float			m_fQTime = 0.f;
 
-private:
+private://For R
 	_bool			m_bRState = false;
 
 	_float			m_fRTime = 0.f;
@@ -92,6 +97,12 @@ private:
 	_float			m_fTime = 0.f;
 
 	_float3			m_vOriginScale;
+
+	_float  m_fDelayTime = 0.f;
+	_bool	 m_bPattern1 = false;
+
+private://For Pattern 2
+	_uint		m_iPattern_AttackTime = 0;
 public:
 	static CVolibear* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const CTransform::TRANSFORMDESC& TransformDesc);
 	virtual CGameObject* Clone(void* pArg);
