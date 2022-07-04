@@ -1,3 +1,5 @@
+
+
 sampler		DefaultSampler = sampler_state
 {
 	filter = min_mag_mip_linear;

@@ -94,6 +94,9 @@ private:
 	HRESULT Ready_HierarchyNodes(aiNode* pNode, class CHierarchyNode* pParent, _uint iDepth);
 	HRESULT Ready_Animation();
 
+	HRESULT Clone_MeshContainer();
+	HRESULT Clone_Animation();
+
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const char* pModelFilePath, const char* pModelFileName, TYPE eType, _fmatrix PivotMatrix);
 	virtual CComponent* Clone(void* pArg);

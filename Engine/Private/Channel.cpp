@@ -17,6 +17,8 @@ CChannel::CChannel(const CChannel & rhs)
 
 HRESULT CChannel::NativeConstruct(aiNodeAnim * pChannel, CHierarchyNode * pHierarchyNode)
 {
+	strcpy_s(m_szName, pChannel->mNodeName.data);
+
 	m_pHierarchyNode = pHierarchyNode;
 	Safe_AddRef(m_pHierarchyNode);
 

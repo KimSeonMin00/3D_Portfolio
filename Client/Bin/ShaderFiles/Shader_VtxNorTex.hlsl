@@ -22,27 +22,6 @@ texture2D		g_SourDiffTexture;
 texture2D		g_DestDiffTexture;
 texture2D		g_FilterTexture;
 
-sampler		DefaultSampler = sampler_state
-{
-	// D3D11_SAMPLER_DESC 
-
-	filter = min_mag_mip_linear;
-	AddressU = wrap;
-	AddressV = wrap;
-
-	/*minfilter = linear;
-	magfilter = linear;
-	mipfilter = linear;*/
-};
-
-
-sampler		PointSampler = sampler_state
-{
-	filter = min_mag_mip_point;
-	AddressU = wrap;
-	AddressV = wrap;
-};
-
 struct VS_IN
 {
 	float3		vPosition : POSITION;

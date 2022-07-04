@@ -5,17 +5,6 @@ matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 texture2D		g_DiffuseTexture;
 
-sampler		DefaultSampler = sampler_state
-{
-	// D3D11_SAMPLER_DESC 
-
-	filter = min_mag_mip_linear;
-
-	/*minfilter = linear;
-	magfilter = linear;
-	mipfilter = linear;*/
-};
-
 struct VS_IN
 {
 	float3		vPosition : POSITION;

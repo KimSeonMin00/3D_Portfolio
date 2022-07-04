@@ -162,7 +162,7 @@
     <ClInclude Include="MapObject.h">
       <Filter>02.GameObjects\MapObject</Filter>
     </ClInclude>
-    <ClInclude Include="Shader_Defines.hpp">
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
       <Filter>97.ShaderFiles</Filter>
     </ClInclude>
   </ItemGroup>
@@ -275,6 +275,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnim.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPointInstance.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

@@ -19,11 +19,6 @@ vector			g_vCamPosition;
 
 texture2D		g_DiffuseTexture;
 
-sampler		DefaultSampler = sampler_state
-{
-	filter = min_mag_mip_linear;
-};
-
 struct VS_IN
 {
 	float3		vPosition : POSITION;
