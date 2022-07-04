@@ -74,7 +74,7 @@ void CCamera_Free::Tick(_float fTimeDelta)
 	}
 
 	//카메라 플레이어 방향으로 고정
-	/*CTransform* pPlayerTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"));
+	CTransform* pPlayerTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"));
 
 	if (pPlayerTransform == nullptr)
 	{
@@ -89,7 +89,7 @@ void CCamera_Free::Tick(_float fTimeDelta)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION,vCamPosition);
 	m_pTransformCom->LookAt(pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 
-	Safe_Release(pPlayerTransform);*/
+	Safe_Release(pPlayerTransform);
 	//
 
 	if (FAILED(__super::Bind_TransformMatrices()))

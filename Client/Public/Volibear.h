@@ -57,6 +57,7 @@ private:
 	void	Pattern_1(_float fTimeDelta);
 	void	Pattern_2(_float fTimeDelta);
 	void	Pattern_3(_float fTimeDelta);
+	void	Pattern_4(_float fTimeDelta);
 
 	_float	m_fInitTime = 0.f;
 
@@ -103,6 +104,7 @@ private://For R
 
 private://For Pattern 2
 	_uint		m_iPattern_AttackTime = 0;
+
 public:
 	static CVolibear* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const CTransform::TRANSFORMDESC& TransformDesc);
 	virtual CGameObject* Clone(void* pArg);

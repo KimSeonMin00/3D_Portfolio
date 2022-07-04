@@ -67,7 +67,7 @@ void CVolibear::Tick(_float fTimeDelta)
 	if (m_bPattern1 == true)
 	{
 		if (m_bAirborne == false && m_pModelCom->Get_IsChange() == false)
-			Pattern_3(fTimeDelta);
+			Pattern_4(fTimeDelta);
 	}
 	
 
@@ -1038,33 +1038,20 @@ void CVolibear::Chase_Player(_float fTimeDelta)
 		return;
 	}
 
+	Safe_AddRef(pPlayer_Transform);
+
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_vector vPlayerPos = pPlayer_Transform->Get_State(CTransform::STATE_POSITION);
+
+	Safe_Release(pPlayer_Transform);
 
 	m_vMovePos = vPlayerPos;
 
 	m_pTransformCom->LookAt(vPlayerPos);
 
-	_float fDist = XMVectorGetX(XMVector3Length(vPlayerPos - vPos));
+	m_fMoveDistTotal = XMVectorGetX(XMVector3Length(vPlayerPos - vPos));
 
-
-	if (fDist >= 3.f)
-	{
-		if (m_eState == STATE_ATTACK)
-		{
-			if (m_pModelCom->Get_KeyFrame() == 10)
-				m_eState = STATE_MOVE;
-		}
-		else
-		{
-			m_eState = STATE_MOVE;
-		}
-	}
-
-	else
-	{
-		m_eState = STATE_ATTACK;
-	}
+	m_fMoveDist = 0.f;
 
 	Safe_Release(pGameInstance);
 
@@ -1204,6 +1191,53 @@ void CVolibear::Pattern_3(_float fTimeDelta)
 				m_iPattern_AttackTime++;
 			}
 			else if (m_iPattern_AttackTime == 3)
+			{
+				m_bIsChanneling = false;
+				m_bQState = false;
+				m_bQState_Pre = false;
+				m_fDelayTime = 0.f;
+				m_bPattern1 = false;
+				m_iPattern_AttackTime = 0;
+				m_eState = STATE_IDLE;
+			}
+		}
+	}
+}
+
+void CVolibear::Pattern_4(_float fTimeDelta)
+{
+	if (m_bIsChanneling == false)
+	{
+		m_eState = STATE_R;
+		m_bIsChanneling = true;
+		Chase_Player(fTimeDelta);
+		m_iPattern_AttackTime++;
+	}
+
+	else
+	{
+		if (m_pModelCom->Get_Finished() == true)
+		{
+			if (m_iPattern_AttackTime == 1)
+			{
+				m_eState = STATE_R;
+				if(m_iCurrentIndex == 79)
+					m_iPattern_AttackTime++;
+			}
+
+			if (m_iPattern_AttackTime == 2)
+			{
+				m_eState = STATE_W;
+				Chase_Player(fTimeDelta);
+				m_iPattern_AttackTime++;
+			}
+			else if (m_iPattern_AttackTime == 3)
+			{
+				m_eState = STATE_Q;
+				Chase_Player(fTimeDelta);
+				m_iPattern_AttackTime++;
+			}
+			else if (m_iPattern_AttackTime == 4)
 			{
 				m_bIsChanneling = false;
 				m_bQState = false;
