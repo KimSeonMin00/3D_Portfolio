@@ -1,3 +1,5 @@
+#include "Shader_Defines.hpp"
+
 // float4x4
 matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
@@ -83,6 +85,10 @@ technique11 DefaultTechinque
 {
 	pass Rect
 	{
+		SetBlendState(BS_AlphaBlend, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Default, 0);
+		SetRasterizerState(RS_Default);
+
 		VertexShader = compile vs_5_0 VS_MAIN_RECT();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_RECT();
@@ -90,6 +96,10 @@ technique11 DefaultTechinque
 
 	pass Rect_Color
 	{
+		SetBlendState(BS_AlphaBlend, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Default, 0);
+		SetRasterizerState(RS_Default);
+
 		VertexShader = compile vs_5_0 VS_MAIN_RECT();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_RECT_COLOR();

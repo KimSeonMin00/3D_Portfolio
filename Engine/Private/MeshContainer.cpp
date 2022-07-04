@@ -8,7 +8,14 @@ CMeshContainer::CMeshContainer(ID3D11Device * pDevice, ID3D11DeviceContext * pDe
 
 CMeshContainer::CMeshContainer(const CMeshContainer & rhs)
 	:CVIBuffer(rhs)
+	, m_iNumBones(rhs.m_iNumBones)
+	, m_iMaterialIndex(rhs.m_iMaterialIndex)
+	, m_Bones(rhs.m_Bones)
 {
+	for (auto& pHierarchyNode : m_Bones)
+		Safe_AddRef(pHierarchyNode);
+
+	strcpy_s(m_szName, rhs.m_szName);
 }
 
 void CMeshContainer::Get_BoneMatrices(_float4x4 * pBoneMatrices, _fmatrix PivotMatrix)
@@ -79,6 +86,10 @@ HRESULT CMeshContainer::NativeConstruct_Prototype(CModel::TYPE eModelType, aiMes
 
 HRESULT CMeshContainer::NativeConstruct(void * pArg)
 {
+	CModel*		pModel = (CModel*)pArg;
+
+	SetUp_HierarchyNodes(pModel);
+
 	return S_OK;
 }
 
@@ -154,6 +165,32 @@ HRESULT CMeshContainer::Ready_AnimModel(aiMesh * pAIMesh, CModel* pModel)
 		return E_FAIL;
 
 	Safe_Delete_Array(pVertices);
+
+	return S_OK;
+}
+
+HRESULT CMeshContainer::SetUp_HierarchyNodes(CModel * pModel)
+{
+	vector<CHierarchyNode*>		Nodes;
+
+	for (auto& pHierarchyNode : m_Bones)
+	{
+		CHierarchyNode*		pNode = pModel->Find_HierarcyNodes(pHierarchyNode->Get_Name());
+
+		_float4x4			OffsetMatrix;
+		XMStoreFloat4x4(&OffsetMatrix, XMMatrixTranspose(pHierarchyNode->Get_OffsetMatrix()));
+
+		pNode->Set_OffsetMatrix(&OffsetMatrix);
+
+		Nodes.push_back(pNode);
+
+		Safe_AddRef(pNode);
+
+		Safe_Release(pHierarchyNode);
+	}
+
+	m_Bones.clear();
+	m_Bones = Nodes;
 
 	return S_OK;
 }

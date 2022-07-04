@@ -7,11 +7,21 @@ class CChannel final : public CBase
 {
 private:
 	CChannel();
+	CChannel(const CChannel& rhs);
 	virtual ~CChannel() = default;
 
 public:
 	void Set_CurrentKeyFrameIndex(_uint iIndex) {
 		m_iCurrentKeyFrame = iIndex;
+	}
+
+	const char* Get_Name() const {
+		return m_szName;
+	}
+
+	void Set_HierarchyNode(class CHierarchyNode* pNode) {
+		m_pHierarchyNode = pNode;
+		Safe_AddRef(m_pHierarchyNode);
 	}
 
 	_uint Get_KeyFrame()
@@ -43,9 +53,11 @@ private:
 
 private:
 	class CHierarchyNode*		m_pHierarchyNode = nullptr;
+	_bool						m_isCloned = false;
 
 public:
 	static CChannel* Create(aiNodeAnim* pAIChannel, CHierarchyNode* pHierarchyNode);
+	CChannel* Clone();
 	virtual void Free() override;
 };
 

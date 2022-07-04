@@ -6,6 +6,15 @@ CChannel::CChannel()
 {
 }
 
+CChannel::CChannel(const CChannel & rhs)
+	: m_iCurrentKeyFrame(rhs.m_iCurrentKeyFrame)
+	, m_iNumKeyFrames(rhs.m_iNumKeyFrames)
+	, m_KeyFrames(rhs.m_KeyFrames)
+	, m_isCloned(true)
+{
+	strcpy_s(m_szName, rhs.m_szName);
+}
+
 HRESULT CChannel::NativeConstruct(aiNodeAnim * pChannel, CHierarchyNode * pHierarchyNode)
 {
 	m_pHierarchyNode = pHierarchyNode;
@@ -110,10 +119,18 @@ CChannel * CChannel::Create(aiNodeAnim * pAIChannel, CHierarchyNode * pHierarchy
 	return pInstance;
 }
 
+CChannel * CChannel::Clone()
+{
+	return new CChannel(*this);
+}
+
 void CChannel::Free()
 {
-	for (auto& pKeyFrame : m_KeyFrames)
-		Safe_Delete(pKeyFrame);
+	if (false == m_isCloned)
+	{
+		for (auto& pKeyFrame : m_KeyFrames)
+			Safe_Delete(pKeyFrame);
+	}
 
 	m_KeyFrames.clear();
 

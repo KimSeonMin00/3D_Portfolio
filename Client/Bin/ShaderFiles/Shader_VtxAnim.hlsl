@@ -1,3 +1,5 @@
+#include "Shader_Defines.hpp"
+
 matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 matrix			g_SocketMatrix;
 
@@ -164,6 +166,10 @@ technique11 DefaultTechinque
 {
 	pass Default
 	{
+		SetBlendState(BS_None, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Default, 0);
+		SetRasterizerState(RS_Default);
+
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
@@ -171,6 +177,10 @@ technique11 DefaultTechinque
 
 	pass Hit
 	{
+		SetBlendState(BS_None, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Default, 0);
+		SetRasterizerState(RS_Default);
+
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_HIT();
@@ -178,6 +188,10 @@ technique11 DefaultTechinque
 
 	pass Socket
 	{
+		SetBlendState(BS_None, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Default, 0);
+		SetRasterizerState(RS_Default);
+
 		VertexShader = compile vs_5_0 VS_MAIN_SOCKET();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();

@@ -7,6 +7,18 @@ CAnimation::CAnimation()
 {
 }
 
+CAnimation::CAnimation(const CAnimation & rhs)
+	: m_Duration(rhs.m_Duration)
+	, m_TickPerSecond(rhs.m_TickPerSecond)
+	, m_iNumChannels(rhs.m_iNumChannels)
+	, m_Channels(rhs.m_Channels)
+{
+	strcpy_s(m_szName, rhs.m_szName);
+
+	for (auto& pChannel : m_Channels)
+		Safe_AddRef(pChannel);
+}
+
 HRESULT CAnimation::NativeConstruct(aiAnimation * pAIAnimation, CModel * pModel)
 {
 	strcpy_s(m_szName, pAIAnimation->mName.data);
@@ -25,6 +37,31 @@ HRESULT CAnimation::NativeConstruct(aiAnimation * pAIAnimation, CModel * pModel)
 
 		m_Channels.push_back(pChannel);
 	}
+
+	return S_OK;
+}
+
+HRESULT CAnimation::CloneNativeConstruct(CModel * pModel)
+{
+	vector<CChannel*>		Channels;
+
+	for (auto& pPrototype : m_Channels)
+	{
+		CChannel*		pChannel = pPrototype->Clone();
+		if (nullptr == pChannel)
+			break;
+
+		CHierarchyNode*	pNode = pModel->Find_HierarcyNodes(pPrototype->Get_Name());
+		pChannel->Set_HierarchyNode(pNode);
+
+		Channels.push_back(pChannel);
+
+		Safe_Release(pPrototype);
+	}
+
+	m_Channels.clear();
+
+	m_Channels = Channels;
 
 	return S_OK;
 }
@@ -99,6 +136,19 @@ CAnimation * CAnimation::Create(aiAnimation * pAIAnimation, CModel * pModel)
 		MSGBOX(TEXT("Failed to Created : CAnimation"));
 		Safe_Release(pInstance);
 	}
+	return pInstance;
+}
+
+CAnimation * CAnimation::Clone_Animation(CModel * pModel)
+{
+	CAnimation*		pInstance = new CAnimation(*this);
+
+	if (FAILED(pInstance->CloneNativeConstruct(pModel)))
+	{
+		MSGBOX(TEXT("Failed to Cloned : CAnimation"));
+		Safe_Release(pInstance);
+	}
+
 	return pInstance;
 }
 

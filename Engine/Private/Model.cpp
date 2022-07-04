@@ -226,6 +226,25 @@ HRESULT CModel::NativeConstruct_Prototype(const char * pModelFilePath, const cha
 
 HRESULT CModel::NativeConstruct(void * pArg)
 {
+	if (FAILED(Ready_HierarchyNodes(m_pScene->mRootNode, nullptr, 0)))
+		return E_FAIL;
+
+	sort(m_HierarchyNodes.begin(), m_HierarchyNodes.end(), [](CHierarchyNode* pSour, CHierarchyNode* pDest)
+	{
+		return pSour->Get_Depth() < pDest->Get_Depth();
+	});
+
+	//for (auto& pMeshContainer : m_Meshes)
+	//{
+	//	pMeshContainer->SetUp_HierarchyNodes(this);
+	//}
+
+	if (FAILED(Clone_MeshContainer()))
+		return E_FAIL;
+
+	if (FAILED(Clone_Animation()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -347,6 +366,48 @@ HRESULT CModel::Ready_Animation()
 
 		m_Animations.push_back(pAnimation);
 	}
+	return S_OK;
+}
+
+HRESULT CModel::Clone_MeshContainer()
+{
+	vector<CMeshContainer*>			Meshes;
+
+	for (auto& pPrototype : m_Meshes)
+	{
+		CMeshContainer*		pMeshContainer = (CMeshContainer*)pPrototype->Clone(this);
+		if (nullptr == pMeshContainer)
+			return E_FAIL;
+
+		Meshes.push_back(pMeshContainer);
+
+		Safe_Release(pPrototype);
+	}
+
+	m_Meshes.clear();
+	m_Meshes = Meshes;
+
+	return S_OK;
+}
+
+HRESULT CModel::Clone_Animation()
+{
+	ANIMATIONS		Anims;
+
+	for (auto& pAnimation : m_Animations)
+	{
+		if (nullptr != pAnimation)
+		{
+			CAnimation*		pAnim = pAnimation->Clone_Animation(this);
+			if (nullptr != pAnim)
+				Anims.push_back(pAnim);
+
+			Safe_Release(pAnimation);
+		}
+	}
+	m_Animations.clear();
+	m_Animations = Anims;
+
 	return S_OK;
 }
 

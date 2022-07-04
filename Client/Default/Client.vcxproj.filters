@@ -162,6 +162,9 @@
     <ClInclude Include="MapObject.h">
       <Filter>02.GameObjects\MapObject</Filter>
     </ClInclude>
+    <ClInclude Include="Shader_Defines.hpp">
+      <Filter>97.ShaderFiles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">

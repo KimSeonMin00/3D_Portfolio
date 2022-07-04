@@ -26,6 +26,7 @@ public:
 public:
 	HRESULT Ready_NonAnimModel(aiMesh* pAIMesh, _fmatrix PivotMatrix);
 	HRESULT Ready_AnimModel(aiMesh* pAIMesh, class CModel* pModel);
+	HRESULT SetUp_HierarchyNodes(class CModel* pModel);
 
 private:
 	char			m_szName[MAX_PATH] = "";

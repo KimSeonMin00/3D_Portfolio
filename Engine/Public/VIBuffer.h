@@ -34,7 +34,7 @@ public:
 	virtual HRESULT NativeConstruct(void* pArg);
 
 public:
-	HRESULT Render();
+	virtual HRESULT Render();
 
 protected://Vertex Buffer º¯¼ö
 	ID3D11Buffer*				m_pVB = nullptr;

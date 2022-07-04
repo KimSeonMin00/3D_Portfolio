@@ -1,3 +1,5 @@
+#include "Shader_Defines.hpp"
+
 // float4x4
 matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
@@ -140,6 +142,10 @@ technique11 DefaultTechinque
 {
 	pass Terrain_Directional
 	{
+		SetBlendState(BS_None, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Default, 0);
+		SetRasterizerState(RS_Default);
+
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_TERRAIN_DIRECTIONAL();
@@ -147,6 +153,10 @@ technique11 DefaultTechinque
 
 	pass Terrain_Point
 	{
+		SetBlendState(BS_None, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Default, 0);
+		SetRasterizerState(RS_Wireframe);
+
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_TERRAIN_POINT();

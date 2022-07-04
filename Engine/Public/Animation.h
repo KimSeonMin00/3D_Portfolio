@@ -7,10 +7,12 @@ class CAnimation final : public CBase
 {
 private:
 	CAnimation();
+	CAnimation(const CAnimation& rhs);
 	virtual ~CAnimation() = default;
 
 public:
 	HRESULT NativeConstruct(aiAnimation * pAIAnimation, class CModel* pModel);
+	HRESULT CloneNativeConstruct(class CModel* pModel);
 	void Check_Looped(_double TimeDelta);
 	void Update_TransformationMatrices(_double TimeDelta);
 
@@ -45,6 +47,7 @@ private:
 
 public:
 	static CAnimation* Create(aiAnimation* pAIAnimation, class CModel* pModel);
+	CAnimation* Clone_Animation(CModel* pModel);
 	virtual void Free() override;
 };
 

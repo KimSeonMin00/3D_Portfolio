@@ -112,6 +112,12 @@
     <ClCompile Include="..\Private\VIBuffer_Triangle.cpp">
       <Filter>01.Utility\03.Components\VIBuffer\Triangle</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_PointInstance.cpp">
+      <Filter>01.Utility\03.Components\VIBuffer\Instance\Point</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_RectInstance.cpp">
+      <Filter>01.Utility\03.Components\VIBuffer\Instance\Rect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -238,6 +244,12 @@
     <ClInclude Include="..\Public\VIBuffer_Triangle.h">
       <Filter>01.Utility\03.Components\VIBuffer\Triangle</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_PointInstance.h">
+      <Filter>01.Utility\03.Components\VIBuffer\Instance\Point</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_RectInstance.h">
+      <Filter>01.Utility\03.Components\VIBuffer\Instance\Rect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00.System">
@@ -359,6 +371,15 @@
     </Filter>
     <Filter Include="01.Utility\03.Components\Navigation\NaviShader">
       <UniqueIdentifier>{60d31ecf-6987-4b0b-8349-111b85be1f10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Components\VIBuffer\Instance">
+      <UniqueIdentifier>{d9dad90e-84bc-43c6-aad5-9af39fa2706d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Components\VIBuffer\Instance\Point">
+      <UniqueIdentifier>{a01053ee-8cfe-4b8a-8c90-8bd68fdd49de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Components\VIBuffer\Instance\Rect">
+      <UniqueIdentifier>{6e3b34c9-60cd-4fd9-a660-1d14661765a5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
