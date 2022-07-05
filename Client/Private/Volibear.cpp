@@ -57,7 +57,45 @@ void CVolibear::Tick(_float fTimeDelta)
 	{
 		m_fDelayTime += fTimeDelta;
 		if (m_fDelayTime >= 3.f)
-			m_bPattern1 = true;
+		{
+			CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+
+			if (nullptr == pGameInstance)
+				return;
+
+			Safe_AddRef(pGameInstance);
+
+			if (pGameInstance->Get_DIKeyState(DIK_1) & 0x80)
+			{
+				m_iPattern_Index = 1;
+				m_bPattern1 = true;
+				m_iPattern_AttackTime = 0;
+				m_fDelayTime = 0.f;
+			}
+			if (pGameInstance->Get_DIKeyState(DIK_2) & 0x80)
+			{
+				m_iPattern_Index = 2;
+				m_bPattern1 = true;
+				m_iPattern_AttackTime = 0;
+				m_fDelayTime = 0.f;
+			}
+			if (pGameInstance->Get_DIKeyState(DIK_3) & 0x80)
+			{
+				m_iPattern_Index = 3;
+				m_bPattern1 = true;
+				m_iPattern_AttackTime = 0;
+				m_fDelayTime = 0.f;
+			}
+			if (pGameInstance->Get_DIKeyState(DIK_4) & 0x80)
+			{
+				m_iPattern_Index = 4;
+				m_bPattern1 = true;
+				m_iPattern_AttackTime = 0;
+				m_fDelayTime = 0.f;
+			}
+
+			
+		}
 	}
 
 	//Key_Input(fTimeDelta);
@@ -67,7 +105,23 @@ void CVolibear::Tick(_float fTimeDelta)
 	if (m_bPattern1 == true)
 	{
 		if (m_bAirborne == false && m_pModelCom->Get_IsChange() == false)
-			Pattern_4(fTimeDelta);
+		{
+			switch (m_iPattern_Index)
+			{
+			case 1:
+				Pattern_1(fTimeDelta);
+				break;
+			case 2:
+				Pattern_2(fTimeDelta);
+				break;
+			case 3:
+				Pattern_3(fTimeDelta);
+				break;
+			case 4:
+				Pattern_4(fTimeDelta);
+				break;
+			}
+		}
 	}
 	
 

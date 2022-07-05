@@ -104,6 +104,7 @@ private://For R
 
 private://For Pattern 2
 	_uint		m_iPattern_AttackTime = 0;
+	_int		m_iPattern_Index = 0;
 
 public:
 	static CVolibear* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const CTransform::TRANSFORMDESC& TransformDesc);
