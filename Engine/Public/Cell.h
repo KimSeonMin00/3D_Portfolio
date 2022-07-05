@@ -29,7 +29,7 @@ public:
 public:
 	HRESULT NativeConstruct(const _float3* pPoints, _uint iIndex);
 	_bool Compare_Points(const _float3* pSourPoint, const _float3* pDestPoint);
-	_bool isIn(const _float3* pPosition, _int* pNeighborIndex);
+	_bool isIn(const _float3* pPosition, _int* pNeighborIndex, _float3* pDir);
 
 #ifdef _DEBUG
 public:

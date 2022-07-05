@@ -48,7 +48,7 @@ VS_OUT VS_MAIN_RECT(VS_IN In)
 	vector		vPosition = mul(float4(In.vPosition, 1.f), matWVP);
 
 	Out.vPosition = vPosition;
-	Out.vNormal = mul(vector(In.vNormal, 0.f), g_WorldMatrix).xyz;
+	Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix).xyz);
 	Out.vTexUV = In.vTexUV;
 	Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
 

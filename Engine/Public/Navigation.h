@@ -22,7 +22,7 @@ public:
 	virtual HRESULT NativeConstruct(void* pArg) override;
 
 public:
-	_bool Move_OnNavigation(const _float3* pPosition);
+	_bool Move_OnNavigation(const _float3* pPosition, _float3* pDir);
 	_bool Check_isIn_Navigation(const _float3* pPosition);
 
 public:

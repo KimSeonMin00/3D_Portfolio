@@ -64,15 +64,21 @@ HRESULT CTransform::Go_Straight(_double TimeDelta, CNavigation* pNaviCom)
 
 	vPosition += XMVector3Normalize(vLook) * m_TransformDesc.fSpeedPerSec * (_float)TimeDelta;
 
+	_float3		vPos;
+
 	if (nullptr != pNaviCom)
 	{
-		_float3		vPos;
 		XMStoreFloat3(&vPos, vPosition);
+		_float3     vDir;
+		XMStoreFloat3(&vDir, XMVector3Normalize(vLook));
 
-		if (false == pNaviCom->Move_OnNavigation(&vPos))
+		if (false == pNaviCom->Move_OnNavigation(&vPos, &vDir))
 		{
-			return S_OK;
+			vPosition = Get_State(CTransform::STATE_POSITION) + (XMLoadFloat3(&vDir)* m_TransformDesc.fSpeedPerSec * (_float)TimeDelta);
 		}
+
+		XMStoreFloat3(&vPos, vPosition);
+		pNaviCom->Check_isIn_Navigation(&vPos);
 	}
 
 	Set_State(CTransform::STATE_POSITION, vPosition);

@@ -69,12 +69,14 @@ HRESULT CNavigation::NativeConstruct(void * pArg)
 	return S_OK;
 }
 
-_bool CNavigation::Move_OnNavigation(const _float3 * pPosition)
+_bool CNavigation::Move_OnNavigation(const _float3 * pPosition, _float3* pDir)
 {
 	_int		iNeighborIndex = -1;
+	if (pDir == nullptr)
+		return false;
 
 	/* 셀안에서 움직였다. */
-	if (true == m_Cells[m_iCurrentCellIndex]->isIn(pPosition, &iNeighborIndex))
+	if (true == m_Cells[m_iCurrentCellIndex]->isIn(pPosition, &iNeighborIndex, pDir))
 		return true;
 
 	/* 셀 밖으로 움직였다. */
@@ -87,7 +89,7 @@ _bool CNavigation::Move_OnNavigation(const _float3 * pPosition)
 				if (-1 == iNeighborIndex)
 					return false;
 
-				if (true == m_Cells[iNeighborIndex]->isIn(pPosition, &iNeighborIndex))
+				if (true == m_Cells[iNeighborIndex]->isIn(pPosition, &iNeighborIndex, pDir))
 				{
 					m_iCurrentCellIndex = iNeighborIndex;
 					break;
@@ -116,7 +118,7 @@ _bool CNavigation::Check_isIn_Navigation(const _float3 * pPosition)
 
 		for (auto& pCell : m_Cells)
 		{
-			if (pCell->isIn(pPosition, &iNeighborIndex))
+			if (pCell->isIn(pPosition, &iNeighborIndex, nullptr))
 			{
 				m_iCurrentCellIndex = iCellIndex;
 				return true;
