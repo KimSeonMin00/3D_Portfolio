@@ -497,6 +497,8 @@ void CImguiManager::Object_Tool()
 			ImGui::EndCombo();
 		}
 
+		((CMapObject*)m_pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_Map"), m_iCurrentItemIndex))->Set_Select();
+
 		_float fScale = 0.f;
 		_float3 fRotation = { 0.f ,0.f ,0.f };
 		_float3 fPosition = { 0.f, 0.f, 0.f };

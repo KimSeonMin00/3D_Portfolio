@@ -31,8 +31,14 @@ public:
 		return m_iModelIndex;
 	}
 
+	void	Set_Select()
+	{
+		m_bSelected = true;
+	}
+
 private:
 	_int m_iModelIndex = 0;
+	_bool	m_bSelected = false;
 
 private:
 	CShader*						m_pShaderCom = nullptr;

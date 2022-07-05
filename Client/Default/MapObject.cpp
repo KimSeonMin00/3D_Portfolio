@@ -48,6 +48,8 @@ void CMapObject::Late_Tick(_float fTimeDelta)
 	if (nullptr == m_pRendererCom)
 		return;
 
+	m_bSelected = false;
+
 	m_pRendererCom->Add_RenderList(CRenderer::RENDER_NONALPHABLEND, this);
 }
 
@@ -66,7 +68,11 @@ HRESULT CMapObject::Render()
 	{
 		m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 
-		m_pShaderCom->Begin(0);
+		if (m_bSelected == false)
+			m_pShaderCom->Begin(0);
+
+		else
+			m_pShaderCom->Begin(1);
 
 		m_pModelCom->Render(i);
 	}

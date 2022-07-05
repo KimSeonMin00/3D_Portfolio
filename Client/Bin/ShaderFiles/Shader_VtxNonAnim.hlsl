@@ -15,6 +15,7 @@ vector			g_vMtrlAmbient = vector(0.2f, 0.2f, 0.2f, 1.f);
 vector			g_vMtrlSpecular = vector(1.f, 1.f, 1.f, 1.f);
 
 vector			g_vCamPosition;
+vector			g_vColor = vector(1.f, 0.f, 0.f, 1.f);
 
 
 texture2D		g_DiffuseTexture;
@@ -91,6 +92,30 @@ PS_OUT PS_MAIN_RECT(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_MAIN_RECT_SELECT(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	vector		vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+
+	float		fShade = max(dot(normalize(g_vLightDir.xyz) * -1.f, In.vNormal), 0.f);
+
+	vector		vLook = In.vWorldPos - g_vCamPosition;
+	vector		vReflect = reflect(normalize(g_vLightDir), vector(In.vNormal, 0.f));
+
+	float		fSpecular = pow(max(dot(normalize(vLook) * -1.f, normalize(vReflect)), 0.f), 30.f);
+
+	Out.vColor.xyz = ((g_vColor * g_vLightDiffuse * vMtrlDiffuse) * (fShade + g_vLightAmbient * g_vMtrlAmbient)
+		+ (g_vLightSpecular * g_vMtrlSpecular) * fSpecular).xyz;
+
+	Out.vColor.a = vMtrlDiffuse.a;
+
+	if (Out.vColor.a < 0.1f)
+		discard;
+
+	return Out;
+}
+
 technique11 DefaultTechinque
 {
 	pass Default
@@ -102,6 +127,17 @@ technique11 DefaultTechinque
 		VertexShader = compile vs_5_0 VS_MAIN_RECT();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_RECT();
+	}
+
+	pass Select
+	{
+		SetBlendState(BS_None, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Default, 0);
+		SetRasterizerState(RS_Default);
+
+		VertexShader = compile vs_5_0 VS_MAIN_RECT();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_RECT_SELECT();
 	}
 
 }
