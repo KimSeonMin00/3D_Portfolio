@@ -6,7 +6,7 @@ class CVolibear
 	final : public CMonster
 {
 public:
-	enum STATE { STATE_IDLE, STATE_MOVE, STATE_ATTACK, STATE_Q, STATE_W, STATE_W_BITE, STATE_E, STATE_R, STATE_END };
+	enum STATE { STATE_IDLE, STATE_MOVE, STATE_ATTACK, STATE_Q, STATE_W, STATE_W_BITE, STATE_E, STATE_R, STATE_FLY,STATE_END };
 
 
 protected:
@@ -52,12 +52,14 @@ private:
 	void	W_Bite_Skill(_float fTimeDelta);
 	void	E_Skill(_float fTimeDelta);
 	void	R_Skill(_float fTimeDelta);
+	void	Fly(_float fTimeDelta);
 
 	void	Chase_Player(_float fTimeDelta);
 	void	Pattern_1(_float fTimeDelta);
 	void	Pattern_2(_float fTimeDelta);
 	void	Pattern_3(_float fTimeDelta);
 	void	Pattern_4(_float fTimeDelta);
+	void	Pattern_5(_float fTimeDelta);
 
 	_float	m_fInitTime = 0.f;
 

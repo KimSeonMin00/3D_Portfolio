@@ -95,6 +95,13 @@ void CVolibear::Tick(_float fTimeDelta)
 				m_iPattern_AttackTime = 0;
 				m_fDelayTime = 0.f;
 			}
+			if (pGameInstance->Get_DIKeyState(DIK_5) & 0x80)
+			{
+				m_iPattern_Index = 5;
+				m_bPattern1 = true;
+				m_iPattern_AttackTime = 0;
+				m_fDelayTime = 0.f;
+			}
 
 			
 		}
@@ -121,6 +128,11 @@ void CVolibear::Tick(_float fTimeDelta)
 				break;
 			case 4:
 				Pattern_4(fTimeDelta);
+				break;
+			case 5:
+				Pattern_5(fTimeDelta);
+				break;
+			default:
 				break;
 			}
 		}
@@ -498,6 +510,11 @@ void CVolibear::Check_Loop(_float fTimeDelta)
 			m_pModelCom->Check_Looped(fTimeDelta);
 		break;
 
+	case STATE_FLY:
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Check_Looped(fTimeDelta);
+		break;
+
 	default:
 		break;
 	}
@@ -587,6 +604,19 @@ void CVolibear::Update_State(_float fTimeDelta)
 			else if (m_eDoingState == STATE_R)
 			{
 				m_iCurrentIndex = 77;
+				m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 1.0);
+				if (m_pModelCom->Get_IsChange() == false)
+				{
+					m_bStateChange = false;
+					m_bIsState_In = true;
+					m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+					m_pModelCom->Set_Initialize();
+				}
+			}
+
+			else if (m_eDoingState == STATE_FLY)
+			{
+				m_iCurrentIndex = 21;
 				m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 1.0);
 				if (m_pModelCom->Get_IsChange() == false)
 				{
@@ -730,6 +760,10 @@ void CVolibear::Update_State(_float fTimeDelta)
 
 	case STATE_R:
 		R_Skill(fTimeDelta);
+		break;
+
+	case STATE_FLY:
+		Fly(fTimeDelta);
 		break;
 
 	default:
@@ -1077,6 +1111,34 @@ void CVolibear::R_Skill(_float fTimeDelta)
 	}
 }
 
+void CVolibear::Fly(_float fTimeDelta)
+{
+	if (m_bStateChange == true)
+	{
+		m_iCurrentIndex = 20;
+
+		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
+		if (m_pModelCom->Get_IsChange() == false)
+		{
+			m_bStateChange = false;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
+		}
+	}
+
+	else
+	{
+		if (m_pModelCom->Get_Finished())
+		{
+			m_bIsChanneling = false;
+			m_eState = STATE_IDLE;
+			return;
+		}
+
+		m_pModelCom->Play_Animation(fTimeDelta);
+	}
+}
+
 void CVolibear::Chase_Player(_float fTimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
@@ -1304,6 +1366,17 @@ void CVolibear::Pattern_4(_float fTimeDelta)
 				m_eState = STATE_IDLE;
 			}
 		}
+	}
+}
+
+void CVolibear::Pattern_5(_float fTimeDelta)
+{
+	if (m_bIsChanneling == false)
+	{
+		m_eState = STATE_FLY;
+		m_fDelayTime = 0.f;
+		m_bPattern1 = false;
+		m_iPattern_AttackTime = 0;
 	}
 }
 
