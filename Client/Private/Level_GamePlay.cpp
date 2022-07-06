@@ -199,6 +199,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Map(const _tchar * pLayerTag)
 		iNumObject++;
 	}
 
+	CloseHandle(hFile);
+
 	Safe_Release(pGameInstance);
 
 	return S_OK;
