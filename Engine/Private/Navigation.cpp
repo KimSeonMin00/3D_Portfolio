@@ -120,7 +120,7 @@ _bool CNavigation::Check_isIn_Navigation(const _float3 * pPosition)
 		{
 			if (pCell->isIn(pPosition, &iNeighborIndex, nullptr))
 			{
-				m_iCurrentCellIndex = iCellIndex;
+	s			m_iCurrentCellIndex = iCellIndex;
 				return true;
 			}
 

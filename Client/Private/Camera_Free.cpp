@@ -84,7 +84,7 @@ void CCamera_Free::Tick(_float fTimeDelta)
 
 	Safe_AddRef(pPlayerTransform);
 	_vector vCamPosition = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-	vCamPosition += XMVectorSet(0.f, 10.f, -5.f, 0.f);
+	vCamPosition += XMVectorSet(0.f, 6.f, -3.f, 0.f);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION,vCamPosition);
 	m_pTransformCom->LookAt(pPlayerTransform->Get_State(CTransform::STATE_POSITION));

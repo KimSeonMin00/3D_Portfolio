@@ -77,7 +77,7 @@ HRESULT CTerrain::Render()
 	if (FAILED(SetUp_ConstantTable()))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Begin(m_iPassIndex)))
+	if (FAILED(m_pShaderCom->Begin(0)))
 		return E_FAIL;
 
 	if (FAILED(m_pVIBufferCom->Render()))

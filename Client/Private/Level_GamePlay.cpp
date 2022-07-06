@@ -162,7 +162,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Map(const _tchar * pLayerTag)
 		return E_FAIL;
 
 	Safe_AddRef(pGameInstance);
-	HANDLE		hFile = CreateFile(TEXT("../Bin/Data/TestMap.dat"), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	//HANDLE		hFile = CreateFile(TEXT("../Bin/Data/TestMap.dat"), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	HANDLE		hFile = CreateFile(TEXT("../Bin/Data/BossMap.dat"), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	DWORD	dwByte = 0;
 
 	if (INVALID_HANDLE_VALUE == hFile)

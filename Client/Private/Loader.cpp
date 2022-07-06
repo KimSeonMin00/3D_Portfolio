@@ -172,7 +172,7 @@ _uint CLoader::Loading_ForGamePlay()
 
 	///* For.Prototype_Component_Texture_Terrain . */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"),
-		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Terrain/Grass_%d.dds"), 2))))
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Meshes/Map/earth_river_dragoncamp_ground_a.dds")))))
 		return E_FAIL;
 
 	///* For.Prototype_Component_Texture_Player. */
@@ -221,7 +221,7 @@ _uint CLoader::Loading_ForGamePlay()
 
 	/* For.Prototype_Component_Navigation*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Data/Navigation.dat")))))
+		CNavigation::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Data/Navigation_Boss.dat")))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을 생성 중입니다. "));

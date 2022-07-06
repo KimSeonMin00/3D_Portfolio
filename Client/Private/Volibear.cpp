@@ -43,8 +43,10 @@ HRESULT CVolibear::NativeConstruct(void * pArg)
 	m_pModelCom->SetUp_AnimationIndex(14);
 	m_eState = STATE_IDLE;
 	m_ePreState = STATE_IDLE;
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 0.f, 5.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(12.f, 0.f, 15.f, 1.f));
 	m_pTransformCom->LookAt(XMVectorSet(0.f, 0.f, 0.f, 1.f));
+
+	m_pTransformCom->Set_Scaled(XMVectorSet(0.75f, 0.75f, 0.75f, 0.f));
 
 	return S_OK;
 }
@@ -143,10 +145,10 @@ void CVolibear::Late_Tick(_float fTimeDelta)
 		return;
 
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-
+	
 	if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_HitSphere")))->Collision_Sphere(m_pSPHEREAttackRange))
 	{
-		if (m_eState == STATE_ATTACK)
+		if (m_eState == STATE_ATTACK || m_eState == STATE_W)
 		{
 			if (false == ((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBRightHand))
 				((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBLeftHand);
@@ -1142,7 +1144,7 @@ void CVolibear::Pattern_1(_float fTimeDelta)
 		m_bQState = true;
 		m_ePreState = STATE_MOVE;
 
-		if (fDist >= 3.f)
+		if (fDist >= 2.f)
 		{
 			m_eState = STATE_MOVE;
 			m_fMoveSpeed = 4.0f;

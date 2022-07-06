@@ -33,7 +33,7 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	_float3 pPos;
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(10.f, 0.f, 3.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(12.f, 0.f, 2.f, 1.f));
 	XMStoreFloat3(&pPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	if (false == m_pNavigationCom->Check_isIn_Navigation(&pPos))
 		return E_FAIL;
@@ -48,6 +48,8 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 	m_eState = STATE_IDLE;
 	m_pModelCom->SetUp_AnimationIndex(40);
 	m_fQDistance = 3.f;
+
+	m_pTransformCom->Set_Scaled(XMVectorSet(0.5f, 0.5f, 0.5f, 0.f));
 
 	return S_OK;
 }
