@@ -1290,7 +1290,7 @@ void CVolibear::Pattern_1(_float fTimeDelta)
 		m_bQState = true;
 
 
-		if (m_fPatternTime >= 8.f)
+		if (m_fPatternTime >= 5.f)
 		{
 			m_eState = STATE_MOVE;
 			m_fMoveSpeed = 4.0f;
