@@ -70,6 +70,12 @@
     <Filter Include="02.GameObjects\MapObject">
       <UniqueIdentifier>{d9d8ad1e-a3b0-44af-b7c7-f562d13ba276}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Effect">
+      <UniqueIdentifier>{244cc128-ef00-4952-8c75-afb697ada57e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster\Boss\Effect">
+      <UniqueIdentifier>{f78fc336-8eee-4f19-b982-c548949b8a4c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -165,6 +171,10 @@
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
       <Filter>97.ShaderFiles</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect.h">
+      <Filter>02.GameObjects\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Voli_E.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -245,6 +255,10 @@
     <ClCompile Include="MapObject.cpp">
       <Filter>02.GameObjects\MapObject</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Effect.cpp">
+      <Filter>02.GameObjects\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Voli_E.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

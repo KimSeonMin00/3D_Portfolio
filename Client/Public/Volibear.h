@@ -6,7 +6,7 @@ class CVolibear
 	final : public CMonster
 {
 public:
-	enum STATE { STATE_IDLE, STATE_MOVE, STATE_ATTACK, STATE_Q, STATE_W, STATE_W_BITE, STATE_E, STATE_R, STATE_FLY,STATE_END };
+	enum STATE { STATE_IDLE, STATE_MOVE, STATE_ATTACK, STATE_Q, STATE_W, STATE_W_BITE, STATE_E, STATE_R, STATE_FLY, STATE_STUN, STATE_END };
 
 
 protected:
@@ -32,11 +32,13 @@ private:
 	CCollider*						m_pSPHEREAttackRange = nullptr;
 	CCollider*						m_pOBBRightHand = nullptr;
 	CCollider*						m_pOBBLeftHand = nullptr;
+	CCollider*						m_pOBBJaw = nullptr;
 
 	_float4x4		m_PivotMatrix;
 
 	CHierarchyNode*	m_pRHNode = nullptr;
 	CHierarchyNode*	m_pLHNode = nullptr;
+	CHierarchyNode*	m_pJawNode = nullptr;
 
 private:
 	void	Key_Input(_float fTimeDelta);
@@ -53,6 +55,7 @@ private:
 	void	E_Skill(_float fTimeDelta);
 	void	R_Skill(_float fTimeDelta);
 	void	Fly(_float fTimeDelta);
+	void	Stun(_float fTimeDelta);
 
 	void	Chase_Player(_float fTimeDelta);
 	void	Pattern_1(_float fTimeDelta);
@@ -62,6 +65,9 @@ private:
 	void	Pattern_5(_float fTimeDelta);
 
 	_float	m_fInitTime = 0.f;
+	_float  m_fPatternTime = 0.f;
+	_float	m_fStunTime = 0.f;
+	_float	m_bStun = false;
 
 private:
 	STATE			m_ePreState = STATE_END;

@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Terrain.h"
 #include "HierarchyNode.h"
+#include "Effect_Voli_E.h"
 
 CVolibear::CVolibear(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
 	:CMonster(pDevice, pDevice_Context)
@@ -38,12 +39,16 @@ HRESULT CVolibear::NativeConstruct(void * pArg)
 	if (m_pLHNode == nullptr)
 		return E_FAIL;
 
+	m_pJawNode = m_pModelCom->Find_HierarcyNodes("C_Up_Lip");
+	if (m_pJawNode == nullptr)
+		return E_FAIL;
+
 	m_PivotMatrix = m_pModelCom->Get_PivotMatrix();
 
 	m_pModelCom->SetUp_AnimationIndex(14);
 	m_eState = STATE_IDLE;
 	m_ePreState = STATE_IDLE;
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(12.f, 0.f, 15.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(12.f, 0.f, 17.f, 1.f));
 	m_pTransformCom->LookAt(XMVectorSet(0.f, 0.f, 0.f, 1.f));
 
 	m_pTransformCom->Set_Scaled(XMVectorSet(0.75f, 0.75f, 0.75f, 0.f));
@@ -160,10 +165,15 @@ void CVolibear::Late_Tick(_float fTimeDelta)
 	
 	if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_HitSphere")))->Collision_Sphere(m_pSPHEREAttackRange))
 	{
-		if (m_eState == STATE_ATTACK || m_eState == STATE_W)
+		if (m_eState == STATE_ATTACK || m_eState == STATE_W || m_eState == STATE_Q)
 		{
 			if (false == ((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBRightHand))
 				((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBLeftHand);
+		}
+
+		if (m_eState == STATE_W_BITE)
+		{
+			((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBJaw);
 		}
 	}
 
@@ -205,6 +215,7 @@ HRESULT CVolibear::Render()
 	m_pSphereCom->Render();
 	m_pOBBRightHand->Render();
 	m_pOBBLeftHand->Render();
+	m_pOBBJaw->Render();
 	m_pSPHEREAttackRange->Render();
 
 	return S_OK;
@@ -260,6 +271,10 @@ HRESULT CVolibear::SetUp_Components()
 
 	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"), TEXT("Com_LeftHand"), (CComponent**)&m_pOBBLeftHand, &ColliderDesc)))
 		return E_FAIL;
+
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"), TEXT("Com_Jaw"), (CComponent**)&m_pOBBJaw, &ColliderDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -309,6 +324,20 @@ void CVolibear::Update_HandCollider()
 
 	//m_pOBBCom->Update(m_pTransformCom->Get_WorldMatrix());
 	m_pOBBLeftHand->Update(XMLoadFloat4x4(&SocketMatrix));
+
+	XMStoreFloat4x4(&SocketMatrix, m_pJawNode->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&m_PivotMatrix));
+
+	a = XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[1]));
+	b = XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[2]));
+
+	XMStoreFloat3((_float3*)&SocketMatrix.m[0], XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[0])));
+	XMStoreFloat3((_float3*)&SocketMatrix.m[1], b);
+	XMStoreFloat3((_float3*)&SocketMatrix.m[2], a);
+
+	XMStoreFloat4x4(&SocketMatrix, XMLoadFloat4x4(&SocketMatrix) * m_pTransformCom->Get_WorldMatrix());
+
+	//m_pOBBCom->Update(m_pTransformCom->Get_WorldMatrix());
+	m_pOBBJaw->Update(XMLoadFloat4x4(&SocketMatrix));
 }
 
 void CVolibear::Key_Input(_float fTimeDelta)
@@ -515,6 +544,11 @@ void CVolibear::Check_Loop(_float fTimeDelta)
 			m_pModelCom->Check_Looped(fTimeDelta);
 		break;
 
+	case STATE_STUN:
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Check_Looped(fTimeDelta);
+		break;
+
 	default:
 		break;
 	}
@@ -617,6 +651,18 @@ void CVolibear::Update_State(_float fTimeDelta)
 			else if (m_eDoingState == STATE_FLY)
 			{
 				m_iCurrentIndex = 21;
+				m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 1.0);
+				if (m_pModelCom->Get_IsChange() == false)
+				{
+					m_bStateChange = false;
+					m_bIsState_In = true;
+					m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+					m_pModelCom->Set_Initialize();
+				}
+			}
+			else if (m_eDoingState == STATE_STUN)
+			{
+				m_iCurrentIndex = 77;
 				m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 1.0);
 				if (m_pModelCom->Get_IsChange() == false)
 				{
@@ -764,6 +810,10 @@ void CVolibear::Update_State(_float fTimeDelta)
 
 	case STATE_FLY:
 		Fly(fTimeDelta);
+		break;
+
+	case STATE_STUN:
+		Stun(fTimeDelta);
 		break;
 
 	default:
@@ -1049,6 +1099,17 @@ void CVolibear::E_Skill(_float fTimeDelta)
 		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
 		if (m_pModelCom->Get_IsChange() == false)
 		{
+			CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+
+			if (pGameInstance == nullptr)
+				return;
+
+			Safe_AddRef(pGameInstance);
+
+			pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Voli_E"), &(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
+
+			Safe_Release(pGameInstance);
+
 			m_bStateChange = false;
 			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 			m_pModelCom->Set_Initialize();
@@ -1139,6 +1200,51 @@ void CVolibear::Fly(_float fTimeDelta)
 	}
 }
 
+void CVolibear::Stun(_float fTimeDelta)
+{
+	if (m_bStateChange == true)
+	{
+		m_iCurrentIndex = 47;
+
+		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
+		if (m_pModelCom->Get_IsChange() == false)
+		{
+			m_bStateChange = false;
+			m_fStunTime = 0.f;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
+		}
+	}
+
+	else
+	{
+		if (m_pModelCom->Get_Finished() && m_bStun == false)
+		{
+			m_bStun = true;
+			m_fStunTime = 0.f;
+		}
+
+
+
+		if (m_bStun == false)
+		{
+			m_pModelCom->Play_Animation(fTimeDelta);
+		}
+
+		else
+		{
+			m_fStunTime += fTimeDelta;
+			if (m_fStunTime >= 5.f)
+			{
+				m_bIsChanneling = false;
+				m_bStun = false;
+				m_eState = STATE_IDLE;
+				return;
+			}
+		}
+	}
+}
+
 void CVolibear::Chase_Player(_float fTimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
@@ -1177,63 +1283,42 @@ void CVolibear::Chase_Player(_float fTimeDelta)
 
 void CVolibear::Pattern_1(_float fTimeDelta)
 {
-	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
-
-	if (pGameInstance == nullptr)
-		return;
-
-	Safe_AddRef(pGameInstance);
-
-	CTransform* pPlayer_Transform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"));
-
-	if (pPlayer_Transform == nullptr)
-	{
-		Safe_Release(pGameInstance);
-		return;
-	}
-
-	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vPlayerPos = pPlayer_Transform->Get_State(CTransform::STATE_POSITION);
-
-	m_vMovePos = vPlayerPos;
-
-	m_pTransformCom->LookAt(vPlayerPos);
-
-	_float fDist = XMVectorGetX(XMVector3Length(vPlayerPos - vPos));
-
 	if (m_bIsChanneling == false)
 	{
+		m_fPatternTime += fTimeDelta;
+		Chase_Player(fTimeDelta);
 		m_bQState = true;
-		m_ePreState = STATE_MOVE;
 
-		if (fDist >= 2.f)
+
+		if (m_fPatternTime >= 8.f)
 		{
 			m_eState = STATE_MOVE;
 			m_fMoveSpeed = 4.0f;
-		}
-
-		else
-		{
-			m_eState = STATE_Q;
+			m_fPatternTime = 0.f;
 			m_bIsChanneling = true;
 		}
 	}
 
 	else
 	{
-		if (m_pModelCom->Get_Finished() == true)
+		m_fPatternTime += fTimeDelta;
+		if (m_fPatternTime >= 1.f)
+		{
+			m_eState = STATE_Q;
+		}
+
+		if (m_eState == STATE_Q && m_pModelCom->Get_Finished())
 		{
 			m_bIsChanneling = false;
 			m_bQState = false;
 			m_bQState_Pre = false;
 			m_fDelayTime = 0.f;
 			m_bPattern1 = false;
+			m_fPatternTime = 0.f;
+			m_iPattern_AttackTime = 0;
 			m_eState = STATE_IDLE;
-			m_fMoveSpeed = 2.0f;
 		}
 	}
-
-	Safe_Release(pGameInstance);
 }
 
 void CVolibear::Pattern_2(_float fTimeDelta)
@@ -1408,6 +1493,9 @@ void CVolibear::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pSPHEREAttackRange);
+	Safe_Release(m_pOBBRightHand);
+	Safe_Release(m_pOBBLeftHand);
 	Safe_Release(m_pSphereCom);
 	Safe_Release(m_pAABBCom);
 	Safe_Release(m_pRendererCom);
