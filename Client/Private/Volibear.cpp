@@ -1327,6 +1327,7 @@ void CVolibear::Pattern_2(_float fTimeDelta)
 	{
 		m_eState = STATE_ATTACK;
 		m_bIsChanneling = true;
+		Chase_Player(fTimeDelta);
 		m_iPattern_AttackTime++;
 	}
 
@@ -1376,6 +1377,7 @@ void CVolibear::Pattern_3(_float fTimeDelta)
 	{
 		m_eState = STATE_ATTACK;
 		m_bIsChanneling = true;
+		Chase_Player(fTimeDelta);
 		m_iPattern_AttackTime++;
 	}
 
