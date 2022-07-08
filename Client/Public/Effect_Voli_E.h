@@ -23,6 +23,7 @@ public:
 private:
 	_float m_fCastingTime = 0.f;
 	_float m_fLiveTime = 0.f;
+	_float m_fAlpha = 0.f;
 
 public:
 	static  CEffect_Voli_E* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const CTransform::TRANSFORMDESC& TransformDesc);

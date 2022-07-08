@@ -5,6 +5,8 @@ matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 texture2D		g_DiffuseTexture;
 
+float			g_Alpha;
+
 struct VS_IN
 {
 	float3		vPosition : POSITION;
@@ -52,6 +54,7 @@ PS_OUT PS_MAIN_RECT(PS_IN In)
 	vector		vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
 
 	Out.vColor = vMtrlDiffuse;
+	Out.vColor.a = Out.vColor.a * g_Alpha;
 
 	return Out;
 }

@@ -257,11 +257,11 @@
     <ClCompile Include="..\Private\Effect.cpp">
       <Filter>02.GameObjects\Effect</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\WhirlWind_EQ.cpp">
-      <Filter>02.GameObjects\Monster\Boss\Effect</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Effect_Voli_E.cpp">
       <Filter>02.GameObjects\Monster\Boss\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\WhirlWind_EQ.cpp">
+      <Filter>02.GameObjects\Player\WhirlWind\WhirlWind_EQ</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

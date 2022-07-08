@@ -48,6 +48,20 @@ void CEffect_Voli_E::Tick(_float fTimeDelta)
 	m_fLiveTime += fTimeDelta;
 	m_fCastingTime += fTimeDelta;
 
+	if (m_fCastingTime <= 0.5f)
+	{
+		if(m_fAlpha < 1.f)
+			m_fAlpha += 2 * fTimeDelta;
+	}
+
+	else if (m_fCastingTime >= 2.5f)
+	{
+		if (m_fAlpha > 0.f)
+			m_fAlpha -= 2 * fTimeDelta;
+	}
+
+
+
 	if (m_fLiveTime >= 3.f)
 	{
 		m_bDead = true;
@@ -80,6 +94,9 @@ HRESULT CEffect_Voli_E::Render()
 		if (FAILED(m_pTextureCom->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture", 1)))
 			return E_FAIL;
 	}
+
+	if (FAILED(m_pShaderCom->Set_RawValue("g_Alpha", &m_fAlpha, sizeof(_float))))
+		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Begin(0)))
 		return E_FAIL;
