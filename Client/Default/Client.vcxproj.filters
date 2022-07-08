@@ -174,7 +174,9 @@
     <ClInclude Include="..\Public\Effect.h">
       <Filter>02.GameObjects\Effect</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Effect_Voli_E.h" />
+    <ClInclude Include="..\Public\Effect_Voli_E.h">
+      <Filter>02.GameObjects\Monster\Boss\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -249,16 +251,18 @@
     <ClCompile Include="..\Private\WhirlWind_Normal.cpp">
       <Filter>02.GameObjects\Player\WhirlWind\WhirlWind_Normal</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\WhirlWind_EQ.cpp">
-      <Filter>02.GameObjects\Player\WhirlWind\WhirlWind_EQ</Filter>
-    </ClCompile>
     <ClCompile Include="MapObject.cpp">
       <Filter>02.GameObjects\MapObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Effect.cpp">
       <Filter>02.GameObjects\Effect</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Effect_Voli_E.cpp" />
+    <ClCompile Include="..\Private\WhirlWind_EQ.cpp">
+      <Filter>02.GameObjects\Monster\Boss\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Voli_E.cpp">
+      <Filter>02.GameObjects\Monster\Boss\Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

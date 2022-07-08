@@ -4,6 +4,7 @@
 #include "Terrain.h"
 #include "HierarchyNode.h"
 #include "Effect_Voli_E.h"
+#include "Camera_Free.h"
 
 CVolibear::CVolibear(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
 	:CMonster(pDevice, pDevice_Context)
@@ -114,7 +115,8 @@ void CVolibear::Tick(_float fTimeDelta)
 
 	//Key_Input(fTimeDelta);
 
-	Check_Loop(fTimeDelta);
+	if(m_bStop == false)
+		Check_Loop(fTimeDelta);
 
 	if (m_bPattern1 == true)
 	{
@@ -146,7 +148,8 @@ void CVolibear::Tick(_float fTimeDelta)
 
 	Change_State(fTimeDelta);
 
-	Update_State(fTimeDelta);
+	if(m_bStop == false)
+		Update_State(fTimeDelta);
 
 	m_pAABBCom->Update(m_pTransformCom->Get_WorldMatrix());
 	m_pSphereCom->Update(m_pTransformCom->Get_WorldMatrix());
@@ -1192,7 +1195,7 @@ void CVolibear::Fly(_float fTimeDelta)
 		if (m_pModelCom->Get_Finished())
 		{
 			m_bIsChanneling = false;
-			m_eState = STATE_IDLE;
+			m_bStop = true;
 			return;
 		}
 
@@ -1461,9 +1464,73 @@ void CVolibear::Pattern_5(_float fTimeDelta)
 	if (m_bIsChanneling == false)
 	{
 		m_eState = STATE_FLY;
-		m_fDelayTime = 0.f;
-		m_bPattern1 = false;
+		m_bIsChanneling = true;
 		m_iPattern_AttackTime = 0;
+		m_bCutScene = true;
+
+		CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+
+		if (pGameInstance == nullptr)
+			return;
+
+		Safe_AddRef(pGameInstance);
+
+		((CCamera_Free*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_Camera"), 0))->Set_State(CCamera_Free::STATE_BOSS);
+
+		Safe_Release(pGameInstance);
+	}
+
+	else
+	{
+		if (m_eState == STATE_FLY && m_pModelCom->Get_Finished())
+		{
+			if (m_bCutScene == true)
+			{
+				CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+
+				if (pGameInstance == nullptr)
+					return;
+
+				Safe_AddRef(pGameInstance);
+
+				((CCamera_Free*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_Camera"), 0))->Set_State(CCamera_Free::STATE_PLAYER);
+
+				Safe_Release(pGameInstance);
+
+				m_bCutScene = false;
+			}
+
+			m_fFlyAttackDelay += fTimeDelta;
+
+			if (m_fFlyAttackDelay >= 1.5f)
+			{
+				Chase_Player(fTimeDelta);
+
+				CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+
+				if (pGameInstance == nullptr)
+					return;
+
+				Safe_AddRef(pGameInstance);
+
+				pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Voli_E"), &m_vMovePos);
+
+				Safe_Release(pGameInstance);
+
+				m_fFlyAttackDelay = 0.f;
+				m_iPattern_AttackTime++;
+			}
+
+			if (m_iPattern_AttackTime >= 8)
+			{
+				m_bIsChanneling = false;
+				m_fDelayTime = 0.f;
+				m_bPattern1 = false;
+				m_bStop = false;
+				m_iPattern_AttackTime = 0;
+				m_eState = STATE_IDLE;
+			}
+		}
 	}
 }
 

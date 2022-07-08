@@ -67,7 +67,12 @@ private:
 	_float	m_fInitTime = 0.f;
 	_float  m_fPatternTime = 0.f;
 	_float	m_fStunTime = 0.f;
-	_float	m_bStun = false;
+	_bool	m_bStop = false;
+	_bool	m_bStun = false;
+	_bool	m_bCutScene = false;
+
+	_float	m_fFlyAttackDelay = 0.f;
+
 
 private:
 	STATE			m_ePreState = STATE_END;
