@@ -56,6 +56,7 @@ private:
 	void	R_Skill(_float fTimeDelta);
 	void	Fly(_float fTimeDelta);
 	void	Stun(_float fTimeDelta);
+	void	Grab(_float fTimeDelta);
 
 	void	Chase_Player(_float fTimeDelta);
 	void	Pattern_1(_float fTimeDelta);
@@ -63,12 +64,14 @@ private:
 	void	Pattern_3(_float fTimeDelta);
 	void	Pattern_4(_float fTimeDelta);
 	void	Pattern_5(_float fTimeDelta);
+	void	Pattern_6(_float fTimeDelta);
 
 	_float	m_fInitTime = 0.f;
 	_float  m_fPatternTime = 0.f;
 	_float	m_fStunTime = 0.f;
 	_bool	m_bStop = false;
 	_bool	m_bStun = false;
+	_bool	m_bGrab = false;
 	_bool	m_bCutScene = false;
 
 	_float	m_fFlyAttackDelay = 0.f;

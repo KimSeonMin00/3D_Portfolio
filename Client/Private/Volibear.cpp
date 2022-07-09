@@ -108,6 +108,13 @@ void CVolibear::Tick(_float fTimeDelta)
 				m_iPattern_AttackTime = 0;
 				m_fDelayTime = 0.f;
 			}
+			if (pGameInstance->Get_DIKeyState(DIK_6) & 0x80)
+			{
+				m_iPattern_Index = 6;
+				m_bPattern1 = true;
+				m_iPattern_AttackTime = 0;
+				m_fDelayTime = 0.f;
+			}
 
 			
 		}
@@ -138,6 +145,9 @@ void CVolibear::Tick(_float fTimeDelta)
 				break;
 			case 5:
 				Pattern_5(fTimeDelta);
+				break;
+			case 6:
+				Pattern_6(fTimeDelta);
 				break;
 			default:
 				break;
@@ -1248,6 +1258,49 @@ void CVolibear::Stun(_float fTimeDelta)
 	}
 }
 
+void CVolibear::Grab(_float fTimeDelta)
+{
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (pGameInstance == nullptr)
+		return;
+
+	Safe_AddRef(pGameInstance);
+
+	if (m_bGrab == false)
+	{
+		if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_HitSphere")))->Collision_Sphere(m_pSPHEREAttackRange))
+		{
+			if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBLeftHand))
+				m_bGrab = true;
+		}
+	}
+
+	else
+	{
+		CTransform* pPlayer_Transform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"));
+
+		if (pPlayer_Transform == nullptr)
+		{
+			Safe_Release(pGameInstance);
+			return;
+		}
+
+		Safe_AddRef(pPlayer_Transform);
+
+		_float4x4  SocketMatrix;
+
+		XMStoreFloat4x4(&SocketMatrix, m_pLHNode->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&m_PivotMatrix));
+		
+		_vector vGrabPos = XMVector3TransformCoord(XMLoadFloat4((_float4*)SocketMatrix.m[3]), m_pTransformCom->Get_WorldMatrix());
+		pPlayer_Transform->Set_State(CTransform::STATE_POSITION, vGrabPos);
+
+		Safe_Release(pPlayer_Transform);
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
 void CVolibear::Chase_Player(_float fTimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
@@ -1527,6 +1580,45 @@ void CVolibear::Pattern_5(_float fTimeDelta)
 				m_fDelayTime = 0.f;
 				m_bPattern1 = false;
 				m_bStop = false;
+				m_iPattern_AttackTime = 0;
+				m_eState = STATE_IDLE;
+			}
+		}
+	}
+}
+
+void CVolibear::Pattern_6(_float fTimeDelta)
+{
+	if (m_bIsChanneling == false)
+	{
+		m_eState = STATE_ATTACK;
+		m_bIsChanneling = true;
+		m_iAttackIndex = 3;
+		m_iPattern_AttackTime = 0;
+		Chase_Player(fTimeDelta);
+		m_bGrab = false;
+	}
+
+	else
+	{
+		if (m_eState == STATE_ATTACK || m_bGrab == true)
+			Grab(fTimeDelta);
+
+		if (m_pModelCom->Get_Finished())
+		{
+			if (m_iPattern_AttackTime == 0)
+			{
+				m_eState = STATE_E;
+				m_iPattern_AttackTime++;
+			}
+
+			else if (m_iPattern_AttackTime == 1)
+			{
+				m_bIsChanneling = false;
+				m_bQState = false;
+				m_bQState_Pre = false;
+				m_fDelayTime = 0.f;
+				m_bPattern1 = false;
 				m_iPattern_AttackTime = 0;
 				m_eState = STATE_IDLE;
 			}
