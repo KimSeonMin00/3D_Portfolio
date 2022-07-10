@@ -123,7 +123,7 @@ void CVolibear::Tick(_float fTimeDelta)
 
 	//Key_Input(fTimeDelta);
 
-	if(m_bStop == false)
+	if(m_bStop == false && m_bStun == false)
 		Check_Loop(fTimeDelta);
 
 	if (m_bPattern1 == true)
@@ -676,15 +676,8 @@ void CVolibear::Update_State(_float fTimeDelta)
 			}
 			else if (m_eDoingState == STATE_STUN)
 			{
-				m_iCurrentIndex = 77;
-				m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 1.0);
-				if (m_pModelCom->Get_IsChange() == false)
-				{
-					m_bStateChange = false;
-					m_bIsState_In = true;
-					m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
-					m_pModelCom->Set_Initialize();
-				}
+				m_bStateChange = false;
+				m_bIsState_In = true;
 			}
 		}
 
@@ -1224,6 +1217,7 @@ void CVolibear::Stun(_float fTimeDelta)
 		if (m_pModelCom->Get_IsChange() == false)
 		{
 			m_bStateChange = false;
+
 			m_fStunTime = 0.f;
 			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 			m_pModelCom->Set_Initialize();
@@ -1232,16 +1226,24 @@ void CVolibear::Stun(_float fTimeDelta)
 
 	else
 	{
-		if (m_pModelCom->Get_Finished() && m_bStun == false)
-		{
-			m_bStun = true;
-			m_fStunTime = 0.f;
+		if (m_pModelCom->Get_KeyFrame() == 11 && m_bStun == false)
+		{	
+			if (m_fStunTime < 5.f)
+			{
+				m_bStun = true;
+				m_fStunTime = 0.f;
+			}
 		}
-
-
 
 		if (m_bStun == false)
 		{
+			if (m_pModelCom->Get_Finished())
+			{
+				m_bIsChanneling = false;
+				m_eState = STATE_IDLE;
+				return;
+			}
+
 			m_pModelCom->Play_Animation(fTimeDelta);
 		}
 
@@ -1250,10 +1252,7 @@ void CVolibear::Stun(_float fTimeDelta)
 			m_fStunTime += fTimeDelta;
 			if (m_fStunTime >= 5.f)
 			{
-				m_bIsChanneling = false;
 				m_bStun = false;
-				m_eState = STATE_IDLE;
-				return;
 			}
 		}
 	}
@@ -1590,7 +1589,10 @@ void CVolibear::Pattern_5(_float fTimeDelta)
 
 void CVolibear::Pattern_6(_float fTimeDelta)
 {
-	if (m_bIsChanneling == false)
+	m_fDelayTime = 0.f;
+	m_bPattern1 = false;
+	m_eState = STATE_STUN;
+	/*if (m_bIsChanneling == false)
 	{
 
 		CGameInstance* pGameInstance = CGameInstance::Get_Instance();
@@ -1636,7 +1638,7 @@ void CVolibear::Pattern_6(_float fTimeDelta)
 				m_eState = STATE_IDLE;
 			}
 		}
-	}
+	}*/
 }
 
 CVolibear * CVolibear::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const CTransform::TRANSFORMDESC & TransformDesc)
