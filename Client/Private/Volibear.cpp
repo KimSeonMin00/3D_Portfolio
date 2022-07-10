@@ -4,6 +4,7 @@
 #include "Terrain.h"
 #include "HierarchyNode.h"
 #include "Effect_Voli_E.h"
+#include "Voli_Ghost.h"
 #include "Camera_Free.h"
 
 CVolibear::CVolibear(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
@@ -861,7 +862,7 @@ void CVolibear::Move(_float fTimeDelta)
 				m_bIsState_In = true;
 				m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 				m_pModelCom->Set_Initialize();
-			};
+			}
 		}
 
 		else if (m_eDoingState == STATE_ATTACK)
@@ -1591,6 +1592,18 @@ void CVolibear::Pattern_6(_float fTimeDelta)
 {
 	if (m_bIsChanneling == false)
 	{
+
+		CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+
+		if (pGameInstance == nullptr)
+			return;
+
+		Safe_AddRef(pGameInstance);
+
+		pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Voli_Ghost"));
+
+		Safe_Release(pGameInstance);
+
 		m_eState = STATE_ATTACK;
 		m_bIsChanneling = true;
 		m_iAttackIndex = 3;

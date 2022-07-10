@@ -10,6 +10,7 @@
 #include "WhirlWind_Normal.h"
 #include "WhirlWind_EQ.h"
 #include "Volibear.h"
+#include "Voli_Ghost.h"
 #include "Effect_Voli_E.h"
 #include "MapObject.h"
 
@@ -128,6 +129,10 @@ _uint CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Boss"),
 		CVolibear::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Voli_Ghost"),
+		CVoli_Ghost::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Voli_E"),

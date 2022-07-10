@@ -3,6 +3,8 @@
 matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 matrix			g_SocketMatrix;
 
+float			g_Alpha = 1.f;
+
 struct BoneDesc
 {
 	matrix		BoneMatrices[180];
@@ -128,6 +130,8 @@ PS_OUT PS_MAIN(PS_IN In)
 	if (Out.vColor.a < 0.1f)
 		discard;
 
+	Out.vColor.a = Out.vColor.a* g_Alpha;
+
 	return Out;
 }
 
@@ -151,6 +155,8 @@ PS_OUT PS_HIT(PS_IN In)
 
 	if (Out.vColor.a < 0.1f)
 		discard;
+
+	Out.vColor.a = Out.vColor.a* g_Alpha;
 
 	return Out;
 }
@@ -181,13 +187,13 @@ technique11 DefaultTechinque
 		PixelShader = compile ps_5_0 PS_HIT();
 	}
 
-	pass Socket
+	pass Alpha
 	{
-		SetBlendState(BS_None, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
+		SetBlendState(BS_AlphaBlend, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
 		SetDepthStencilState(DSS_Default, 0);
 		SetRasterizerState(RS_Default);
 
-		VertexShader = compile vs_5_0 VS_MAIN_SOCKET();
+		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}

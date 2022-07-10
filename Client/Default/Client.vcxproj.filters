@@ -76,6 +76,9 @@
     <Filter Include="02.GameObjects\Monster\Boss\Effect">
       <UniqueIdentifier>{f78fc336-8eee-4f19-b982-c548949b8a4c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Monster\Boss\Voli_Ghost">
+      <UniqueIdentifier>{3a17d7cf-382f-4cff-ab89-cf1107207c27}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -177,6 +180,9 @@
     <ClInclude Include="..\Public\Effect_Voli_E.h">
       <Filter>02.GameObjects\Monster\Boss\Effect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Voli_Ghost.h">
+      <Filter>02.GameObjects\Monster\Boss\Voli_Ghost</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -262,6 +268,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\WhirlWind_EQ.cpp">
       <Filter>02.GameObjects\Player\WhirlWind\WhirlWind_EQ</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Voli_Ghost.cpp">
+      <Filter>02.GameObjects\Monster\Boss\Voli_Ghost</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
