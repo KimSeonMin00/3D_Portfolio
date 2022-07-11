@@ -66,6 +66,10 @@ private:
 	void	Pattern_5(_float fTimeDelta);
 	void	Pattern_6(_float fTimeDelta);
 
+	void	Pattern_Phase1(_float fTimeDelta);
+	_uint	m_iPatternIndex = 0;
+	_bool	m_bPatternFinished = false;
+
 	_float	m_fInitTime = 0.f;
 	_float  m_fPatternTime = 0.f;
 	_float	m_fStunTime = 0.f;

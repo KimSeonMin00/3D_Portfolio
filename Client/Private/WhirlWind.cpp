@@ -52,7 +52,7 @@ void CWhirlWind::Late_Tick(_float fTimeDelta)
 				return;
 			Safe_AddRef(pMonster);
 
-			pMonster->Airborne(fTimeDelta);
+			pMonster->Set_Airborne();
 
 			Safe_Release(pMonster);
 			

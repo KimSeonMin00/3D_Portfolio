@@ -47,7 +47,19 @@ public:
 	HRESULT SetUp_ConstantTable();
 
 public:
-	void Change_AnimtionIndex(_uint iIndex);
+	void	Grabbed(_vector pPos)
+	{
+		m_bGrab = true;
+
+		pPos = XMVectorSetY(pPos, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
+		m_pTransformCom->LookAt(pPos);
+	};
+	void	Set_Fall()
+	{
+		m_bGrab = true;
+		m_bFall = true;
+		m_fYdir = 3.f;
+	};
 
 private:
 	void	Key_Input(_float fTimeDelta);
@@ -62,6 +74,8 @@ private:
 	void	W_Skill(_float fTimeDelta);
 	void	E_Skill(_float fTimeDelta);
 	void	R_Skill(_float fTimeDelta);
+
+	void	Fall(_float fTimeDelta);
 
 private:
 	STATE			m_ePreState = STATE_END;
@@ -109,6 +123,13 @@ private:
 	_bool			m_bE_Q_Used = false;
 
 	_float			m_fDashDist = 0.f;
+
+private:
+	_float			m_fYdir = 1.f;
+
+
+	_bool			m_bFall = false;
+	_bool			m_bGrab = false;
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const CTransform::TRANSFORMDESC& TransformDesc);

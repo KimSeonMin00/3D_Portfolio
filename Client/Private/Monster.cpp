@@ -44,12 +44,6 @@ HRESULT CMonster::Render()
 
 void CMonster::Airborne(_float fTimeDelta)
 {
-	if (m_bAirborne == false)
-	{
-		m_bAirborne = true;
-		m_fAirborneTime = 0.f;
-	}
-
 	m_fAirborneTime += fTimeDelta;
 
 	if(m_fAirborneTime <= 0.5f)

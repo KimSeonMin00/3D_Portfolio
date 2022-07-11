@@ -56,11 +56,17 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 
 void CPlayer::Tick(_float fTimeDelta)
 {
-	Key_Input(fTimeDelta);
+	if (m_bGrab == false)
+	{
+		Key_Input(fTimeDelta);
 
-	Change_State(fTimeDelta);
+		Change_State(fTimeDelta);
 
-	Update_State(fTimeDelta);
+		Update_State(fTimeDelta);
+	}
+
+	if (m_bFall == true)
+		Fall(fTimeDelta);
 
 	m_pAABBCom->Update(m_pTransformCom->Get_WorldMatrix());
 	Update_SwordCollider();
@@ -202,13 +208,6 @@ HRESULT CPlayer::SetUp_ConstantTable()
 	m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_PROJ), sizeof(_float4x4));
 	
 	RELEASE_INSTANCE(CGameInstance);
-}
-
-void CPlayer::Change_AnimtionIndex(_uint iIndex)
-{
-	m_iAnimationIndex = iIndex;
-	m_pModelCom->SetUp_AnimationIndex(m_iAnimationIndex);
-	m_pModelCom->Set_Initialize();
 }
 
 void CPlayer::Key_Input(_float fTimeDelta)
@@ -756,6 +755,27 @@ void CPlayer::R_Skill(_float fTimeDelta)
 	}
 
 	m_pModelCom->Play_Animation(fTimeDelta);
+}
+
+void CPlayer::Fall(_float fTimeDelta)
+{
+	m_pTransformCom->Go_Backward(4.f*fTimeDelta);
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	if (XMVectorGetY(vPos) > 0.f)
+	{
+		vPos = vPos + XMVectorSet(0.f, m_fYdir * fTimeDelta, 0.f, 0.f);
+		m_fYdir -= 10.f * fTimeDelta;
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+	}
+
+	else
+	{
+		vPos = XMVectorSetY(vPos, 0.f);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+		m_bFall = false;
+		m_bGrab = false;
+	}
 }
 
 CPlayer * CPlayer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const CTransform::TRANSFORMDESC & TransformDesc)

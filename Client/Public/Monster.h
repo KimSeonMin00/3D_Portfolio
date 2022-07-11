@@ -30,6 +30,14 @@ public:
 
 public:
 	void		Airborne(_float fTimeDelta);
+	void		Set_Airborne()
+	{
+		if (m_bAirborne == false)
+		{
+			m_bAirborne = true;
+			m_fAirborneTime = 0.f;
+		}
+	};
 
 protected:
 	_bool		m_bAirborne = false;
