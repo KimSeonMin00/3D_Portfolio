@@ -6,6 +6,8 @@
 BEGIN(Engine)
 class CRenderer;
 class CCollider;
+class CModel;
+class CShader;
 END
 
 class CWhirlWind abstract
@@ -25,6 +27,8 @@ public:
 
 protected:
 	CRenderer*						m_pRendererCom = nullptr;
+	CModel*							m_pModelCom = nullptr;
+	CShader*						m_pShaderCom = nullptr;
 	CCollider*						m_pSPHERECom = nullptr;
 
 public:

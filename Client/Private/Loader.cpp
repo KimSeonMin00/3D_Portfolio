@@ -213,6 +213,12 @@ _uint CLoader::Loading_ForGamePlay()
 		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/", "Volibear.fbx", CModel::TYPE_ANIM, PivotMatrix))))
 		return E_FAIL;
 
+	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tornado"),
+		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Effect/", "Q_Tornado.fbx", CModel::TYPE_NONANIM, PivotMatrix))))
+		return E_FAIL;
+
 	Load_MapObject(LEVEL_GAMEPLAY);
 
 	lstrcpy(m_szLoadingText, TEXT("콜라이더를 생성 중입니다. "));
