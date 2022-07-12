@@ -76,11 +76,9 @@ void CWhirlWind::Free()
 
 	Safe_Release(m_pSPHERECom);
 
-	if(m_pShaderCom != nullptr)
-		Safe_Release(m_pShaderCom);
-
-	if(m_pModelCom != nullptr)
-		Safe_Release(m_pModelCom);
+	Safe_Release(m_pModelCom);
+	Safe_Release(m_pTextureAlpha);
+	Safe_Release(m_pShaderCom);
 
 	Safe_Release(m_pRendererCom);
 }

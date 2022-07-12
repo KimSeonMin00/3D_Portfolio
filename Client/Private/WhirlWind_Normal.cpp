@@ -74,7 +74,9 @@ HRESULT CWhirlWind_Normal::Render()
 	{
 		m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 
-		m_pShaderCom->Begin(0);
+		m_pTextureAlpha->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
+
+		m_pShaderCom->Begin(2);
 
 		m_pModelCom->Render(i);
 	}
@@ -96,6 +98,9 @@ HRESULT CWhirlWind_Normal::SetUp_Components()
 
 	/* For.Com_Model*/
 	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tornado"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Tornado_Alpha"), TEXT("Com_Alpha_Texture"), (CComponent**)&m_pTextureAlpha)))
 		return E_FAIL;
 
 	CCollider::COLLIDERDESC		ColliderDesc;

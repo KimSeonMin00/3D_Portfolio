@@ -8,6 +8,7 @@ class CRenderer;
 class CCollider;
 class CModel;
 class CShader;
+class CTexture;
 END
 
 class CWhirlWind abstract
@@ -30,6 +31,7 @@ protected:
 	CModel*							m_pModelCom = nullptr;
 	CShader*						m_pShaderCom = nullptr;
 	CCollider*						m_pSPHERECom = nullptr;
+	CTexture*						m_pTextureAlpha = nullptr;
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;
