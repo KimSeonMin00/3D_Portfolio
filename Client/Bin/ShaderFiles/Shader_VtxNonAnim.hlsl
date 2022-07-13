@@ -131,8 +131,7 @@ PS_OUT PS_MAIN_EFFECT(PS_IN In)
 
 	float		fSpecular = pow(max(dot(normalize(vLook) * -1.f, normalize(vReflect)), 0.f), 30.f);
 
-	Out.vColor.xyz = ((g_vLightDiffuse * vMtrlDiffuse) * (fShade + g_vLightAmbient * g_vMtrlAmbient)
-		+ (g_vLightSpecular * g_vMtrlSpecular) * fSpecular).xyz;
+	Out.vColor.xyz = vMtrlDiffuse.xyz;
 
 	Out.vColor.a = vMtrlAlpha.x;
 
