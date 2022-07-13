@@ -22,6 +22,7 @@ public:
 	HRESULT SetUp_ConstantTable();
 
 private:
+	_float							m_fScale = 0.5f;
 
 	_vector							m_vMoveDir;
 	_float							m_fMoveDist = 0.f;

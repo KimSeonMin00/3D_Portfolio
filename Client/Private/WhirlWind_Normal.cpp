@@ -36,6 +36,8 @@ HRESULT CWhirlWind_Normal::NativeConstruct(void * pArg)
 		m_vMoveDir = WorldMat.r[2];
 	}
 
+	m_pTransformCom->Set_Scaled(XMVectorSet(1.f, 1.f, 1.f, 0.f));
+
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
@@ -46,11 +48,18 @@ void CWhirlWind_Normal::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
-	/*m_pTransformCom->Go_Direction(m_vMoveDir, 15.f * fTimeDelta);
-	m_fMoveDist += 15.f * fTimeDelta;
+	m_pTransformCom->Set_Scaled(XMVectorSet(m_fScale, m_fScale, m_fScale, 0.f));
+	m_fScale += fTimeDelta;
+	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), 5.f * fTimeDelta);
+	m_pTransformCom->Go_Direction(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta);
+	m_pTransformCom->Go_Direction(m_vMoveDir, 5.f * fTimeDelta);
+	m_fMoveDist += 5.f * fTimeDelta;
 
-	if (m_fMoveDist >= 15.f)
-		m_bDead = true;*/
+	if (m_fMoveDist >= 5.f)
+		m_bDead = true;
+
+
+	
 
 	m_pSPHERECom->Update(m_pTransformCom->Get_WorldMatrix());
 }
@@ -127,6 +136,8 @@ HRESULT CWhirlWind_Normal::SetUp_ConstantTable()
 	m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_PROJ), sizeof(_float4x4));
 
 	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
 }
 
 CWhirlWind_Normal * CWhirlWind_Normal::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const CTransform::TRANSFORMDESC & TransformDesc)
