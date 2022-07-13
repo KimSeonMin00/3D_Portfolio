@@ -36,7 +36,14 @@ HRESULT CWhirlWind_Normal::NativeConstruct(void * pArg)
 		m_vMoveDir = WorldMat.r[2];
 	}
 
-	m_pTransformCom->Set_Scaled(XMVectorSet(1.f, 1.f, 1.f, 0.f));
+	m_pTransformCom->Set_Scaled(XMVectorSet(0.5f, 0.5f, 0.5f, 0.f));
+
+	for (_int i = 0; i < 10; i++)
+	{
+		m_vMatrix.push_back(XMMatrixIdentity()* XMMatrixTranslation(0.f, 0.1f * (_float)i, 0.f));
+	}
+
+	m_iNumModel = 10;
 
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
@@ -74,20 +81,19 @@ HRESULT CWhirlWind_Normal::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
-	if (FAILED(SetUp_ConstantTable()))
-		return E_FAIL;
-
-	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-	for (_uint i = 0; i < iNumMeshes; ++i)
+	for (_int i = 0; i < m_iNumModel; i++)
 	{
-		m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+		if (FAILED(SetUp_ConstantTable(i)))
+			return E_FAIL;
+		
+		m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", 0, aiTextureType_DIFFUSE);
 
 		m_pTextureAlpha->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
 
 		m_pShaderCom->Begin(2);
 
-		m_pModelCom->Render(i);
+		m_pModelCom->Render(0);
+
 	}
 
 	m_pSPHERECom->Render();
@@ -125,12 +131,14 @@ HRESULT CWhirlWind_Normal::SetUp_Components()
 	return S_OK;
 }
 
-HRESULT CWhirlWind_Normal::SetUp_ConstantTable()
+HRESULT CWhirlWind_Normal::SetUp_ConstantTable(_uint iNumModel)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	if (FAILED(m_pTransformCom->Bind_OnShader(m_pShaderCom, "g_WorldMatrix")))
-		return E_FAIL;
+	_float4x4		WorldMatrix;
+	XMStoreFloat4x4(&WorldMatrix, XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix() * m_vMatrix[iNumModel]));
+
+	m_pShaderCom->Set_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4));
 
 	m_pShaderCom->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_VIEW), sizeof(_float4x4));
 	m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_PROJ), sizeof(_float4x4));

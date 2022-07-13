@@ -19,10 +19,14 @@ public:
 
 public:
 	HRESULT SetUp_Components();
-	HRESULT SetUp_ConstantTable();
+	HRESULT SetUp_ConstantTable(_uint iNumModel);
 
 private:
+	_uint							m_iNumModel = 0;
+	vector<_matrix>					m_vMatrix;
 	_float							m_fScale = 0.5f;
+	_float							m_fAddMatrixTime = 0.f;
+
 
 	_vector							m_vMoveDir;
 	_float							m_fMoveDist = 0.f;
