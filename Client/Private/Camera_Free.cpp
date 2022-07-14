@@ -76,11 +76,11 @@ void CCamera_Free::Tick(_float fTimeDelta)
 	}
 
 	//카메라 플레이어 방향으로 고정
-	/*if(m_eSTATE == STATE_PLAYER)
+	if(m_eSTATE == STATE_PLAYER)
 		Look_Player();
 
 	if (m_eSTATE == STATE_BOSS)
-		Look_Boss();*/
+		Look_Boss();
 
 	if (FAILED(__super::Bind_TransformMatrices()))
 		return;

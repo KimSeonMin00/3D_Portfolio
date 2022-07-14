@@ -79,7 +79,7 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 	if (nullptr == m_pRendererCom)
 		return;
 
-	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+	/*CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 	if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_HitSphere")))->Collision_Sphere(m_pSPHERECom))
 	{
@@ -89,7 +89,7 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 		}
 	}
 	
-	RELEASE_INSTANCE(CGameInstance);
+	RELEASE_INSTANCE(CGameInstance);*/
 
 	m_pRendererCom->Add_RenderList(CRenderer::RENDER_NONALPHABLEND, this);
 }

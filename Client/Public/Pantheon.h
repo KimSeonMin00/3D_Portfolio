@@ -42,6 +42,10 @@ private:
 	void	E_Skill(_float fTimeDelta);
 	void	R_Skill(_float fTimeDelta);
 
+	void	Chase_Player(_float fTimeDelta);
+	void	Pattern_1(_float fTimeDelta);
+
+	_uint	m_iPattern_AttackTime = 0;
 	_float	m_fInitTime = 0.f;
 	_bool	m_bStop = false;
 
@@ -66,6 +70,7 @@ private://For Move
 
 private://For Attack
 	_bool			m_bAttackIndex_Change = false;
+	_bool			m_bW_3Attack = false;
 	_uint			m_iAttackIndex = 0;
 
 private:
