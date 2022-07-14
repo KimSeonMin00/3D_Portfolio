@@ -73,11 +73,17 @@
     <Filter Include="02.GameObjects\Effect">
       <UniqueIdentifier>{244cc128-ef00-4952-8c75-afb697ada57e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Monster\Boss\Effect">
+    <Filter Include="02.GameObjects\Monster\Boss\Volibear">
+      <UniqueIdentifier>{f879e70e-ebc2-44bd-85d1-4f41e669c137}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster\Boss\Volibear\Voli_Ghost">
+      <UniqueIdentifier>{3a17d7cf-382f-4cff-ab89-cf1107207c27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster\Boss\Volibear\Effect">
       <UniqueIdentifier>{f78fc336-8eee-4f19-b982-c548949b8a4c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Monster\Boss\Voli_Ghost">
-      <UniqueIdentifier>{3a17d7cf-382f-4cff-ab89-cf1107207c27}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\Monster\Boss\Pantheon">
+      <UniqueIdentifier>{0d39349b-e2d4-4cbd-b4a5-550f96867fae}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -156,9 +162,6 @@
     <ClInclude Include="..\Public\Monster.h">
       <Filter>02.GameObjects\Monster</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Volibear.h">
-      <Filter>02.GameObjects\Monster\Boss</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\WhirlWind.h">
       <Filter>02.GameObjects\Player\WhirlWind</Filter>
     </ClInclude>
@@ -177,11 +180,17 @@
     <ClInclude Include="..\Public\Effect.h">
       <Filter>02.GameObjects\Effect</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Effect_Voli_E.h">
-      <Filter>02.GameObjects\Monster\Boss\Effect</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Voli_Ghost.h">
-      <Filter>02.GameObjects\Monster\Boss\Voli_Ghost</Filter>
+      <Filter>02.GameObjects\Monster\Boss\Volibear\Voli_Ghost</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Volibear.h">
+      <Filter>02.GameObjects\Monster\Boss\Volibear</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Voli_E.h">
+      <Filter>02.GameObjects\Monster\Boss\Volibear\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Pantheon.h">
+      <Filter>02.GameObjects\Monster\Boss\Pantheon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -248,9 +257,6 @@
     <ClCompile Include="..\Private\Monster.cpp">
       <Filter>02.GameObjects\Monster</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Volibear.cpp">
-      <Filter>02.GameObjects\Monster\Boss</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\WhirlWind.cpp">
       <Filter>02.GameObjects\Player\WhirlWind</Filter>
     </ClCompile>
@@ -263,14 +269,20 @@
     <ClCompile Include="..\Private\Effect.cpp">
       <Filter>02.GameObjects\Effect</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Effect_Voli_E.cpp">
-      <Filter>02.GameObjects\Monster\Boss\Effect</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\WhirlWind_EQ.cpp">
       <Filter>02.GameObjects\Player\WhirlWind\WhirlWind_EQ</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Voli_Ghost.cpp">
-      <Filter>02.GameObjects\Monster\Boss\Voli_Ghost</Filter>
+      <Filter>02.GameObjects\Monster\Boss\Volibear\Voli_Ghost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Volibear.cpp">
+      <Filter>02.GameObjects\Monster\Boss\Volibear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Voli_E.cpp">
+      <Filter>02.GameObjects\Monster\Boss\Volibear\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Pantheon.cpp">
+      <Filter>02.GameObjects\Monster\Boss\Pantheon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

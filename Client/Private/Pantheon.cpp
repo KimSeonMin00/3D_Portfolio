@@ -1,0 +1,502 @@
+#include "stdafx.h"
+#include "..\Public\Pantheon.h"
+#include "GameInstance.h"
+
+CPantheon::CPantheon(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
+	:CMonster(pDevice, pDevice_Context)
+{
+}
+
+CPantheon::CPantheon(const CPantheon & rhs)
+	: CMonster(rhs)
+{
+}
+
+HRESULT CPantheon::NativeConstruct_Prototype(const CTransform::TRANSFORMDESC & TransformDesc)
+{
+	if (FAILED(__super::NativeConstruct_Prototype(TransformDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CPantheon::NativeConstruct(void * pArg)
+{
+	if (FAILED(__super::NativeConstruct(pArg)))
+		return E_FAIL;
+
+	if (FAILED(SetUp_Components()))
+		return E_FAIL;
+
+	m_PivotMatrix = m_pModelCom->Get_PivotMatrix();
+
+	m_pModelCom->SetUp_AnimationIndex(12);
+	m_eState = STATE_IDLE;
+	m_ePreState = STATE_IDLE;
+
+	m_pTransformCom->Set_Scaled(XMVectorSet(0.75f, 0.75f, 0.75f, 0.f));
+
+	return S_OK;
+}
+
+void CPantheon::Tick(_float fTimeDelta)
+{
+
+
+	if (m_bStop == false)
+		Check_Loop(fTimeDelta);
+
+	Key_Input(fTimeDelta);
+
+	Change_State(fTimeDelta);
+
+	if (m_bStop == false)
+		Update_State(fTimeDelta);
+
+}
+
+void CPantheon::Late_Tick(_float fTimeDelta)
+{
+	__super::Late_Tick(fTimeDelta);
+
+	if (nullptr == m_pRendererCom)
+		return;
+
+	m_pRendererCom->Add_RenderList(CRenderer::RENDER_NONALPHABLEND, this);
+}
+
+HRESULT CPantheon::Render()
+{
+	if (nullptr == m_pShaderCom ||
+		nullptr == m_pModelCom)
+		return E_FAIL;
+
+	if (FAILED(SetUp_ConstantTable()))
+		return E_FAIL;
+
+	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		m_pModelCom->SetUp_BoneMatrices_OnShader(m_pShaderCom, "g_Bones", i);
+
+		m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+
+		m_pShaderCom->Begin(0);
+
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
+
+HRESULT CPantheon::SetUp_Components()
+{
+	/* For.Com_Renderer */
+	if (FAILED(__super::Add_Components(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
+		return E_FAIL;
+
+	/* For.Com_Shader */
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnim"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
+		return E_FAIL;
+
+	/* For.Com_Model*/
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Pantheon"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+		return E_FAIL;
+}
+
+HRESULT CPantheon::SetUp_ConstantTable()
+{
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(m_pTransformCom->Bind_OnShader(m_pShaderCom, "g_WorldMatrix")))
+		return E_FAIL;
+
+	m_pShaderCom->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_VIEW), sizeof(_float4x4));
+	m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_PROJ), sizeof(_float4x4));
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CPantheon::Key_Input(_float fTimeDelta)
+{
+	if (m_bIsChanneling == true)
+		return;
+
+	if (m_pModelCom->Get_IsChange() == true)
+		return;
+
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+
+	if (nullptr == pGameInstance)
+		return;
+
+	Safe_AddRef(pGameInstance);
+
+	if (pGameInstance->Get_DIKeyState(DIK_SPACE) & 0x80)
+	{
+		m_eState = STATE_IDLE;
+	}
+
+	if (pGameInstance->Get_DIMButtonState(CInput_Device::DIMB_RBUTTON) & 0x80)
+	{
+		m_eState = STATE_MOVE;
+	}
+
+	if (pGameInstance->Get_DIMButtonState(CInput_Device::DIMB_LBUTTON) & 0x80)
+	{
+		m_eState = STATE_ATTACK;
+	}
+
+	if (pGameInstance->Get_DIKeyState(DIK_Q) & 0x80)
+	{
+		m_eState = STATE_Q;
+	}
+
+	if (pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
+	{
+		m_eState = STATE_W;
+	}
+
+	if (pGameInstance->Get_DIKeyState(DIK_E) & 0x80)
+	{
+		m_eState = STATE_E;
+	}
+
+	if (pGameInstance->Get_DIKeyState(DIK_R) & 0x80)
+	{
+		m_eState = STATE_R;
+	}
+
+	Safe_Release(pGameInstance);
+}
+
+void CPantheon::Change_State(_float fTimeDelta)
+{
+	if (m_ePreState != m_eState)
+	{
+		m_bStateChange = true;
+		m_eDoingState = m_ePreState;
+	}
+	m_ePreState = m_eState;
+}
+
+void CPantheon::Check_Loop(_float fTimeDelta)
+{
+	switch (m_eState)
+	{
+	case STATE_IDLE:
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Check_Looped(fTimeDelta);
+
+	case STATE_MOVE:
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Check_Looped(fTimeDelta);
+		break;
+
+	case STATE_ATTACK:
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Check_Looped(fTimeDelta);
+		break;
+
+	case STATE_Q:
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Check_Looped(fTimeDelta);
+		break;
+
+	case STATE_W:
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Check_Looped(fTimeDelta);
+		break;
+
+	case STATE_E:
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Check_Looped(fTimeDelta);
+		break;
+
+	case STATE_R:
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Check_Looped(fTimeDelta);
+		break;
+
+	default:
+		break;
+	}
+}
+
+void CPantheon::Update_State(_float fTimeDelta)
+{
+	switch (m_eState)
+	{
+	case STATE_IDLE:
+		Idle(fTimeDelta);
+		break;
+
+	case STATE_MOVE:
+		Move(fTimeDelta);
+		break;
+
+	case STATE_ATTACK:
+		Attack(fTimeDelta);
+		break;
+
+	case STATE_Q:
+		Q_Skill(fTimeDelta);
+		break;
+
+	case STATE_W:
+		W_Skill(fTimeDelta);
+		break;
+
+	case STATE_E:
+		E_Skill(fTimeDelta);
+		break;
+
+	case STATE_R:
+		R_Skill(fTimeDelta);
+		break;
+
+	default:
+		break;
+	}
+}
+
+void CPantheon::Idle(_float fTimeDelta)
+{
+	if (m_bStateChange == true)
+	{
+		switch (m_eDoingState)
+		{
+		case STATE_Q:
+			m_iCurrentIndex = 42;
+			break;
+
+		case STATE_W:
+			m_iCurrentIndex = 58;
+			break;
+
+		case STATE_E:
+			m_iCurrentIndex = 12;
+			break;
+		}
+
+		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
+		if (m_pModelCom->Get_IsChange() == false)
+		{
+			m_bStateChange = false;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
+		}
+	}
+
+	else
+	{
+		if (m_pModelCom->Get_Finished())
+		{
+			m_iCurrentIndex = 12;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
+		}
+
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Play_Animation(fTimeDelta);
+	}
+}
+
+void CPantheon::Move(_float fTimeDelta)
+{
+	if (m_bStateChange == true)
+	{
+		m_iCurrentIndex = 35;
+
+		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
+		if (m_pModelCom->Get_IsChange() == false)
+		{
+			m_bStateChange = false;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
+		}
+	}
+
+	else
+	{
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Play_Animation(fTimeDelta);
+	}
+}
+
+void CPantheon::Attack(_float fTimeDelta)
+{
+	if (m_bStateChange == true)
+	{
+		m_iCurrentIndex = m_iAttackIndex;
+
+		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
+		if (m_pModelCom->Get_IsChange() == false)
+		{
+			m_bStateChange = false;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
+		}
+	}
+
+	else
+	{
+		if (m_pModelCom->Get_Finished())
+		{
+			if (m_iAttackIndex == 4)
+				m_iAttackIndex = 0;
+
+			else
+				m_iAttackIndex += 2;
+
+			m_iCurrentIndex = m_iAttackIndex;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
+		}
+
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Play_Animation(fTimeDelta);
+	}
+}
+
+void CPantheon::Q_Skill(_float fTimeDelta)
+{
+	if (m_bStateChange == true)
+	{
+		m_bIsChanneling = true;
+		m_iCurrentIndex = 39;
+
+		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
+		if (m_pModelCom->Get_IsChange() == false)
+		{
+			m_bStateChange = false;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
+		}
+	}
+
+	else
+	{
+		if (m_pModelCom->Get_Finished())
+		{
+			m_bIsChanneling = false;
+			m_eState = STATE_IDLE;
+			return;
+		}
+
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Play_Animation(fTimeDelta);
+	}
+}
+
+void CPantheon::W_Skill(_float fTimeDelta)
+{
+	if (m_bStateChange == true)
+	{
+		m_bIsChanneling = true;
+		m_iCurrentIndex = 55;
+
+		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
+		if (m_pModelCom->Get_IsChange() == false)
+		{
+			m_bStateChange = false;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
+		}
+	}
+
+	else
+	{
+		if (m_pModelCom->Get_Finished())
+		{
+			m_bIsChanneling = false;
+			m_eState = STATE_IDLE;
+			return;
+		}
+
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Play_Animation(fTimeDelta);
+	}
+}
+
+void CPantheon::E_Skill(_float fTimeDelta)
+{
+	if (m_bStateChange == true)
+	{
+		m_bIsChanneling = true;
+		m_iCurrentIndex = 60;
+
+		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
+		if (m_pModelCom->Get_IsChange() == false)
+		{
+			m_bStateChange = false;
+			m_fE_CastingTime = 0.f;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
+		}
+	}
+
+	else
+	{
+		m_fE_CastingTime += fTimeDelta;
+
+		if (m_pModelCom->Get_Finished())
+		{
+			if (m_iCurrentIndex == 26)
+			{
+				m_bIsChanneling = false;
+				m_eState = STATE_IDLE;
+				return;
+			}
+
+			if (m_fE_CastingTime <= 5.f)
+				m_iCurrentIndex = 74;
+			else
+				m_iCurrentIndex = 26;
+
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
+		}
+
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Play_Animation(fTimeDelta);
+	}
+}
+
+void CPantheon::R_Skill(_float fTimeDelta)
+{
+}
+
+CPantheon * CPantheon::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const CTransform::TRANSFORMDESC & TransformDesc)
+{
+	CPantheon*		pInstance = new CPantheon(pDevice, pDeviceContext);
+
+	if (FAILED(pInstance->NativeConstruct_Prototype(TransformDesc)))
+	{
+		MSGBOX(TEXT("Failed to Created : CPantheon"));
+		Safe_Release(pInstance);
+	}
+	return pInstance;
+}
+
+CGameObject * CPantheon::Clone(void * pArg)
+{
+	CPantheon*		pInstance = new CPantheon(*this);
+
+	if (FAILED(pInstance->NativeConstruct(pArg)))
+	{
+		MSGBOX(TEXT("Failed to Cloned : CPantheon"));
+		Safe_Release(pInstance);
+	}
+	return pInstance;
+}
+
+void CPantheon::Free()
+{
+	__super::Free();
+
+	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pModelCom);
+	Safe_Release(m_pShaderCom);
+}

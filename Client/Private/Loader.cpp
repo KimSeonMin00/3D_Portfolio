@@ -10,6 +10,7 @@
 #include "WhirlWind_Normal.h"
 #include "WhirlWind_EQ.h"
 #include "Volibear.h"
+#include "Pantheon.h"
 #include "Voli_Ghost.h"
 #include "Effect_Voli_E.h"
 #include "MapObject.h"
@@ -137,6 +138,10 @@ _uint CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Voli_E"),
 		CEffect_Voli_E::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Pantheon"),
+		CPantheon::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MapObject"),
