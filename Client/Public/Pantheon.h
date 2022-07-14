@@ -52,6 +52,7 @@ private:
 
 	_bool			m_bIsChanneling = false;
 	_bool			m_bStateChange = false;
+	_bool			m_bIdle_In = false;
 
 	_uint			m_iCurrentIndex = 0;
 
@@ -64,6 +65,7 @@ private://For Move
 	_float			m_fMoveSpeed = 2.f;
 
 private://For Attack
+	_bool			m_bAttackIndex_Change = false;
 	_uint			m_iAttackIndex = 0;
 
 private:
