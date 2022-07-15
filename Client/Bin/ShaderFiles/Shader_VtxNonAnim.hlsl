@@ -15,7 +15,7 @@ vector			g_vMtrlAmbient = vector(0.2f, 0.2f, 0.2f, 1.f);
 vector			g_vMtrlSpecular = vector(1.f, 1.f, 1.f, 1.f);
 
 vector			g_vCamPosition;
-vector			g_vColor = vector(1.f, 0.f, 0.f, 1.f);
+vector			g_vColor = vector(0.f, 0.5f, 0.5f, 1.f);
 
 
 texture2D		g_DiffuseTexture;
@@ -133,9 +133,9 @@ PS_OUT PS_MAIN_EFFECT(PS_IN In)
 
 	float		fSpecular = pow(max(dot(normalize(vLook) * -1.f, normalize(vReflect)), 0.f), 30.f);
 
-	Out.vColor.xyz = vMtrlDiffuse.xyz;
+	Out.vColor.xyz = vMtrlDiffuse.xyz + g_vColor;
 
-	Out.vColor.a = vMtrlAlpha.x * g_Alpha;
+	Out.vColor.a =  vMtrlAlpha.x * g_Alpha;
 
 
 	return Out;

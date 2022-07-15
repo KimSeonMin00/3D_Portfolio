@@ -11,7 +11,7 @@ public:
 		_float fScale = 0.1f;
 		_float fAlpha = 2.f;
 		_float fPosY = 0.f;
-		_matrix matWorld;
+		_bool	bTurn = false;
 	}SCALEALPHA;
 
 protected:
@@ -32,7 +32,8 @@ public:
 
 private:
 	_uint							m_iNumModel = 0;
-	vector<SCALEALPHA>				m_vScaleAlpha;
+	vector<SCALEALPHA*>	m_vScaleAlpha;
+	_bool							m_bTurn = false;
 	_float							m_fScale = 0.5f;
 	_float							m_fAddMatrixTime = 0.f;
 

@@ -39,6 +39,12 @@ HRESULT CWhirlWind_Normal::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
+	SCALEALPHA* tScaleAlpha = new SCALEALPHA;
+	tScaleAlpha->bTurn = m_bTurn;
+	m_vScaleAlpha.push_back(tScaleAlpha);
+	m_bTurn = !m_bTurn;
+	m_fAddMatrixTime = 0.f;
+
 	return S_OK;
 }
 
@@ -47,39 +53,36 @@ void CWhirlWind_Normal::Tick(_float fTimeDelta)
 	__super::Tick(fTimeDelta);
 
 	m_fAddMatrixTime += fTimeDelta;
-	if (m_fAddMatrixTime >= 0.2f)
+	if (m_fAddMatrixTime >= 0.1f)
 	{
-		SCALEALPHA tScaleAlpha;
-		tScaleAlpha.matWorld = XMMatrixIdentity();
+		SCALEALPHA* tScaleAlpha = new SCALEALPHA;
+		tScaleAlpha->bTurn = m_bTurn;
 		m_vScaleAlpha.push_back(tScaleAlpha);
+		m_bTurn = !m_bTurn;
 		m_fAddMatrixTime = 0.f;
 	}
 
 	for (_int i = 0; i < m_vScaleAlpha.size(); i++)
 	{
-		m_vScaleAlpha[i].fScale += 2.f * fTimeDelta;
-		m_vScaleAlpha[i].fPosY += 2.f * fTimeDelta;
-		if (m_vScaleAlpha[i].fAlpha > 0.f)
+		if(m_vScaleAlpha[i]->fScale < 1.f)
+			m_vScaleAlpha[i]->fScale += 4.f * fTimeDelta;
+		m_vScaleAlpha[i]->fPosY += 4.f * fTimeDelta;
+		if (m_vScaleAlpha[i]->fAlpha > 0.1f)
 		{
-			m_vScaleAlpha[i].fAlpha -= 2.f * fTimeDelta;
-			if (m_vScaleAlpha[i].fAlpha <= 0.f)
+			m_vScaleAlpha[i]->fAlpha -= 1.f * fTimeDelta;
+			if (m_vScaleAlpha[i]->fAlpha <= 0.f)
 			{
-				m_vScaleAlpha[i].fAlpha = 0.f;
+				m_vScaleAlpha[i]->fAlpha = 0.f;
 			}
 		}
-
-		m_vScaleAlpha[i].matWorld = XMMatrixIdentity() * XMMatrixScaling(m_vScaleAlpha[i].fScale, m_vScaleAlpha[i].fScale, m_vScaleAlpha[i].fScale) * XMMatrixTranslation(0.f, m_vScaleAlpha[i].fPosY, 0.f);
 	}
 
-	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), 10.f * fTimeDelta);
+	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), 1.f * fTimeDelta);
 	m_pTransformCom->Go_Direction(m_vMoveDir, 1.f * fTimeDelta);
-	m_fMoveDist += 1.f * fTimeDelta;
+	m_fMoveDist += 5.f * fTimeDelta;
 
-	if (m_fMoveDist >= 5.f)
+	if (m_fMoveDist >= 15.f)
 		m_bDead = true;
-
-
-	
 
 	m_pSPHERECom->Update(m_pTransformCom->Get_WorldMatrix());
 }
@@ -94,24 +97,34 @@ HRESULT CWhirlWind_Normal::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
-	for (_int i = 0; i < m_vScaleAlpha.size(); i++)
-	{
-		if (FAILED(SetUp_ConstantTable(i)))
-			return E_FAIL;
-		
+	//for (_int i = 0; i < m_vScaleAlpha.size(); i++)
+	//{
+	//	if (FAILED(SetUp_ConstantTable(i)))
+	//		return E_FAIL;
 
+	//	m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", 0, aiTextureType_DIFFUSE);
 
-		m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", 0, aiTextureType_DIFFUSE);
+	//	m_pTextureAlpha->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
 
-		m_pTextureAlpha->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
+	//	m_pShaderCom->Set_RawValue("g_Alpha", &m_vScaleAlpha[i]->fAlpha, sizeof(_float));
 
-		m_pShaderCom->Set_RawValue("g_Alpha", &m_vScaleAlpha[i].fAlpha, sizeof(_float));
+	//	m_pShaderCom->Begin(2);
 
-		m_pShaderCom->Begin(2);
+	//	m_pModelCom->Render(0);
+	//}
 
-		m_pModelCom->Render(0);
+	if (FAILED(SetUp_ConstantTable(0)))
+		return E_FAIL;
 
-	}
+	m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", 0, aiTextureType_DIFFUSE);
+
+	m_pTextureAlpha->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
+
+	m_pShaderCom->Set_RawValue("g_Alpha", &m_vScaleAlpha[0]->fAlpha, sizeof(_float));
+
+	m_pShaderCom->Begin(2);
+
+	m_pModelCom->Render(0);
 
 	m_pSPHERECom->Render();
 
@@ -153,7 +166,16 @@ HRESULT CWhirlWind_Normal::SetUp_ConstantTable(_uint iNumModel)
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 	_float4x4		WorldMatrix;
-	XMStoreFloat4x4(&WorldMatrix, XMMatrixTranspose(m_vScaleAlpha[m_iNumModel].matWorld *  m_pTransformCom->Get_WorldMatrix()));
+	_matrix		InstanceMatrix;
+	if (m_vScaleAlpha[iNumModel]->bTurn == true)
+	{
+		InstanceMatrix = XMMatrixIdentity() * XMMatrixScaling(m_vScaleAlpha[iNumModel]->fScale, m_vScaleAlpha[iNumModel]->fScale, m_vScaleAlpha[iNumModel]->fScale) * XMMatrixRotationY(XMConvertToRadians(180.f)) * XMMatrixTranslation(0.f, m_vScaleAlpha[iNumModel]->fPosY, 0.f);
+	}
+	else
+	{
+		InstanceMatrix = XMMatrixIdentity() * XMMatrixScaling(m_vScaleAlpha[iNumModel]->fScale, m_vScaleAlpha[iNumModel]->fScale, m_vScaleAlpha[iNumModel]->fScale) * XMMatrixTranslation(0.f, m_vScaleAlpha[iNumModel]->fPosY, 0.f);
+	}
+	XMStoreFloat4x4(&WorldMatrix, XMMatrixTranspose(InstanceMatrix *  m_pTransformCom->Get_WorldMatrix()));
 	m_pShaderCom->Set_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4));
 
 	m_pShaderCom->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_VIEW), sizeof(_float4x4));
@@ -191,4 +213,11 @@ CGameObject * CWhirlWind_Normal::Clone(void * pArg)
 void CWhirlWind_Normal::Free()
 {
 	__super::Free();
+
+	for (auto& ScaleAlpha : m_vScaleAlpha)
+	{
+		Safe_Delete(ScaleAlpha);
+	}
+
+	m_vScaleAlpha.clear();
 }
