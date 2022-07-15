@@ -36,15 +36,6 @@ HRESULT CWhirlWind_Normal::NativeConstruct(void * pArg)
 		m_vMoveDir = WorldMat.r[2];
 	}
 
-	m_pTransformCom->Set_Scaled(XMVectorSet(0.5f, 0.5f, 0.5f, 0.f));
-
-	for (_int i = 0; i < 10; i++)
-	{
-		m_vMatrix.push_back(XMMatrixIdentity()* XMMatrixTranslation(0.f, 0.1f * (_float)i, 0.f));
-	}
-
-	m_iNumModel = 10;
-
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
@@ -55,12 +46,34 @@ void CWhirlWind_Normal::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
-	m_pTransformCom->Set_Scaled(XMVectorSet(m_fScale, m_fScale, m_fScale, 0.f));
-	m_fScale += fTimeDelta;
-	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), 5.f * fTimeDelta);
-	m_pTransformCom->Go_Direction(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta);
-	m_pTransformCom->Go_Direction(m_vMoveDir, 5.f * fTimeDelta);
-	m_fMoveDist += 5.f * fTimeDelta;
+	m_fAddMatrixTime += fTimeDelta;
+	if (m_fAddMatrixTime >= 0.2f)
+	{
+		SCALEALPHA tScaleAlpha;
+		tScaleAlpha.matWorld = XMMatrixIdentity();
+		m_vScaleAlpha.push_back(tScaleAlpha);
+		m_fAddMatrixTime = 0.f;
+	}
+
+	for (_int i = 0; i < m_vScaleAlpha.size(); i++)
+	{
+		m_vScaleAlpha[i].fScale += 2.f * fTimeDelta;
+		m_vScaleAlpha[i].fPosY += 2.f * fTimeDelta;
+		if (m_vScaleAlpha[i].fAlpha > 0.f)
+		{
+			m_vScaleAlpha[i].fAlpha -= 2.f * fTimeDelta;
+			if (m_vScaleAlpha[i].fAlpha <= 0.f)
+			{
+				m_vScaleAlpha[i].fAlpha = 0.f;
+			}
+		}
+
+		m_vScaleAlpha[i].matWorld = XMMatrixIdentity() * XMMatrixScaling(m_vScaleAlpha[i].fScale, m_vScaleAlpha[i].fScale, m_vScaleAlpha[i].fScale) * XMMatrixTranslation(0.f, m_vScaleAlpha[i].fPosY, 0.f);
+	}
+
+	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), 10.f * fTimeDelta);
+	m_pTransformCom->Go_Direction(m_vMoveDir, 1.f * fTimeDelta);
+	m_fMoveDist += 1.f * fTimeDelta;
 
 	if (m_fMoveDist >= 5.f)
 		m_bDead = true;
@@ -81,14 +94,18 @@ HRESULT CWhirlWind_Normal::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
-	for (_int i = 0; i < m_iNumModel; i++)
+	for (_int i = 0; i < m_vScaleAlpha.size(); i++)
 	{
 		if (FAILED(SetUp_ConstantTable(i)))
 			return E_FAIL;
 		
+
+
 		m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", 0, aiTextureType_DIFFUSE);
 
 		m_pTextureAlpha->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
+
+		m_pShaderCom->Set_RawValue("g_Alpha", &m_vScaleAlpha[i].fAlpha, sizeof(_float));
 
 		m_pShaderCom->Begin(2);
 
@@ -136,8 +153,7 @@ HRESULT CWhirlWind_Normal::SetUp_ConstantTable(_uint iNumModel)
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 	_float4x4		WorldMatrix;
-	XMStoreFloat4x4(&WorldMatrix, XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix() * m_vMatrix[iNumModel]));
-
+	XMStoreFloat4x4(&WorldMatrix, XMMatrixTranspose(m_vScaleAlpha[m_iNumModel].matWorld *  m_pTransformCom->Get_WorldMatrix()));
 	m_pShaderCom->Set_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4));
 
 	m_pShaderCom->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_VIEW), sizeof(_float4x4));

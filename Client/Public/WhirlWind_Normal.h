@@ -5,6 +5,15 @@
 class CWhirlWind_Normal final
 	:public CWhirlWind
 {
+public:
+	typedef struct tagScaleAlpha
+	{
+		_float fScale = 0.1f;
+		_float fAlpha = 2.f;
+		_float fPosY = 0.f;
+		_matrix matWorld;
+	}SCALEALPHA;
+
 protected:
 	explicit CWhirlWind_Normal(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
 	explicit CWhirlWind_Normal(const CWhirlWind_Normal& rhs);
@@ -23,7 +32,7 @@ public:
 
 private:
 	_uint							m_iNumModel = 0;
-	vector<_matrix>					m_vMatrix;
+	vector<SCALEALPHA>				m_vScaleAlpha;
 	_float							m_fScale = 0.5f;
 	_float							m_fAddMatrixTime = 0.f;
 

@@ -21,6 +21,8 @@ vector			g_vColor = vector(1.f, 0.f, 0.f, 1.f);
 texture2D		g_DiffuseTexture;
 texture2D		g_AlphaTexture;
 
+float			g_Alpha = 1.f;
+
 struct VS_IN
 {
 	float3		vPosition : POSITION;
@@ -133,7 +135,7 @@ PS_OUT PS_MAIN_EFFECT(PS_IN In)
 
 	Out.vColor.xyz = vMtrlDiffuse.xyz;
 
-	Out.vColor.a = vMtrlAlpha.x;
+	Out.vColor.a = vMtrlAlpha.x * g_Alpha;
 
 
 	return Out;
