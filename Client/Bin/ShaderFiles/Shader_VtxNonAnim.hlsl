@@ -15,7 +15,7 @@ vector			g_vMtrlAmbient = vector(0.2f, 0.2f, 0.2f, 1.f);
 vector			g_vMtrlSpecular = vector(1.f, 1.f, 1.f, 1.f);
 
 vector			g_vCamPosition;
-vector			g_vColor = vector(0.f, 0.5f, 0.5f, 1.f);
+vector			g_vColor = vector(0.f, 1.f, 1.f, 1.f);
 
 
 texture2D		g_DiffuseTexture;
@@ -133,7 +133,7 @@ PS_OUT PS_MAIN_EFFECT(PS_IN In)
 
 	float		fSpecular = pow(max(dot(normalize(vLook) * -1.f, normalize(vReflect)), 0.f), 30.f);
 
-	Out.vColor.xyz = vMtrlDiffuse.xyz + g_vColor;
+	Out.vColor.xyz = g_vColor;
 
 	Out.vColor.a =  vMtrlAlpha.x * g_Alpha;
 
@@ -168,7 +168,7 @@ technique11 DefaultTechinque
 	pass Effect
 	{
 		SetBlendState(BS_AlphaBlend, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
-		SetDepthStencilState(DSS_Default, 0);
+		SetDepthStencilState(DSS_None_ZTest_And_Write, 0);
 		SetRasterizerState(RS_NonCulling);
 
 		VertexShader = compile vs_5_0 VS_MAIN_RECT();

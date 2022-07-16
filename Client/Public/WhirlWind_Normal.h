@@ -8,7 +8,7 @@ class CWhirlWind_Normal final
 public:
 	typedef struct tagScaleAlpha
 	{
-		_float fScale = 0.1f;
+		_float fScale = 0.5f;
 		_float fAlpha = 2.f;
 		_float fPosY = 0.f;
 		_bool	bTurn = false;
@@ -29,9 +29,6 @@ public:
 public:
 	HRESULT SetUp_Components();
 	HRESULT SetUp_ConstantTable(_uint iNumModel);
-
-private:
-	vector<CModel*>			m_VecModelCom;
 
 private:
 	_uint							m_iNumModel = 0;
