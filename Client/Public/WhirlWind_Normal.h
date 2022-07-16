@@ -31,6 +31,9 @@ public:
 	HRESULT SetUp_ConstantTable(_uint iNumModel);
 
 private:
+	vector<CModel*>			m_VecModelCom;
+
+private:
 	_uint							m_iNumModel = 0;
 	vector<SCALEALPHA*>	m_vScaleAlpha;
 	_bool							m_bTurn = false;
@@ -40,6 +43,8 @@ private:
 
 	_vector							m_vMoveDir;
 	_float							m_fMoveDist = 0.f;
+
+
 
 public:
 	static CWhirlWind_Normal* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const CTransform::TRANSFORMDESC& TransformDesc);

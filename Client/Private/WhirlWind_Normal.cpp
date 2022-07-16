@@ -39,6 +39,14 @@ HRESULT CWhirlWind_Normal::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+	Safe_AddRef(pGameInstance);
+
+	CModel*	pModleCom = (CModel*)pGameInstance->Clone_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tornado"));
+	m_VecModelCom.push_back(m_pModelCom);
+
+	Safe_Release(pGameInstance);
+
 	SCALEALPHA* tScaleAlpha = new SCALEALPHA;
 	tScaleAlpha->bTurn = m_bTurn;
 	m_vScaleAlpha.push_back(tScaleAlpha);
@@ -53,8 +61,16 @@ void CWhirlWind_Normal::Tick(_float fTimeDelta)
 	__super::Tick(fTimeDelta);
 
 	m_fAddMatrixTime += fTimeDelta;
-	if (m_fAddMatrixTime >= 0.1f)
+	if (m_fAddMatrixTime >= 0.2f)
 	{
+		CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+		Safe_AddRef(pGameInstance);
+
+		CModel*	pModleCom = (CModel*)pGameInstance->Clone_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tornado"));
+		m_VecModelCom.push_back(m_pModelCom);
+
+		Safe_Release(pGameInstance);
+
 		SCALEALPHA* tScaleAlpha = new SCALEALPHA;
 		tScaleAlpha->bTurn = m_bTurn;
 		m_vScaleAlpha.push_back(tScaleAlpha);
@@ -64,12 +80,12 @@ void CWhirlWind_Normal::Tick(_float fTimeDelta)
 
 	for (_int i = 0; i < m_vScaleAlpha.size(); i++)
 	{
-		if(m_vScaleAlpha[i]->fScale < 1.f)
+		if(m_vScaleAlpha[i]->fScale < 2.f)
 			m_vScaleAlpha[i]->fScale += 4.f * fTimeDelta;
-		m_vScaleAlpha[i]->fPosY += 4.f * fTimeDelta;
+		m_vScaleAlpha[i]->fPosY += 2.f * fTimeDelta;
 		if (m_vScaleAlpha[i]->fAlpha > 0.1f)
 		{
-			m_vScaleAlpha[i]->fAlpha -= 1.f * fTimeDelta;
+			m_vScaleAlpha[i]->fAlpha -= 2.f * fTimeDelta;
 			if (m_vScaleAlpha[i]->fAlpha <= 0.f)
 			{
 				m_vScaleAlpha[i]->fAlpha = 0.f;
@@ -77,9 +93,9 @@ void CWhirlWind_Normal::Tick(_float fTimeDelta)
 		}
 	}
 
-	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), 1.f * fTimeDelta);
-	m_pTransformCom->Go_Direction(m_vMoveDir, 1.f * fTimeDelta);
-	m_fMoveDist += 5.f * fTimeDelta;
+	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), 10.f * fTimeDelta);
+	m_pTransformCom->Go_Direction(m_vMoveDir, 3.f * fTimeDelta);
+	m_fMoveDist += 3.f * fTimeDelta;
 
 	if (m_fMoveDist >= 15.f)
 		m_bDead = true;
@@ -97,34 +113,34 @@ HRESULT CWhirlWind_Normal::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
-	//for (_int i = 0; i < m_vScaleAlpha.size(); i++)
-	//{
-	//	if (FAILED(SetUp_ConstantTable(i)))
-	//		return E_FAIL;
+	for (_int i = 0; i < m_vScaleAlpha.size(); i++)
+	{
+		if (FAILED(SetUp_ConstantTable(i)))
+			return E_FAIL;
 
-	//	m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", 0, aiTextureType_DIFFUSE);
+		m_VecModelCom[i]->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", 0, aiTextureType_DIFFUSE);
 
-	//	m_pTextureAlpha->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
+		m_pTextureAlpha->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
 
-	//	m_pShaderCom->Set_RawValue("g_Alpha", &m_vScaleAlpha[i]->fAlpha, sizeof(_float));
+		m_pShaderCom->Set_RawValue("g_Alpha", &m_vScaleAlpha[i]->fAlpha, sizeof(_float));
 
-	//	m_pShaderCom->Begin(2);
+		m_pShaderCom->Begin(2);
 
-	//	m_pModelCom->Render(0);
-	//}
+		m_VecModelCom[i]->Render(0);
+	}
 
-	if (FAILED(SetUp_ConstantTable(0)))
-		return E_FAIL;
+	//if (FAILED(SetUp_ConstantTable(0)))
+	//	return E_FAIL;
 
-	m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", 0, aiTextureType_DIFFUSE);
+	//m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", 0, aiTextureType_DIFFUSE);
 
-	m_pTextureAlpha->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
+	//m_pTextureAlpha->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
 
-	m_pShaderCom->Set_RawValue("g_Alpha", &m_vScaleAlpha[0]->fAlpha, sizeof(_float));
+	//m_pShaderCom->Set_RawValue("g_Alpha", &m_vScaleAlpha[0]->fAlpha, sizeof(_float));
 
-	m_pShaderCom->Begin(2);
+	//m_pShaderCom->Begin(2);
 
-	m_pModelCom->Render(0);
+	//m_pModelCom->Render(0);
 
 	m_pSPHERECom->Render();
 
@@ -220,4 +236,11 @@ void CWhirlWind_Normal::Free()
 	}
 
 	m_vScaleAlpha.clear();
+
+	for (auto& ModelCom : m_VecModelCom)
+	{
+		Safe_Release(ModelCom);
+	}
+
+	m_VecModelCom.clear();	
 }
