@@ -292,7 +292,7 @@ void CPlayer::Key_Input(_float fTimeDelta)
 		}
 
 		m_pTransformCom->LookAt(XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f));
-
+		pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Q_Effect"), &m_pTransformCom->Get_WorldMatrix());
 		m_iQ_Time++;
 
 		if (m_iQ_Time == 1)
@@ -542,6 +542,7 @@ void CPlayer::Update_SwordCollider()
 	XMStoreFloat3((_float3*)&SocketMatrix.m[3], XMLoadFloat3((_float3*)&SocketMatrix.m[3]) - XMVector3Normalize(XMLoadFloat3((_float3*)&SocketMatrix.m[0])) * 1.f);
 
 	XMStoreFloat4x4(&SocketMatrix, XMLoadFloat4x4(&SocketMatrix) * m_pTransformCom->Get_WorldMatrix());
+	m_SwordWorldMat = XMLoadFloat4x4(&SocketMatrix);
 
 	//m_pOBBCom->Update(m_pTransformCom->Get_WorldMatrix());
 	m_pOBBCom->Update(XMLoadFloat4x4(&SocketMatrix));

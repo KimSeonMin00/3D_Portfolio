@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "WhirlWind_Normal.h"
 #include "WhirlWind_EQ.h"
+#include "Player_Q_Effect.h"
 #include "Volibear.h"
 #include "Pantheon.h"
 #include "Voli_Ghost.h"
@@ -128,6 +129,10 @@ _uint CLoader::Loading_ForGamePlay()
 		CWhirlWind_EQ::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Yasuo_Q_Effect"),
+		CPlayer_Q_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Boss"),
 		CVolibear::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
@@ -194,8 +199,17 @@ _uint CLoader::Loading_ForGamePlay()
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Volibear/Effect/volibear_base_e_0%d.dds"), 2))))
 		return E_FAIL;
 	
+	//For Player_Effect
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Tornado_Alpha"),
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_base_q_tonado_wind_cas.dds")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Yasuo_Q_Indicator"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_q_indicator.dds")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Yasuo_Q_Sword"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_q_sword.dds")))))
 		return E_FAIL;
 
 	///* For.Prototype_Component_Texture_Player. */

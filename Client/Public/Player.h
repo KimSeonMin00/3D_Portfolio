@@ -94,6 +94,7 @@ private:
 
 private://For Attack Collider
 	_float4x4		m_PivotMatrix;
+	_matrix		m_SwordWorldMat;
 
 	CHierarchyNode*	m_pSwordNode = nullptr;
 
