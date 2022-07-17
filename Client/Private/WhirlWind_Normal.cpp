@@ -53,7 +53,7 @@ void CWhirlWind_Normal::Tick(_float fTimeDelta)
 	__super::Tick(fTimeDelta);
 
 	m_fAddMatrixTime += fTimeDelta;
-	if (m_fAddMatrixTime >= 0.1f)
+	if (m_fAddMatrixTime >= 0.2f)
 	{
 		SCALEALPHA* tScaleAlpha = new SCALEALPHA;
 		tScaleAlpha->bTurn = m_bTurn;
@@ -64,15 +64,12 @@ void CWhirlWind_Normal::Tick(_float fTimeDelta)
 
 	for (_int i = 0; i < m_vScaleAlpha.size(); i++)
 	{
-		if(m_vScaleAlpha[i]->fScale > 1.f)
-			m_vScaleAlpha[i]->fScale += 1.f * fTimeDelta;
-		else
-			m_vScaleAlpha[i]->fScale += 4.f * fTimeDelta;
+		m_vScaleAlpha[i]->fScale += 1.f * fTimeDelta;
 
 		m_vScaleAlpha[i]->fPosY += 2.f * fTimeDelta;
 		if (m_vScaleAlpha[i]->fAlpha > 0.1f)
 		{
-			m_vScaleAlpha[i]->fAlpha -= 4.f * fTimeDelta;
+			m_vScaleAlpha[i]->fAlpha -= 1.f * fTimeDelta;
 			if (m_vScaleAlpha[i]->fAlpha <= 0.f)
 			{
 				m_vScaleAlpha[i]->fAlpha = 0.f;
@@ -80,11 +77,11 @@ void CWhirlWind_Normal::Tick(_float fTimeDelta)
 		}
 	}
 
-	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), 10.f * fTimeDelta);
+	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), 12.f * fTimeDelta);
 	m_pTransformCom->Go_Direction(m_vMoveDir, 5.f * fTimeDelta);
 	m_fMoveDist += 5.f * fTimeDelta;
 
-	if (m_fMoveDist >= 15.f)
+	if (m_fMoveDist >= 10.f)
 		m_bDead = true;
 
 	m_pSPHERECom->Update(m_pTransformCom->Get_WorldMatrix());
@@ -172,7 +169,7 @@ HRESULT CWhirlWind_Normal::SetUp_ConstantTable(_uint iNumModel)
 	_matrix		InstanceMatrix;
 	if (m_vScaleAlpha[iNumModel]->bTurn == true)
 	{
-		InstanceMatrix = XMMatrixIdentity() * XMMatrixScaling(m_vScaleAlpha[iNumModel]->fScale, m_vScaleAlpha[iNumModel]->fScale, m_vScaleAlpha[iNumModel]->fScale) * XMMatrixRotationY(XMConvertToRadians(90.f)) * XMMatrixTranslation(0.f, m_vScaleAlpha[iNumModel]->fPosY, 0.f);
+		InstanceMatrix = XMMatrixIdentity() * XMMatrixScaling(m_vScaleAlpha[iNumModel]->fScale, m_vScaleAlpha[iNumModel]->fScale, m_vScaleAlpha[iNumModel]->fScale) * XMMatrixRotationY(XMConvertToRadians(180.f)) * XMMatrixTranslation(0.f, m_vScaleAlpha[iNumModel]->fPosY, 0.f);
 	}
 	else
 	{

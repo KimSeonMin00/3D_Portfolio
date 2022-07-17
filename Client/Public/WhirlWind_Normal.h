@@ -8,8 +8,8 @@ class CWhirlWind_Normal final
 public:
 	typedef struct tagScaleAlpha
 	{
-		_float fScale = 0.5f;
-		_float fAlpha = 2.f;
+		_float fScale = 1.f;
+		_float fAlpha = 1.f;
 		_float fPosY = 0.f;
 		_bool	bTurn = false;
 	}SCALEALPHA;
