@@ -33,8 +33,8 @@ HRESULT CPlayer_Q_Effect::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, WorldMat.r[2]);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, WorldMat.r[3]);
 
-	m_pTransformCom->Set_Scaled(XMVectorSet(1.f, 2.f, 1.f, 0.f));
-	m_pTransformCom->Go_Straight(1.5f);
+	m_pTransformCom->Set_Scaled(XMVectorSet(1.f, 4.f, 1.f, 0.f));
+	m_pTransformCom->Go_Straight(1.f);
 	m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(90.f) / XMConvertToRadians(60.f));
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	vPos = XMVectorSetY(vPos, 0.5f);
@@ -62,7 +62,7 @@ void CPlayer_Q_Effect::Tick(_float fTimeDelta)
 		if (m_fScale <= 0.f)
 			m_bDead = true;
 
-		m_pTransformCom->Set_Scaled(XMVectorSet(m_fScale, 2.f, 1.f, 0.f));
+		m_pTransformCom->Set_Scaled(XMVectorSet(m_fScale, 4.f, 1.f, 0.f));
 	}
 	
 }
