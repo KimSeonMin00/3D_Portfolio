@@ -135,7 +135,7 @@ PS_OUT PS_MAIN_EFFECT(PS_IN In)
 
 	Out.vColor.xyz = g_vColor;
 
-	Out.vColor.a =  vMtrlAlpha.x * g_Alpha;
+	Out.vColor.a =  vMtrlAlpha.a * g_Alpha;
 
 
 	return Out;
