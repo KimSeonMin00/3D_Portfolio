@@ -716,11 +716,8 @@ void CPlayer::E_Skill(_float fTimeDelta)
 		{
 			m_iQ_Time++;
 
-			if (m_iQ_Time == 3)
-			{
-				pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Skill"), TEXT("Prototype_GameObject_WhirlWind_EQ"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-				m_iQ_Time = 0;
-			}
+
+			pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Skill"), TEXT("Prototype_GameObject_WhirlWind_EQ"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 			m_bE_Q_Used = true;
 			m_pModelCom->SetUp_AnimationIndex(25);
