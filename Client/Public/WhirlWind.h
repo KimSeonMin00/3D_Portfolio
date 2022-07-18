@@ -7,6 +7,7 @@ BEGIN(Engine)
 class CRenderer;
 class CCollider;
 class CModel;
+class CVIBuffer_Rect;
 class CShader;
 class CTexture;
 END

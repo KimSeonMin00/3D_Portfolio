@@ -146,6 +146,7 @@ HRESULT CPlayer_Q_Effect::SetUp_ConstantTable()
 	RELEASE_INSTANCE(CGameInstance);
 }
 
+
 CPlayer_Q_Effect * CPlayer_Q_Effect::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const CTransform::TRANSFORMDESC & TransformDesc)
 {
 	CPlayer_Q_Effect*		pInstance = new CPlayer_Q_Effect(pDevice, pDeviceContext);

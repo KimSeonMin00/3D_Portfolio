@@ -29,13 +29,21 @@ public:
 public:
 	HRESULT SetUp_Components();
 	HRESULT SetUp_ConstantTable(_uint iNumModel);
+	HRESULT SetUp_ConstantTable_2(_uint iNumModel);
+
+private:
+	CModel*							m_pModelCom_2 = nullptr;
+	CTexture*						m_pTextureAlpha_2 = nullptr;
 
 private:
 	_uint							m_iNumModel = 0;
 	vector<SCALEALPHA*>	m_vScaleAlpha;
+	vector<SCALEALPHA*>	m_vScaleAlpha_2;
 	_bool							m_bTurn = false;
 	_float							m_fScale = 0.5f;
 	_float							m_fAddMatrixTime = 0.f;
+	_float							m_fAddMatrixTime_2 = 0.f;
+	_uint							m_iTornadoPos = 0;
 
 
 	_vector							m_vMoveDir;

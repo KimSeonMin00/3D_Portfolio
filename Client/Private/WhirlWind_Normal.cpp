@@ -66,10 +66,24 @@ void CWhirlWind_Normal::Tick(_float fTimeDelta)
 	{
 		m_vScaleAlpha[i]->fScale += 1.f * fTimeDelta;
 
-		m_vScaleAlpha[i]->fPosY += 2.f * fTimeDelta;
-		if (m_vScaleAlpha[i]->fAlpha > 0.1f)
+		if (m_vScaleAlpha[i]->bTurn == false)
+			m_vScaleAlpha[i]->fPosY += 1.f * fTimeDelta;
+		else
+			m_vScaleAlpha[i]->fPosY += 4.f * fTimeDelta;
+
+		if (m_vScaleAlpha[i]->fAlpha > 0.f)
 		{
-			m_vScaleAlpha[i]->fAlpha -= 1.f * fTimeDelta;
+			if (m_vScaleAlpha[i]->fPosY > 1.f)
+			{
+				m_vScaleAlpha[i]->fAlpha -= 2.f * fTimeDelta;		
+			}
+
+
+			else
+			{
+				m_vScaleAlpha[i]->fAlpha -= 1.f * fTimeDelta;
+			}
+
 			if (m_vScaleAlpha[i]->fAlpha <= 0.f)
 			{
 				m_vScaleAlpha[i]->fAlpha = 0.f;
@@ -77,7 +91,49 @@ void CWhirlWind_Normal::Tick(_float fTimeDelta)
 		}
 	}
 
-	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), 12.f * fTimeDelta);
+	m_fAddMatrixTime_2 += fTimeDelta;
+	if (m_fAddMatrixTime_2 >= 0.2f)
+	{
+		SCALEALPHA* tScaleAlpha = new SCALEALPHA;
+		
+		tScaleAlpha->fAlpha = 0.5f;
+		if (m_iTornadoPos == 0)
+		{
+			tScaleAlpha->fPosY = 2.f;
+			m_iTornadoPos++;
+		}
+
+		else if (m_iTornadoPos == 1)
+		{
+			tScaleAlpha->fPosY = 0.f;
+			m_iTornadoPos++;
+		}
+
+		else if (m_iTornadoPos == 2)
+		{
+			tScaleAlpha->fPosY = 1.f;
+			m_iTornadoPos = 0;
+		}
+
+		m_vScaleAlpha_2.push_back(tScaleAlpha);
+		m_fAddMatrixTime_2 = 0.f;
+	}
+
+	for (_int i = 0; i < m_vScaleAlpha_2.size(); i++)
+	{
+		m_vScaleAlpha_2[i]->fScale += 1.f * fTimeDelta;
+
+		if (m_vScaleAlpha_2[i]->fAlpha > 0.1f)
+		{
+			m_vScaleAlpha_2[i]->fAlpha -= 1.f * fTimeDelta;
+			if (m_vScaleAlpha_2[i]->fAlpha <= 0.f)
+			{
+				m_vScaleAlpha_2[i]->fAlpha = 0.f;
+			}
+		}
+	}
+
+	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), 24.f * fTimeDelta);
 	m_pTransformCom->Go_Direction(m_vMoveDir, 5.f * fTimeDelta);
 	m_fMoveDist += 5.f * fTimeDelta;
 
@@ -102,29 +158,34 @@ HRESULT CWhirlWind_Normal::Render()
 		if (FAILED(SetUp_ConstantTable(i)))
 			return E_FAIL;
 
-		m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", 0, aiTextureType_DIFFUSE);
-
 		m_pTextureAlpha->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
 
 		m_pShaderCom->Set_RawValue("g_Alpha", &m_vScaleAlpha[i]->fAlpha, sizeof(_float));
+
+		m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(1.f, 1.f, 1.f, 1.f), sizeof(_vector));
 
 		m_pShaderCom->Begin(2);
 
 		m_pModelCom->Render(0);
 	}
 
-	//if (FAILED(SetUp_ConstantTable(0)))
-	//	return E_FAIL;
+	for (_int i = 0; i < m_vScaleAlpha_2.size(); i++)
+	{
+		if (FAILED(SetUp_ConstantTable_2(i)))
+			return E_FAIL;
 
-	//m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", 0, aiTextureType_DIFFUSE);
+		m_pModelCom_2->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", 0, aiTextureType_DIFFUSE);
 
-	//m_pTextureAlpha->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
+		m_pTextureAlpha->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
 
-	//m_pShaderCom->Set_RawValue("g_Alpha", &m_vScaleAlpha[0]->fAlpha, sizeof(_float));
+		m_pShaderCom->Set_RawValue("g_Alpha", &m_vScaleAlpha_2[i]->fAlpha, sizeof(_float));
 
-	//m_pShaderCom->Begin(2);
+		m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(0.f, 100.f/255.f, 1.f, 1.f), sizeof(_vector));
 
-	//m_pModelCom->Render(0);
+		m_pShaderCom->Begin(2);
+
+		m_pModelCom_2->Render(0);
+	}
 
 	m_pSPHERECom->Render();
 
@@ -145,7 +206,15 @@ HRESULT CWhirlWind_Normal::SetUp_Components()
 	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tornado"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Tornado_Alpha"), TEXT("Com_Alpha_Texture"), (CComponent**)&m_pTextureAlpha)))
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_E_Q_White"), TEXT("Com_Alpha_Texture"), (CComponent**)&m_pTextureAlpha)))
+		return E_FAIL;
+
+	/* For.Com_Model*/
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tornado_2"), TEXT("Com_Model_2"), (CComponent**)&m_pModelCom_2)))
+		return E_FAIL;
+
+
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Tornado_2_Alpha"), TEXT("Com_Alpha_Texture_2"), (CComponent**)&m_pTextureAlpha_2)))
 		return E_FAIL;
 
 	CCollider::COLLIDERDESC		ColliderDesc;
@@ -175,6 +244,25 @@ HRESULT CWhirlWind_Normal::SetUp_ConstantTable(_uint iNumModel)
 	{
 		InstanceMatrix = XMMatrixIdentity() * XMMatrixScaling(m_vScaleAlpha[iNumModel]->fScale, m_vScaleAlpha[iNumModel]->fScale, m_vScaleAlpha[iNumModel]->fScale) * XMMatrixTranslation(0.f, m_vScaleAlpha[iNumModel]->fPosY, 0.f);
 	}
+	XMStoreFloat4x4(&WorldMatrix, XMMatrixTranspose(InstanceMatrix *  m_pTransformCom->Get_WorldMatrix()));
+	m_pShaderCom->Set_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4));
+
+	m_pShaderCom->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_VIEW), sizeof(_float4x4));
+	m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_PROJ), sizeof(_float4x4));
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CWhirlWind_Normal::SetUp_ConstantTable_2(_uint iNumModel)
+{
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_float4x4		WorldMatrix;
+	_matrix		InstanceMatrix;
+
+	InstanceMatrix = XMMatrixIdentity() * XMMatrixScaling(m_vScaleAlpha[iNumModel]->fScale, m_vScaleAlpha[iNumModel]->fScale, m_vScaleAlpha[iNumModel]->fScale) * XMMatrixTranslation(0.f, m_vScaleAlpha[iNumModel]->fPosY, 0.f);
 	XMStoreFloat4x4(&WorldMatrix, XMMatrixTranspose(InstanceMatrix *  m_pTransformCom->Get_WorldMatrix()));
 	m_pShaderCom->Set_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4));
 
@@ -220,4 +308,16 @@ void CWhirlWind_Normal::Free()
 	}
 
 	m_vScaleAlpha.clear();
+
+	for (auto& ScaleAlpha : m_vScaleAlpha_2)
+	{
+		Safe_Delete(ScaleAlpha);
+	}
+
+	m_vScaleAlpha_2.clear();
+
+	Safe_Release(m_pTextureAlpha_2);
+	Safe_Release(m_pModelCom_2);
+
 }
+

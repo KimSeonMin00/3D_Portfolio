@@ -113,7 +113,7 @@ technique11 DefaultTechinque
 	pass Rect_Alpha
 	{
 		SetBlendState(BS_AlphaBlend, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
-		SetDepthStencilState(DSS_Default, 0);
+		SetDepthStencilState(DSS_None_ZTest_And_Write, 0);
 		SetRasterizerState(RS_Default);
 
 		VertexShader = compile vs_5_0 VS_MAIN_RECT();

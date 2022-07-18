@@ -88,6 +88,9 @@
     <Filter Include="02.GameObjects\Player\Effect">
       <UniqueIdentifier>{3e77fb15-74d5-4be8-b118-4cedad366bc2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Player\Effect\Q">
+      <UniqueIdentifier>{53088114-44eb-41df-a77b-c4514d55af98}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -196,7 +199,7 @@
       <Filter>02.GameObjects\Monster\Boss\Pantheon</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Player_Q_Effect.h">
-      <Filter>02.GameObjects\Player\Effect</Filter>
+      <Filter>02.GameObjects\Player\Effect\Q</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -291,7 +294,7 @@
       <Filter>02.GameObjects\Monster\Boss\Pantheon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Player_Q_Effect.cpp">
-      <Filter>02.GameObjects\Player\Effect</Filter>
+      <Filter>02.GameObjects\Player\Effect\Q</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

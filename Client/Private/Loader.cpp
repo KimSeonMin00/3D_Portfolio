@@ -204,12 +204,24 @@ _uint CLoader::Loading_ForGamePlay()
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_base_q_tonado_wind_cas.dds")))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Tornado_2_Alpha"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_base_e_tonado_wind_cas.dds")))))
+		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Yasuo_Q_Indicator"),
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_q_indicator.dds")))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Yasuo_Q_Sword"),
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_q_sword.dds")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_E_Q_Black"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_base_e_dash_black.dds")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_E_Q_White"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_base_e_dash_white.dds")))))
 		return E_FAIL;
 
 	///* For.Prototype_Component_Texture_Player. */
@@ -244,6 +256,14 @@ _uint CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tornado"),
 		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Effect/", "Q_Tornado.fbx", CModel::TYPE_NONANIM, PivotMatrix))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tornado_2"),
+		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Effect/", "Q_Tornado_2.fbx", CModel::TYPE_NONANIM, PivotMatrix))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_E_Q_Slash"),
+		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Effect/", "e_q_slash_black.fbx", CModel::TYPE_NONANIM, PivotMatrix))))
 		return E_FAIL;
 
 	Load_MapObject(LEVEL_GAMEPLAY);
