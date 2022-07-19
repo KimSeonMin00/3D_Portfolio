@@ -107,7 +107,7 @@ HRESULT CWhirlWind_EQ::Render()
 		if (FAILED(SetUp_ConstantTable(i)))
 			return E_FAIL;
 
-		if(m_vecEqData[i]->bWhite == true)
+		if (m_vecEqData[i]->bWhite == true)
 			m_pTexture_White->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
 		else
 			m_pTextureAlpha->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
@@ -120,7 +120,9 @@ HRESULT CWhirlWind_EQ::Render()
 
 		m_pModelCom->Render(0);
 	}
-		m_pSPHERECom->Render();
+	m_pSPHERECom->Render();
+
+	return S_OK;
 }
 
 HRESULT CWhirlWind_EQ::SetUp_Components()
@@ -208,4 +210,11 @@ CGameObject * CWhirlWind_EQ::Clone(void * pArg)
 void CWhirlWind_EQ::Free()
 {
 	__super::Free();
+
+	for (auto& EQ_Data : m_vecEqData)
+	{
+		Safe_Delete(EQ_Data);
+	}
+
+	Safe_Release(m_pTexture_White);
 }

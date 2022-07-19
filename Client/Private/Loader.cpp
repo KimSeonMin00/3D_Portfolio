@@ -11,6 +11,7 @@
 #include "WhirlWind_EQ.h"
 #include "Player_Q_Effect.h"
 #include "Player_Q_Passive.h"
+#include "Player_R_Effect.h"
 #include "Volibear.h"
 #include "Pantheon.h"
 #include "Voli_Ghost.h"
@@ -138,6 +139,10 @@ _uint CLoader::Loading_ForGamePlay()
 		CPlayer_Q_Passive::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Yasuo_R_Effect"),
+		CPlayer_R_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Boss"),
 		CVolibear::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
@@ -237,6 +242,10 @@ _uint CLoader::Loading_ForGamePlay()
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_q_tornado_buff_af.dds")))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Player_R_Blast"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_base_r_wind_blast.dds")))))
+		return E_FAIL;
+
 	///* For.Prototype_Component_Texture_Player. */
 	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Player"),
 	//	CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Player/AKIHA_AKI00_00%d.png"), 12))))
@@ -281,6 +290,10 @@ _uint CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Yasuo_Passive_Q"),
 		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Effect/", "q_windPassive.fbx", CModel::TYPE_NONANIM, PivotMatrix))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_R_Blast"),
+		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Effect/", "r_ground_blast.fbx", CModel::TYPE_NONANIM, PivotMatrix))))
 		return E_FAIL;
 
 	Load_MapObject(LEVEL_GAMEPLAY);

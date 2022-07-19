@@ -94,6 +94,9 @@
     <Filter Include="02.GameObjects\Player\Effect\Passive_Q">
       <UniqueIdentifier>{66ab19b7-e62d-47bb-89c2-77b798c816ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Player\Effect\R">
+      <UniqueIdentifier>{62924dbc-e128-4752-91e3-44d0b9f067a0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -207,6 +210,9 @@
     <ClInclude Include="..\Public\Player_Q_Passive.h">
       <Filter>02.GameObjects\Player\Effect\Passive_Q</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Player_R_Effect.h">
+      <Filter>02.GameObjects\Player\Effect\R</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -304,6 +310,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player_Q_Passive.cpp">
       <Filter>02.GameObjects\Player\Effect\Passive_Q</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_R_Effect.cpp">
+      <Filter>02.GameObjects\Player\Effect\R</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

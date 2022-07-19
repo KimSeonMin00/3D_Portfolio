@@ -13,6 +13,13 @@ BEGIN(Client)
 class CPlayer_Q_Passive final
 	:public CGameObject
 {
+public:
+	typedef struct tagTranformAlpha
+	{
+		_float2		vTextureMove = _float2(0.f, 0.f);
+		_float		fAlpha = 1.f;
+	}TRANSFORMALPHA;
+
 protected:
 	explicit CPlayer_Q_Passive(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
 	explicit CPlayer_Q_Passive(const  CPlayer_Q_Passive& rhs);
@@ -32,6 +39,12 @@ private:
 	CModel*						m_pModelCom_2 = nullptr;
 	CTexture*					m_pTexture_PassiveWind1 = nullptr;
 	CTexture*					m_pTexture_PassiveWind2 = nullptr;
+
+private:
+	_float						m_fAddTime = 0.f;
+	_float						m_fInitTime = 0.f;
+	vector<TRANSFORMALPHA*>		m_vecTransformAlpha;
+	_float2						m_vTextureMove = _float2(0.f, 0.f);
 
 public:
 	HRESULT SetUp_Components();

@@ -757,6 +757,13 @@ void CPlayer::R_Skill(_float fTimeDelta)
 	{
 		m_eState = STATE_IDLE;
 		m_bIsChanneling = false;
+
+		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+		pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_R_Effect"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+		RELEASE_INSTANCE(CGameInstance);
+
 	}
 
 	m_pModelCom->Play_Animation(fTimeDelta);

@@ -21,6 +21,7 @@ vector			g_vColor = vector(1.f, 1.f, 1.f, 1.f);
 texture2D		g_DiffuseTexture;
 texture2D		g_AlphaTexture;
 
+float2			g_vMoveTex = float2(0.f, 0.f);
 float			g_Alpha = 1.f;
 
 struct VS_IN
@@ -141,6 +142,21 @@ PS_OUT PS_MAIN_EFFECT(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_MAIN_MOVE(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 vTexUVMove = In.vTexUV + g_vMoveTex;
+
+	vector		vMtrlAlpha = g_AlphaTexture.Sample(DefaultSampler, vTexUVMove);
+
+	Out.vColor = g_vColor * vMtrlAlpha;
+
+	Out.vColor.a = vMtrlAlpha.x * g_Alpha;
+
+	return Out;
+}
+
 technique11 DefaultTechinque
 {
 	pass Default
@@ -174,6 +190,17 @@ technique11 DefaultTechinque
 		VertexShader = compile vs_5_0 VS_MAIN_RECT();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_EFFECT();
+	}
+
+	pass MoveTexture
+	{
+		SetBlendState(BS_AlphaBlend, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_None_ZTest_And_Write, 0);
+		SetRasterizerState(RS_NonCulling);
+
+		VertexShader = compile vs_5_0 VS_MAIN_RECT();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_MOVE();
 	}
 
 }
