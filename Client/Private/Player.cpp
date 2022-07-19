@@ -299,7 +299,10 @@ void CPlayer::Key_Input(_float fTimeDelta)
 			m_iQAnimation_Index = 27;
 
 		else if (m_iQ_Time == 2)
+		{
+			pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Q_Passive"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			m_iQAnimation_Index = 28;
+		}
 
 		else if (m_iQ_Time == 3)
 		{

@@ -91,6 +91,9 @@
     <Filter Include="02.GameObjects\Player\Effect\Q">
       <UniqueIdentifier>{53088114-44eb-41df-a77b-c4514d55af98}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Player\Effect\Passive_Q">
+      <UniqueIdentifier>{66ab19b7-e62d-47bb-89c2-77b798c816ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -201,6 +204,9 @@
     <ClInclude Include="..\Public\Player_Q_Effect.h">
       <Filter>02.GameObjects\Player\Effect\Q</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Player_Q_Passive.h">
+      <Filter>02.GameObjects\Player\Effect\Passive_Q</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -295,6 +301,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player_Q_Effect.cpp">
       <Filter>02.GameObjects\Player\Effect\Q</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_Q_Passive.cpp">
+      <Filter>02.GameObjects\Player\Effect\Passive_Q</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

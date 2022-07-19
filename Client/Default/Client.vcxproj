@@ -179,6 +179,7 @@
     <ClInclude Include="..\Public\Pantheon.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\Player_Q_Effect.h" />
+    <ClInclude Include="..\Public\Player_Q_Passive.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\UI.h" />
     <ClInclude Include="..\Public\Volibear.h" />
@@ -214,6 +215,7 @@
     <ClCompile Include="..\Private\Pantheon.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\Player_Q_Effect.cpp" />
+    <ClCompile Include="..\Private\Player_Q_Passive.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\UI.cpp" />
     <ClCompile Include="..\Private\Volibear.cpp" />
