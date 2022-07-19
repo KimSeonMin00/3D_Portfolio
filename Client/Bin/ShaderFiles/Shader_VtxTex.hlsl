@@ -79,12 +79,12 @@ PS_OUT PS_MAIN_ALPHA(PS_IN In)
 
 	vector		vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
 
-	Out.vColor = g_vColor;
+	Out.vColor = g_vColor * vMtrlDiffuse;
+
 	Out.vColor.a = vMtrlDiffuse.x * g_Alpha;
 
 	return Out;
 }
-
 
 technique11 DefaultTechinque
 {

@@ -6,6 +6,7 @@ BEGIN(Engine)
 class CShader;
 class CRenderer;
 class CModel;
+class CVIBuffer_Rect;
 class CTexture;
 END
 
@@ -39,10 +40,17 @@ private:
 	vector<TRANSFORMALPHA*>		m_vecTransformAlpha;
 
 private:
+	_float						m_fFlashScale = 1.f;
+	_float						m_fFlashAlpha = 1.f;
+
+private:
 	CShader*					m_pShaderCom = nullptr;
+	CShader*					m_pShaderCom_Rect = nullptr;
 	CRenderer*					m_pRendererCom = nullptr;
 	CModel*						m_pModelCom = nullptr;
+	CVIBuffer_Rect*				m_pRect_Spark = nullptr;
 	CTexture*					m_pTexture = nullptr;
+	CTexture*					m_pTextureSpark = nullptr;
 
 public:
 	HRESULT SetUp_Components();

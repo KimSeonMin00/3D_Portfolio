@@ -111,13 +111,7 @@ HRESULT CPlayer::Render()
 
 		m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 
-		if (m_iQ_Time == 2)
-		{
-			m_pShaderCom->Set_RawValue("g_vHitColor", &_float4(0.f, 0.f, 1.f, 1.f), sizeof(_float4));
-			m_pShaderCom->Begin(1);
-		}
-		else
-			m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(0);
 
 		if (m_pAABBCom->Get_IsCollision() == true)
 		{
