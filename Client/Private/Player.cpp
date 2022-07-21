@@ -754,7 +754,8 @@ void CPlayer::R_Skill(_float fTimeDelta)
 
 		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-		pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_R_Effect"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_pTransformCom->Get_State(CTransform::STATE_LOOK) * 2.f;
+		pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_R_Effect"), &vPos);
 
 		RELEASE_INSTANCE(CGameInstance);
 

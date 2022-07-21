@@ -32,7 +32,7 @@ HRESULT CPlayer_Q_Passive::NativeConstruct(void * pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f) / XMConvertToRadians(60.f));
-	m_pTransformCom->Set_Scaled(XMVectorSet(1.5f, 1.5f, 1.5f, 0.f));
+	m_pTransformCom->Set_Scaled(XMVectorSet(2.f, 2.f, 4.f, 0.f));
 
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
@@ -109,7 +109,7 @@ HRESULT CPlayer_Q_Passive::Render()
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
 
-	for (_int i = 0; i < m_vecTransformAlpha.size(); i++)
+	/*for (_int i = 0; i < m_vecTransformAlpha.size(); i++)
 	{
 		if (FAILED(SetUp_ConstantTable_Model_1(0)))
 			return E_FAIL;
@@ -118,14 +118,14 @@ HRESULT CPlayer_Q_Passive::Render()
 			return E_FAIL;
 
 		m_pShaderCom->Set_RawValue("g_Alpha", &m_vecTransformAlpha[i]->fAlpha , sizeof(_float));
-		m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(0.5f, 1.f, 1.f, 1.f), sizeof(_vector));
+		m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(0.f, 1.f, 1.f, 1.f), sizeof(_vector));
 		m_pShaderCom->Set_RawValue("g_vMoveTex", &m_vecTransformAlpha[i]->vTextureMove, sizeof(_float2));
 
 		m_pShaderCom->Begin(3);
 
 		m_pModelCom_1->Render(0);
 
-	}
+	}*/
 
 	for (_int i = 0; i < m_vecTransformAlpha.size(); i++)
 	{
@@ -175,7 +175,7 @@ HRESULT CPlayer_Q_Passive::SetUp_ConstantTable_Model_1(_uint iNumModel)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	m_pShaderCom->Set_RawValue("g_WorldMatrix", &XMMatrixTranspose(XMMatrixRotationY(XMConvertToRadians(-15.f)) * m_pTransformCom->Get_WorldMatrix()), sizeof(_float4x4));
+	m_pShaderCom->Set_RawValue("g_WorldMatrix", &XMMatrixTranspose(XMMatrixRotationY(XMConvertToRadians(-30.f)) * m_pTransformCom->Get_WorldMatrix()), sizeof(_float4x4));
 	m_pShaderCom->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_VIEW), sizeof(_float4x4));
 	m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_PROJ), sizeof(_float4x4));
 
@@ -188,7 +188,7 @@ HRESULT CPlayer_Q_Passive::SetUp_ConstantTable_Model_2(_uint iNumModel)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	m_pShaderCom->Set_RawValue("g_WorldMatrix", &XMMatrixTranspose(XMMatrixRotationY(XMConvertToRadians(15.f)) * m_pTransformCom->Get_WorldMatrix()), sizeof(_float4x4));
+	m_pShaderCom->Set_RawValue("g_WorldMatrix", &XMMatrixTranspose(m_pTransformCom->Get_WorldMatrix()), sizeof(_float4x4));
 	m_pShaderCom->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_VIEW), sizeof(_float4x4));
 	m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_PROJ), sizeof(_float4x4));
 

@@ -19,6 +19,8 @@ public:
 	{
 		_float2		vTextureMove = _float2(0.f, -0.5f);
 		_float		fAlpha = 1.f;
+		_vector		fScale = XMVectorSet(1.f, 1.f, 1.f, 0.f);
+		_vector		vPos = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 	}TRANSFORMALPHA;
 
 protected:
@@ -34,14 +36,26 @@ public:
 	virtual HRESULT Render();
 
 private:
+	HRESULT Render_Flash();
+	HRESULT Render_Wind();
+	HRESULT Render_String();
+
+private:
 	_float						m_fAddTime = 0.2f;
 	_float						m_fTexMoveX = 0.f;
 	_float						m_fAlpha = 1.f;
 	vector<TRANSFORMALPHA*>		m_vecTransformAlpha;
 
+	vector<TRANSFORMALPHA*>		m_vecString;
+	_bool						m_bStringFall = false;
+
+	vector<TRANSFORMALPHA*>		m_vecRing;
+
 private:
-	_float						m_fFlashScale = 1.f;
+	_float						m_fFlashScale = 0.1f;
 	_float						m_fFlashAlpha = 1.f;
+
+
 
 private:
 	CShader*					m_pShaderCom = nullptr;
@@ -49,8 +63,11 @@ private:
 	CRenderer*					m_pRendererCom = nullptr;
 	CModel*						m_pModelCom = nullptr;
 	CVIBuffer_Rect*				m_pRect_Spark = nullptr;
+	CVIBuffer_Rect*				m_pRect_String = nullptr;
 	CTexture*					m_pTexture = nullptr;
 	CTexture*					m_pTextureSpark = nullptr;
+	CTexture*					m_pTextureString = nullptr;
+	CTexture*					m_pTexture_R_Ring = nullptr;
 
 public:
 	HRESULT SetUp_Components();
