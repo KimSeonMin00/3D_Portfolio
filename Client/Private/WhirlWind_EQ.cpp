@@ -30,7 +30,7 @@ HRESULT CWhirlWind_EQ::NativeConstruct(void * pArg)
 
 	memcpy(&vPos, pArg, sizeof(_vector));
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION,vPos);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION,vPos + XMVectorSet(0.f, 0.5f, 0.f, 0.f));
 	m_fLiveTime = 0.f;
 
 	if (FAILED(SetUp_Components()))
@@ -55,7 +55,7 @@ void CWhirlWind_EQ::Tick(_float fTimeDelta)
 		m_bDead = true;
 
 	m_fAddModelTime += fTimeDelta;
-	if (m_fAddModelTime >= 0.1f && m_iModel < 4)
+	if (m_fAddModelTime >= 0.1f && m_iModel < 5)
 	{
 		EQDATA* pEqData = new EQDATA;
 
@@ -107,18 +107,37 @@ HRESULT CWhirlWind_EQ::Render()
 		if (FAILED(SetUp_ConstantTable(i)))
 			return E_FAIL;
 
-		if (m_vecEqData[i]->bWhite == true)
-			m_pTexture_White->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
+		if (i == 4)
+		{
+			m_pTexture_InnerWind->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
+
+			_float2 MoveTex = _float2(-0.5f, 0.f);
+
+			m_pShaderCom->Set_RawValue("g_vMoveTex", &MoveTex, sizeof(_float2));
+
+			m_pShaderCom->Set_RawValue("g_Alpha", &m_vecEqData[i]->fAlpha, sizeof(_float));
+
+			m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(0.f, 100.f / 255.f, 1.f, 1.f), sizeof(_vector));
+
+			m_pShaderCom->Begin(2);
+
+			m_pModel_InnerWind->Render(0);
+		}
 		else
-			m_pTextureAlpha->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
+		{
+			if (m_vecEqData[i]->bWhite == true)
+				m_pTexture_White->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
+			else
+				m_pTextureAlpha->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
 
-		m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(1.f, 1.f, 1.f, 1.f), sizeof(_vector));
+			m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(1.f, 1.f, 1.f, 1.f), sizeof(_vector));
 
-		m_pShaderCom->Set_RawValue("g_Alpha", &m_vecEqData[i]->fAlpha, sizeof(_float));
+			m_pShaderCom->Set_RawValue("g_Alpha", &m_vecEqData[i]->fAlpha, sizeof(_float));
 
-		m_pShaderCom->Begin(2);
+			m_pShaderCom->Begin(2);
 
-		m_pModelCom->Render(0);
+			m_pModelCom->Render(0);
+		}
 	}
 	m_pSPHERECom->Render();
 
@@ -138,16 +157,22 @@ HRESULT CWhirlWind_EQ::SetUp_Components()
 	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_E_Q_Slash"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tornado_2"), TEXT("Com_Model_Wind"), (CComponent**)&m_pModel_InnerWind)))
+		return E_FAIL;
+
 	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_E_Q_Black"), TEXT("Com_Texture_Black"), (CComponent**)&m_pTextureAlpha)))
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_E_Q_White"), TEXT("Com_Texture_White"), (CComponent**)&m_pTexture_White)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Tornado_Alpha"), TEXT("Com_Texture_Wind"), (CComponent**)&m_pTexture_InnerWind)))
+		return E_FAIL;
+
 	CCollider::COLLIDERDESC		ColliderDesc;
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
 
-	ColliderDesc.vScale = _float3(5.f, 5.f, 5.f);
+	ColliderDesc.vScale = _float3(4.f, 4.f, 4.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	ColliderDesc.vAngle = _float3(0.f, 0.0f, 0.0f);
 
@@ -216,5 +241,7 @@ void CWhirlWind_EQ::Free()
 		Safe_Delete(EQ_Data);
 	}
 
+	Safe_Release(m_pTexture_InnerWind);
 	Safe_Release(m_pTexture_White);
+	Safe_Release(m_pModel_InnerWind);
 }

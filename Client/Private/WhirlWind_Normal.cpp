@@ -160,6 +160,10 @@ HRESULT CWhirlWind_Normal::Render()
 
 		m_pTextureAlpha->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
 
+		_float2 MoveTex = _float2(-0.f, 0.f);
+
+		m_pShaderCom->Set_RawValue("g_vMoveTex", &MoveTex, sizeof(_float2));
+
 		m_pShaderCom->Set_RawValue("g_Alpha", &m_vScaleAlpha[i]->fAlpha, sizeof(_float));
 
 		m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(1.f, 1.f, 1.f, 1.f), sizeof(_vector));
@@ -176,7 +180,11 @@ HRESULT CWhirlWind_Normal::Render()
 
 		m_pModelCom_2->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", 0, aiTextureType_DIFFUSE);
 
-		m_pTextureAlpha->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
+		m_pTextureAlpha_2->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
+
+		_float2 MoveTex= _float2(-0.5f, 0.f);
+
+		m_pShaderCom->Set_RawValue("g_vMoveTex", &MoveTex, sizeof(_float2));
 
 		m_pShaderCom->Set_RawValue("g_Alpha", &m_vScaleAlpha_2[i]->fAlpha, sizeof(_float));
 
@@ -214,7 +222,7 @@ HRESULT CWhirlWind_Normal::SetUp_Components()
 		return E_FAIL;
 
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Tornado_2_Alpha"), TEXT("Com_Alpha_Texture_2"), (CComponent**)&m_pTextureAlpha_2)))
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Tornado_Alpha"), TEXT("Com_Alpha_Texture_2"), (CComponent**)&m_pTextureAlpha_2)))
 		return E_FAIL;
 
 	CCollider::COLLIDERDESC		ColliderDesc;

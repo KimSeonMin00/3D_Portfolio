@@ -124,15 +124,9 @@ PS_OUT PS_MAIN_EFFECT(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	vector		vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
-	vector		vMtrlAlpha = g_AlphaTexture.Sample(DefaultSampler, In.vTexUV);
+	float2 vTexUVMove = In.vTexUV + g_vMoveTex;
 
-	float		fShade = max(dot(normalize(g_vLightDir.xyz) * -1.f, In.vNormal), 0.f);
-
-	vector		vLook = In.vWorldPos - g_vCamPosition;
-	vector		vReflect = reflect(normalize(g_vLightDir), vector(In.vNormal, 0.f));
-
-	float		fSpecular = pow(max(dot(normalize(vLook) * -1.f, normalize(vReflect)), 0.f), 30.f);
+	vector		vMtrlAlpha = g_AlphaTexture.Sample(DefaultSampler, vTexUVMove);
 
 	Out.vColor = g_vColor * vMtrlAlpha;
 

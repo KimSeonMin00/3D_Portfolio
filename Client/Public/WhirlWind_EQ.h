@@ -31,6 +31,8 @@ public:
 	HRESULT SetUp_ConstantTable(_uint iNumModel);
 
 private:
+	CModel*							m_pModel_InnerWind = nullptr;
+	CTexture*						m_pTexture_InnerWind = nullptr;
 	CTexture*						m_pTexture_White = nullptr;
 	vector<EQDATA*>					m_vecEqData;
 	_uint							m_iModel = 0;
