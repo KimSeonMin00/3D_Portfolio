@@ -39,6 +39,7 @@ private:
 	HRESULT Render_Flash();
 	HRESULT Render_Wind();
 	HRESULT Render_String();
+	HRESULT Render_Crack();
 
 private:
 	_float						m_fAddTime = 0.2f;
@@ -64,10 +65,12 @@ private:
 	CModel*						m_pModelCom = nullptr;
 	CVIBuffer_Rect*				m_pRect_Spark = nullptr;
 	CVIBuffer_Rect*				m_pRect_String = nullptr;
+	CVIBuffer_Rect*				m_pRect_Crack = nullptr;
 	CTexture*					m_pTexture = nullptr;
 	CTexture*					m_pTextureSpark = nullptr;
 	CTexture*					m_pTextureString = nullptr;
 	CTexture*					m_pTexture_R_Ring = nullptr;
+	CTexture*					m_pTexture_Crack = nullptr;
 
 public:
 	HRESULT SetUp_Components();

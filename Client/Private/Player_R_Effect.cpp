@@ -133,9 +133,11 @@ HRESULT CPlayer_R_Effect::Render()
 
 	if (m_bStringFall == true)
 	{
+		Render_Crack();
+
 		Render_Wind();
 
-		Render_Flash();
+		Render_Flash();	
 	}
 
 	return S_OK;
@@ -243,6 +245,35 @@ HRESULT CPlayer_R_Effect::Render_String()
 	return S_OK;
 }
 
+HRESULT CPlayer_R_Effect::Render_Crack()
+{
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_matrix WorldMat;
+
+	WorldMat = XMMatrixIdentity() * XMMatrixScaling(2.f, 2.f, 1.f) * XMMatrixRotationX(XMConvertToRadians(90.f)) * XMMatrixTranslation(0.f, 0.2f, 0.f) * m_pTransformCom->Get_WorldMatrix();
+
+	m_pShaderCom_Rect->Set_RawValue("g_WorldMatrix", &XMMatrixTranspose(WorldMat), sizeof(_float4x4));
+	m_pShaderCom_Rect->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_VIEW), sizeof(_float4x4));
+	m_pShaderCom_Rect->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_PROJ), sizeof(_float4x4));
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	m_pTexture_Crack->Bind_OnShader(m_pShaderCom_Rect, "g_DiffuseTexture");
+
+	m_pShaderCom_Rect->Set_RawValue("g_vColor", &XMVectorSet(1.f, 1.f, 1.f, 1.f), sizeof(_vector));
+
+	_float fAlpha = 1.f;
+
+	m_pShaderCom_Rect->Set_RawValue("g_Alpha", &fAlpha, sizeof(_float));
+
+	m_pShaderCom_Rect->Begin(0);
+
+	m_pRect_Crack->Render();
+
+	return S_OK;
+}
+
 HRESULT CPlayer_R_Effect::SetUp_Components()
 {
 	/* For.Com_Renderer */
@@ -261,6 +292,9 @@ HRESULT CPlayer_R_Effect::SetUp_Components()
 	if (FAILED(__super::Add_Components(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), TEXT("Com_Rect_String"), (CComponent**)&m_pRect_String)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Components(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), TEXT("Com_Rect_Crack"), (CComponent**)&m_pRect_Crack)))
+		return E_FAIL;
+
 	/* For.Com_Model*/
 	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_R_Blast"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
@@ -276,6 +310,9 @@ HRESULT CPlayer_R_Effect::SetUp_Components()
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Player_R_Ring"), TEXT("Com_Texture_R_Ring"), (CComponent**)&m_pTexture_R_Ring)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Player_R_Crack"), TEXT("Com_Texture_R_Crack"), (CComponent**)&m_pTexture_Crack)))
 		return E_FAIL;
 
 	return S_OK;
@@ -347,9 +384,11 @@ void CPlayer_R_Effect::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pRect_String);
 	Safe_Release(m_pRect_Spark);
+	Safe_Release(m_pRect_Crack);
 	Safe_Release(m_pTexture);
 	Safe_Release(m_pTextureSpark);
 	Safe_Release(m_pTexture_R_Ring);
+	Safe_Release(m_pTexture_Crack);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pShaderCom_Rect);
 }
