@@ -39,6 +39,14 @@ public:
 		}
 	};
 
+	void		Damaged(_float fDamage)
+	{
+		m_fHealthPoint -= fDamage;
+	}
+
+private:
+	_float		m_fHealthPoint = 1000.f;
+
 protected:
 	_bool		m_bAirborne = false;
 	_float		m_fAirborneTime = 0.f;

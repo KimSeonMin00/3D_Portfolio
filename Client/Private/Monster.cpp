@@ -29,8 +29,8 @@ HRESULT CMonster::NativeConstruct(void * pArg)
 
 void CMonster::Tick(_float fTimeDelta)
 {
-	if (m_bAirborne == true)
-		Airborne(fTimeDelta);
+	if (m_fHealthPoint <= 0.f)
+		m_bDead = true;
 }
 
 void CMonster::Late_Tick(_float fTimeDelta)

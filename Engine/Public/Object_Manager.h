@@ -24,6 +24,7 @@ public:
 	HRESULT Add_Layer(_uint iLevelIndex, const _tchar* pLayerTag, const _tchar* pPrototypeTag, void* pArg = nullptr);
 	void Tick(_float fTimeDelta);
 	void Late_Tick(_float fTimeDelta);
+	_uint	Get_Layer_Size(_uint iLevelIndex, const _tchar* pLayerTag);
 	HRESULT Clear(_uint iLevelIndex);
 	
 

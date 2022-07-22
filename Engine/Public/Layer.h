@@ -20,7 +20,7 @@ public:
 	HRESULT Add_GameObject(class CGameObject* pGameObject);
 	void Tick(_float fTimeDelta);
 	void Late_Tick(_float fTimeDelta);
-
+	_uint Get_Size();
 private:
 	list<class CGameObject*>			m_GameObjects;
 	typedef list<class CGameObject*>	GAMEOBJECTS;

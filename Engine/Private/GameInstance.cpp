@@ -188,6 +188,15 @@ HRESULT CGameInstance::Add_Layer(_uint iLevelIndex, const _tchar * pLayerTag, co
 	return m_pObject_Manager->Add_Layer(iLevelIndex, pLayerTag, pPrototypeTag, pArg);
 }
 
+_uint CGameInstance::Get_Layer_Size(_uint iLevelIndex, const _tchar * pLayerTag)
+{
+	if (nullptr == m_pObject_Manager)
+		return E_FAIL;
+
+	m_pObject_Manager->Get_Layer_Size(iLevelIndex, pLayerTag);
+
+}
+
 CComponent * CGameInstance::Get_Component(_uint iLevelID, const _tchar * pLayerTag, const _tchar * pComponentTag, _uint iIndex)
 {
 	if (nullptr == m_pObject_Manager)

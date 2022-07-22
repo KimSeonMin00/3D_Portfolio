@@ -70,6 +70,11 @@ void CLayer::Late_Tick(_float fTimeDelta)
 	}
 }
 
+_uint CLayer::Get_Size()
+{
+	return m_GameObjects.size();
+}
+
 CLayer * CLayer::Create()
 {
 	CLayer*	pInstance = new CLayer();

@@ -78,6 +78,9 @@ private:
 	void	Fall(_float fTimeDelta);
 
 private:
+	void	Hit_Monster();
+
+private:
 	STATE			m_ePreState = STATE_END;
 	STATE			m_eState = STATE_END;
 	STATE			m_eDoingState = STATE_END;
@@ -112,6 +115,7 @@ private://For Move
 
 private://For Attack
 	_uint			m_iAttackAnimation_Index = 0;
+	_bool			m_bHit = false;
 
 private:
 	_uint			m_iQAnimation_Index = 27;
@@ -131,6 +135,9 @@ private:
 
 	_bool			m_bFall = false;
 	_bool			m_bGrab = false;
+
+private:
+	_float			m_fDamage = 100.f;
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const CTransform::TRANSFORMDESC& TransformDesc);

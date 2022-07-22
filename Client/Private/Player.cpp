@@ -5,6 +5,7 @@
 #include "Terrain.h"
 #include "WhirlWind_Normal.h"
 #include "HierarchyNode.h"
+#include "Monster.h"
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
 	:CGameObject(pDevice, pDevice_Context)
@@ -78,18 +79,24 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 {
 	if (nullptr == m_pRendererCom)
 		return;
-
-	/*CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-
-	if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_HitSphere")))->Collision_Sphere(m_pSPHERECom))
+	if (m_bHit == false)
 	{
-		if (m_eState == STATE_Q || m_eState == STATE_ATTACK)
+		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+		if (pGameInstance->Get_Layer_Size(LEVEL_GAMEPLAY, TEXT("Layer_Monster")) != 0)
 		{
-			((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBCom);
+			if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_HitSphere")))->Collision_Sphere(m_pSPHERECom))
+			{
+				if (m_eState == STATE_Q || m_eState == STATE_ATTACK)
+				{
+					if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBCom))
+						m_bHit = true;
+				}
+			}
 		}
+
+		RELEASE_INSTANCE(CGameInstance);
 	}
-	
-	RELEASE_INSTANCE(CGameInstance);*/
 
 	m_pRendererCom->Add_RenderList(CRenderer::RENDER_NONALPHABLEND, this);
 }
@@ -647,6 +654,11 @@ void CPlayer::Attack(_float fTimeDelta)
 			else
 				m_iAnimationIndex++;
 
+			if (m_bHit == true)
+			{
+				Hit_Monster();
+				m_bHit = false;
+			}
 			m_pModelCom->SetUp_AnimationIndex(m_iAnimationIndex);
 			m_pModelCom->Set_Initialize();
 		}
@@ -661,6 +673,12 @@ void CPlayer::Q_Skill(_float fTimeDelta)
 	{
 		m_bIsChanneling = false;
 		m_eState = m_eDoingState;
+
+		if (m_bHit == true)
+		{
+			Hit_Monster();
+			m_bHit = false;
+		}
 		return;
 	}
 
@@ -783,6 +801,15 @@ void CPlayer::Fall(_float fTimeDelta)
 		m_bFall = false;
 		m_bGrab = false;
 	}
+}
+
+void CPlayer::Hit_Monster()
+{
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	((CMonster*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_Monster")))->Damaged(m_fDamage);
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 CPlayer * CPlayer::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const CTransform::TRANSFORMDESC & TransformDesc)

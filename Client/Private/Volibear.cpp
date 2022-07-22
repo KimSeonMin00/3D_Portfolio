@@ -61,6 +61,8 @@ HRESULT CVolibear::NativeConstruct(void * pArg)
 
 void CVolibear::Tick(_float fTimeDelta)
 {
+	__super::Tick(fTimeDelta);
+
 	if (m_bAirborne == true)
 		m_eState = STATE_STUN;
 
@@ -68,10 +70,10 @@ void CVolibear::Tick(_float fTimeDelta)
 		Check_Loop(fTimeDelta);
 
 	
-	if (m_bAirborne == false && m_pModelCom->Get_IsChange() == false)
+	/*if (m_bAirborne == false && m_pModelCom->Get_IsChange() == false)
 	{
 		Pattern_Phase1(fTimeDelta);
-	}
+	}*/
 
 	Change_State(fTimeDelta);
 

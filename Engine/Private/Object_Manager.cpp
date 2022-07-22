@@ -112,6 +112,16 @@ void CObject_Manager::Late_Tick(_float fTimeDelta)
 	}
 }
 
+_uint CObject_Manager::Get_Layer_Size(_uint iLevelIndex, const _tchar * pLayerTag)
+{
+	CLayer* pLayer = Find_Layer(iLevelIndex, pLayerTag);
+
+	if (pLayer == nullptr)
+		return 0;
+
+	return pLayer->Get_Size();
+}
+
 HRESULT CObject_Manager::Clear(_uint iLevelIndex)
 {
 	for (auto& Pair : m_pLayers[iLevelIndex])
