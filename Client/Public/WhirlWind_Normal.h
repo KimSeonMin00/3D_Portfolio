@@ -31,7 +31,7 @@ private:
 
 private:
 	_float			m_fCrack_Scale = 2.f;
-	_float			m_fCrack_Alpha = 0.5f;
+	_float			m_fCrack_Alpha = 1.f;
 
 public:
 	HRESULT SetUp_Components();

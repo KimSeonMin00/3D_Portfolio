@@ -56,6 +56,8 @@ private:
 	_float						m_fFlashScale = 0.1f;
 	_float						m_fFlashAlpha = 1.f;
 
+	_float						m_fCrackAlpha = 1.f;
+
 
 
 private:

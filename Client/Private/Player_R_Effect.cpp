@@ -112,7 +112,11 @@ void CPlayer_R_Effect::Tick(_float fTimeDelta)
 		if (m_vecRing.size() >= 3)
 		{
 			if (m_vecRing[2]->fAlpha < 0.f)
-				m_bDead = true;
+			{
+				m_fCrackAlpha -= 1.f * fTimeDelta;
+				if(m_fCrackAlpha <= 0.f)
+					m_bDead = true;
+			}
 		}
 	}
 }
@@ -263,9 +267,7 @@ HRESULT CPlayer_R_Effect::Render_Crack()
 
 	m_pShaderCom_Rect->Set_RawValue("g_vColor", &XMVectorSet(1.f, 1.f, 1.f, 1.f), sizeof(_vector));
 
-	_float fAlpha = 1.f;
-
-	m_pShaderCom_Rect->Set_RawValue("g_Alpha", &fAlpha, sizeof(_float));
+	m_pShaderCom_Rect->Set_RawValue("g_Alpha", &m_fCrackAlpha, sizeof(_float));
 
 	m_pShaderCom_Rect->Begin(0);
 

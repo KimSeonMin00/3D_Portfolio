@@ -195,7 +195,7 @@ HRESULT CWhirlWind_Normal::Render()
 		m_pModelCom_2->Render(0);
 	}
 
-	Render_Crack();
+	//Render_Crack();
 
 	m_pSPHERECom->Render();
 
@@ -226,7 +226,7 @@ HRESULT CWhirlWind_Normal::Render_Crack()
 
 	m_pShaderCom_Rect->Set_RawValue("g_Alpha", &m_fCrack_Alpha, sizeof(_float));
 
-	m_pShaderCom_Rect->Begin(0);
+	m_pShaderCom_Rect->Begin(2);
 
 	m_pCrack_Rect->Render();
 
