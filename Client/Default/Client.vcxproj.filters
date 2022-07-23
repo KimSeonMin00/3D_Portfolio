@@ -97,6 +97,12 @@
     <Filter Include="02.GameObjects\Player\Effect\R">
       <UniqueIdentifier>{62924dbc-e128-4752-91e3-44d0b9f067a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Monster\Normal">
+      <UniqueIdentifier>{771cf3a8-e990-49f1-8eb7-f5ebb1b4deed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster\Normal\Wolf">
+      <UniqueIdentifier>{4b016bbc-a307-4343-8e46-50ad90fb71f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -213,6 +219,9 @@
     <ClInclude Include="..\Public\Player_R_Effect.h">
       <Filter>02.GameObjects\Player\Effect\R</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Wolf.h">
+      <Filter>02.GameObjects\Monster\Normal\Wolf</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -313,6 +322,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player_R_Effect.cpp">
       <Filter>02.GameObjects\Player\Effect\R</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Wolf.cpp">
+      <Filter>02.GameObjects\Monster\Normal\Wolf</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

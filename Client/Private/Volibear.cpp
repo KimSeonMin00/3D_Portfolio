@@ -1230,48 +1230,12 @@ void CVolibear::Grab(_float fTimeDelta)
 	RELEASE_INSTANCE(CGameInstance);
 }
 
-void CVolibear::Chase_Player(_float fTimeDelta)
-{
-	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
-
-	if (pGameInstance == nullptr)
-		return;
-
-	Safe_AddRef(pGameInstance);
-
-	CTransform* pPlayer_Transform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"));
-
-	if (pPlayer_Transform == nullptr)
-	{
-		Safe_Release(pGameInstance);
-		return;
-	}
-
-	Safe_AddRef(pPlayer_Transform);
-
-	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vPlayerPos = pPlayer_Transform->Get_State(CTransform::STATE_POSITION);
-
-	Safe_Release(pPlayer_Transform);
-
-	m_vMovePos = vPlayerPos;
-
-	m_pTransformCom->LookAt(vPlayerPos);
-
-	m_fMoveDistTotal = XMVectorGetX(XMVector3Length(vPlayerPos - vPos));
-
-	m_fMoveDist = 0.f;
-
-	Safe_Release(pGameInstance);
-
-}
-
 void CVolibear::Pattern_1(_float fTimeDelta)
 {
 	if (m_bIsChanneling == false)
 	{
 		m_fPatternTime += fTimeDelta;
-		Chase_Player(fTimeDelta);
+		__super::Chase_Player(fTimeDelta);
 		m_bQState = true;
 
 
@@ -1313,7 +1277,7 @@ void CVolibear::Pattern_2(_float fTimeDelta)
 	{
 		m_eState = STATE_ATTACK;
 		m_bIsChanneling = true;
-		Chase_Player(fTimeDelta);
+		__super::Chase_Player(fTimeDelta);
 		m_iPattern_AttackTime++;
 	}
 
@@ -1364,7 +1328,7 @@ void CVolibear::Pattern_3(_float fTimeDelta)
 	{
 		m_eState = STATE_ATTACK;
 		m_bIsChanneling = true;
-		Chase_Player(fTimeDelta);
+		__super::Chase_Player(fTimeDelta);
 		m_iPattern_AttackTime++;
 	}
 
@@ -1403,7 +1367,7 @@ void CVolibear::Pattern_4(_float fTimeDelta)
 	{
 		m_eState = STATE_R;
 		m_bIsChanneling = true;
-		Chase_Player(fTimeDelta);
+		__super::Chase_Player(fTimeDelta);
 		m_iPattern_AttackTime++;
 	}
 
@@ -1421,13 +1385,13 @@ void CVolibear::Pattern_4(_float fTimeDelta)
 			if (m_iPattern_AttackTime == 2)
 			{
 				m_eState = STATE_W;
-				Chase_Player(fTimeDelta);
+				__super::Chase_Player(fTimeDelta);
 				m_iPattern_AttackTime++;
 			}
 			else if (m_iPattern_AttackTime == 3)
 			{
 				m_eState = STATE_Q;
-				Chase_Player(fTimeDelta);
+				__super::Chase_Player(fTimeDelta);
 				m_iPattern_AttackTime++;
 			}
 			else if (m_iPattern_AttackTime == 4)
@@ -1490,7 +1454,7 @@ void CVolibear::Pattern_5(_float fTimeDelta)
 
 			if (m_fFlyAttackDelay >= 0.5f)
 			{
-				Chase_Player(fTimeDelta);
+				__super::Chase_Player(fTimeDelta);
 
 				CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 
@@ -1537,7 +1501,7 @@ void CVolibear::Pattern_6(_float fTimeDelta)
 		//pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Voli_Ghost"));
 
 		//Safe_Release(pGameInstance);
-		Chase_Player(fTimeDelta);
+		__super::Chase_Player(fTimeDelta);
 
 		if (m_fMoveDistTotal > 2.f)
 		{
@@ -1683,9 +1647,4 @@ void CVolibear::Free()
 	Safe_Release(m_pSPHEREAttackRange);
 	Safe_Release(m_pOBBRightHand);
 	Safe_Release(m_pOBBLeftHand);
-	Safe_Release(m_pSphereCom);
-	Safe_Release(m_pAABBCom);
-	Safe_Release(m_pRendererCom);
-	Safe_Release(m_pModelCom);
-	Safe_Release(m_pShaderCom);
 }

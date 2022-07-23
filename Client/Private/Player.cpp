@@ -561,7 +561,7 @@ void CPlayer::Move(_float fTimeDelta)
 {
 	if (m_fMoveDistTotal > m_fMoveDist)
 	{
-		m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * fTimeDelta), m_pNavigationCom);
+		m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * fTimeDelta), nullptr);
 		m_fMoveDist += m_fMoveSpeed * fTimeDelta;
 
 		if (m_bStateChange == true)

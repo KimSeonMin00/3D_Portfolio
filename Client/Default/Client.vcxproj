@@ -188,6 +188,7 @@
     <ClInclude Include="..\Public\WhirlWind.h" />
     <ClInclude Include="..\Public\WhirlWind_EQ.h" />
     <ClInclude Include="..\Public\WhirlWind_Normal.h" />
+    <ClInclude Include="..\Public\Wolf.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="MapObject.h" />
     <ClInclude Include="Resource.h" />
@@ -225,6 +226,7 @@
     <ClCompile Include="..\Private\WhirlWind.cpp" />
     <ClCompile Include="..\Private\WhirlWind_EQ.cpp" />
     <ClCompile Include="..\Private\WhirlWind_Normal.cpp" />
+    <ClCompile Include="..\Private\Wolf.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="MapObject.cpp" />
     <ClCompile Include="stdafx.cpp">

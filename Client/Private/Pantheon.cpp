@@ -344,7 +344,7 @@ void CPantheon::Idle(_float fTimeDelta)
 
 void CPantheon::Move(_float fTimeDelta)
 {
-	Chase_Player(fTimeDelta);
+	__super::Chase_Player(fTimeDelta);
 	m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * fTimeDelta));
 
 	if (m_bStateChange == true)
@@ -561,48 +561,13 @@ void CPantheon::R_Skill(_float fTimeDelta)
 {
 }
 
-void CPantheon::Chase_Player(_float fTimeDelta)
-{
-	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
-
-	if (pGameInstance == nullptr)
-		return;
-
-	Safe_AddRef(pGameInstance);
-
-	CTransform* pPlayer_Transform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"));
-
-	if (pPlayer_Transform == nullptr)
-	{
-		Safe_Release(pGameInstance);
-		return;
-	}
-
-	Safe_AddRef(pPlayer_Transform);
-
-	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_vector vPlayerPos = pPlayer_Transform->Get_State(CTransform::STATE_POSITION);
-
-	Safe_Release(pPlayer_Transform);
-
-	m_vMovePos = vPlayerPos;
-
-	m_pTransformCom->LookAt(vPlayerPos);
-
-	m_fMoveDistTotal = XMVectorGetX(XMVector3Length(vPlayerPos - vPos));
-
-	m_fMoveDist = 0.f;
-
-	Safe_Release(pGameInstance);
-}
-
 void CPantheon::Pattern_1(_float fTimeDelta)
 {
 	if (m_bIsChanneling == false)
 	{
 		m_eState = STATE_W;
 		m_bIsChanneling = true;
-		Chase_Player(fTimeDelta);
+		__super::Chase_Player(fTimeDelta);
 		m_iPattern_AttackTime = 0;
 		m_iPattern_AttackTime++;
 	}
@@ -680,8 +645,4 @@ CGameObject * CPantheon::Clone(void * pArg)
 void CPantheon::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pRendererCom);
-	Safe_Release(m_pModelCom);
-	Safe_Release(m_pShaderCom);
 }

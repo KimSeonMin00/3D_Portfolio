@@ -58,7 +58,6 @@ private:
 	void	Stun(_float fTimeDelta);
 	void	Grab(_float fTimeDelta);
 
-	void	Chase_Player(_float fTimeDelta);
 	void	Pattern_1(_float fTimeDelta);
 	void	Pattern_2(_float fTimeDelta);
 	void	Pattern_3(_float fTimeDelta);
@@ -91,14 +90,6 @@ private:
 	_bool			m_bIsState_In = false;
 
 	_uint			m_iCurrentIndex = 0;
-
-private://For Move
-	_vector			m_vMovePos;
-	_vector			m_vMoveDir;
-	_float			m_fMoveDistTotal = 0.f;
-	_float			m_fMoveDist = 0.f;
-
-	_float			m_fMoveSpeed = 2.f;
 
 private://For Attack
 	_uint			m_iAttackIndex = 3;

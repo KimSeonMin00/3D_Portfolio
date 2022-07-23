@@ -1,18 +1,18 @@
 #pragma once
-
 #include "Client_Defines.h"
 #include "Monster.h"
 
-class CPantheon
+class CWolf
 	final : public CMonster
 {
 public:
-	enum STATE { STATE_IDLE, STATE_MOVE, STATE_ATTACK, STATE_Q, STATE_W, STATE_E, STATE_R, STATE_END };
+	enum STATE { STATE_IDLE, STATE_AGGRO, STATE_MOVE, STATE_ATTACK, STATE_DEATH, STATE_END };
+
 
 protected:
-	explicit CPantheon(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
-	explicit CPantheon(const CPantheon& rhs);
-	virtual ~CPantheon() = default;
+	explicit CWolf(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
+	explicit CWolf(const CWolf& rhs);
+	virtual ~CWolf() = default;
 
 public:
 	virtual HRESULT NativeConstruct_Prototype(const CTransform::TRANSFORMDESC& TransformDesc);
@@ -29,24 +29,20 @@ private:
 	_float4x4		m_PivotMatrix;
 
 private:
-	void	Key_Input(_float fTimeDelta);
 	void	Change_State(_float fTimeDelta);
 	void	Check_Loop(_float fTimeDelta);
 	void	Update_State(_float fTimeDelta);
 
 	void	Idle(_float fTimeDelta);
+	void	Idle_Aggro(_float fTimeDelta);
 	void	Move(_float fTimeDelta);
 	void	Attack(_float fTimeDelta);
-	void	Q_Skill(_float fTimeDelta);
-	void	W_Skill(_float fTimeDelta);
-	void	E_Skill(_float fTimeDelta);
-	void	R_Skill(_float fTimeDelta);
-
-	void	Pattern_1(_float fTimeDelta);
-
-	_uint	m_iPattern_AttackTime = 0;
+	void	Death(_float fTimeDelta);
+	
 	_float	m_fInitTime = 0.f;
+	_float	m_fStunTime = 0.f;
 	_bool	m_bStop = false;
+	_bool	m_bStun = false;
 
 private:
 	STATE			m_ePreState = STATE_END;
@@ -55,30 +51,14 @@ private:
 
 	_bool			m_bIsChanneling = false;
 	_bool			m_bStateChange = false;
-	_bool			m_bIdle_In = false;
+	_bool			m_bState_In = false;
 
 	_uint			m_iCurrentIndex = 0;
-
-private://For Move
-	_vector			m_vMovePos;
-	_vector			m_vMoveDir;
-	_float			m_fMoveDistTotal = 0.f;
-	_float			m_fMoveDist = 0.f;
-
-	_float			m_fMoveSpeed = 2.f;
-
-private://For Attack
-	_bool			m_bAttackIndex_Change = false;
-	_bool			m_bW_3Attack = false;
-	_uint			m_iAttackIndex = 0;
-
-private:
-	_float			m_fE_CastingTime = 0.f;
+	_uint			m_iAttackIndex = 4;
 
 public:
-	static CPantheon* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const CTransform::TRANSFORMDESC& TransformDesc);
+	static CWolf* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const CTransform::TRANSFORMDESC& TransformDesc);
 	virtual CGameObject* Clone(void* pArg);
 	virtual void Free() override;
-
 };
 

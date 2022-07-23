@@ -44,7 +44,19 @@ public:
 		m_fHealthPoint -= fDamage;
 	}
 
-private:
+protected:
+	void	Chase_Player(_float fTimeDelta);
+
+protected://For Move
+	_vector			m_vMovePos;
+	_vector			m_vMoveDir;
+	_float				m_fMoveDistTotal = 0.f;
+	_float				m_fMoveDist = 0.f;
+
+	_float				m_fMoveSpeed = 2.f;
+
+protected:
+	_float		m_fMaxHealth = 1000.f;
 	_float		m_fHealthPoint = 1000.f;
 
 protected:
@@ -54,7 +66,7 @@ protected:
 protected:
 	CCollider*						m_pAABBCom = nullptr;
 	CCollider*						m_pSphereCom = nullptr;
-	CShader*						m_pShaderCom = nullptr;
+	CShader*							m_pShaderCom = nullptr;
 	CRenderer*						m_pRendererCom = nullptr;
 	CModel*							m_pModelCom = nullptr;
 

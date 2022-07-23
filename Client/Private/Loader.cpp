@@ -12,10 +12,15 @@
 #include "Player_Q_Effect.h"
 #include "Player_Q_Passive.h"
 #include "Player_R_Effect.h"
+
 #include "Volibear.h"
-#include "Pantheon.h"
 #include "Voli_Ghost.h"
 #include "Effect_Voli_E.h"
+
+#include "Pantheon.h"
+
+#include "Wolf.h"
+
 #include "MapObject.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -159,6 +164,10 @@ _uint CLoader::Loading_ForGamePlay()
 		CPantheon::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Wolf"),
+		CWolf::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MapObject"),
 		CMapObject::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
@@ -292,6 +301,10 @@ _uint CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Pantheon"),
 		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/", "Pantheon.fbx", CModel::TYPE_ANIM, PivotMatrix))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Wolf"),
+		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Monster/", "Wolf.fbx", CModel::TYPE_ANIM, PivotMatrix))))
 		return E_FAIL;
 
 	PivotMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
