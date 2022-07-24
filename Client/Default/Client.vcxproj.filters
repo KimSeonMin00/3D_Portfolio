@@ -103,6 +103,12 @@
     <Filter Include="02.GameObjects\Monster\Normal\Wolf">
       <UniqueIdentifier>{4b016bbc-a307-4343-8e46-50ad90fb71f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Monster\Normal\Red">
+      <UniqueIdentifier>{193b93c2-0858-4efa-bf34-361db8c8aa83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster\Normal\RazorBeak">
+      <UniqueIdentifier>{7d3f7cd5-50ae-4a7d-b9a9-c3dc35c3243e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -222,6 +228,12 @@
     <ClInclude Include="..\Public\Wolf.h">
       <Filter>02.GameObjects\Monster\Normal\Wolf</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Red.h">
+      <Filter>02.GameObjects\Monster\Normal\Red</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RazorBeak.h">
+      <Filter>02.GameObjects\Monster\Normal\RazorBeak</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -325,6 +337,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Wolf.cpp">
       <Filter>02.GameObjects\Monster\Normal\Wolf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Red.cpp">
+      <Filter>02.GameObjects\Monster\Normal\Red</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RazorBeak.cpp">
+      <Filter>02.GameObjects\Monster\Normal\RazorBeak</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
