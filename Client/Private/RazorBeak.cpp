@@ -344,6 +344,7 @@ void CRazorBeak::Idle_Aggro(_float fTimeDelta)
 void CRazorBeak::Move(_float fTimeDelta)
 {
 	m_pTransformCom->LookAt(m_vMovePos);
+	__super::None_Overlap(fTimeDelta);
 	m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * fTimeDelta));
 
 	if (m_bStateChange == true)
