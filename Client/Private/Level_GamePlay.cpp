@@ -25,8 +25,8 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
-	/*if (FAILED(Ready_Layer_Map(TEXT("Layer_Map"))))
-		return E_FAIL;*/
+	if (FAILED(Ready_Layer_Map(TEXT("Layer_Map"))))
+		return E_FAIL;
 
 
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
@@ -146,19 +146,39 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 
 	_vector vPos;
 
-	vPos = XMVectorSet(1.f, 0.f, 1.f, 1.f);
+	vPos = XMVectorSet(20.f, 0.f, 5.f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Wolf"), &vPos)))
 		return E_FAIL;
 
-	vPos = XMVectorSet(0.f, 0.f, 1.f, 1.f);
+	vPos = XMVectorSet(20.f, 0.f, 10.f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Wolf"), &vPos)))
 		return E_FAIL;
 
-	vPos = XMVectorSet(0.f, 0.f, 2.f, 1.f);
+	vPos = XMVectorSet(15.f, 0.f, 7.f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Wolf"), &vPos)))
+		return E_FAIL;
+
+	vPos = XMVectorSet(30.f, 0.f, 7.f, 1.f);
+
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_RazorBeak"), &vPos)))
+		return E_FAIL;
+
+	vPos = XMVectorSet(40.f, 0.f, 15.f, 1.f);
+
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_RazorBeak"), &vPos)))
+		return E_FAIL;
+
+	vPos = XMVectorSet(45.f, 0.f, 10.f, 1.f);
+
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_RazorBeak"), &vPos)))
+		return E_FAIL;
+
+	vPos = XMVectorSet(45.f, 0.f, 15.f, 1.f);
+
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Red"), &vPos)))
 		return E_FAIL;
 
 	/*if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Boss"))))
@@ -183,7 +203,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Map(const _tchar * pLayerTag)
 
 	Safe_AddRef(pGameInstance);
 	//HANDLE		hFile = CreateFile(TEXT("../Bin/Data/TestMap.dat"), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	HANDLE		hFile = CreateFile(TEXT("../Bin/Data/BossMap.dat"), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	HANDLE		hFile = CreateFile(TEXT("../Bin/Data/TestMap.dat"), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	DWORD	dwByte = 0;
 
 	if (INVALID_HANDLE_VALUE == hFile)

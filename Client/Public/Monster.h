@@ -51,6 +51,7 @@ public:
 
 protected:
 	void	Chase_Player(_float fTimeDelta);
+	void	None_Overlap(_float fTimeDelta);
 
 protected://For Move
 	_vector			m_vMovePos;

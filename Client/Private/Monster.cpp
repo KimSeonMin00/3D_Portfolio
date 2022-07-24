@@ -106,6 +106,38 @@ void CMonster::Chase_Player(_float fTimeDelta)
 	Safe_Release(pGameInstance);
 }
 
+void CMonster::None_Overlap(_float fTimeDelta)
+{
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_uint iLayerSize = pGameInstance->Get_Layer_Size(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	if (iLayerSize != 0)
+	{
+		for (_uint i = 0; i < iLayerSize; i++)
+		{
+			CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_Transform"), i);
+
+			if (pTransform != nullptr || pTransform != m_pTransformCom)
+			{
+				Safe_AddRef(pTransform);
+
+				_vector vTargetPos = pTransform->Get_State(CTransform::STATE_POSITION);
+
+				if (XMVectorGetX(XMVector3Length(vPos - vTargetPos)) < 1.f)
+				{
+					m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos + ((vPos - vTargetPos) * fTimeDelta));
+				}
+
+				Safe_Release(pTransform);
+			}
+		}
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
 void CMonster::Free()
 {
 	__super::Free();

@@ -91,6 +91,8 @@ void CWolf::Tick(_float fTimeDelta)
 
 void CWolf::Late_Tick(_float fTimeDelta)
 {
+	__super::Late_Tick(fTimeDelta);
+
 	if (nullptr == m_pRendererCom)
 		return;
 
@@ -303,6 +305,8 @@ void CWolf::Idle(_float fTimeDelta)
 
 void CWolf::Idle_Aggro(_float fTimeDelta)
 {
+	m_pTransformCom->LookAt(m_vMovePos);
+
 	if (m_bStateChange == true)
 	{
 		if (m_eDoingState == STATE_IDLE)
@@ -343,6 +347,7 @@ void CWolf::Idle_Aggro(_float fTimeDelta)
 void CWolf::Move(_float fTimeDelta)
 {
 	m_pTransformCom->LookAt(m_vMovePos);
+	__super::None_Overlap(fTimeDelta);
 	m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * fTimeDelta));
 
 	if (m_bStateChange == true)

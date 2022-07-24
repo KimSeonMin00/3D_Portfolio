@@ -34,7 +34,8 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	_float3 pPos;
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(12.f, 0.f, 2.f, 1.f));
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(12.f, 0.f, 2.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(15.f, 0.f, 5.f, 1.f));
 	XMStoreFloat3(&pPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	if (false == m_pNavigationCom->Check_isIn_Navigation(&pPos))
 		return E_FAIL;
@@ -565,7 +566,7 @@ void CPlayer::Move(_float fTimeDelta)
 {
 	if (m_fMoveDistTotal > m_fMoveDist)
 	{
-		m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * fTimeDelta), nullptr);
+		m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * fTimeDelta), m_pNavigationCom);
 		m_fMoveDist += m_fMoveSpeed * fTimeDelta;
 
 		if (m_bStateChange == true)

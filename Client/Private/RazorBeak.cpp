@@ -302,6 +302,8 @@ void CRazorBeak::Idle(_float fTimeDelta)
 
 void CRazorBeak::Idle_Aggro(_float fTimeDelta)
 {
+	m_pTransformCom->LookAt(m_vMovePos);
+
 	if (m_bStateChange == true)
 	{
 		if (m_eDoingState == STATE_IDLE)

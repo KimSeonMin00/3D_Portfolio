@@ -62,7 +62,7 @@ void CRed::Tick(_float fTimeDelta)
 	{
 		if (m_fHealthPoint < m_fMaxHealth)
 		{
-			if (m_fMoveDistTotal < 1.f)
+			if (m_fMoveDistTotal < 2.f)
 				m_eState = STATE_ATTACK;
 			else
 				m_eState = STATE_MOVE;
@@ -304,6 +304,8 @@ void CRed::Idle(_float fTimeDelta)
 
 void CRed::Idle_Aggro(_float fTimeDelta)
 {
+	m_pTransformCom->LookAt(m_vMovePos);
+
 	if (m_bStateChange == true)
 	{
 		if (m_eDoingState == STATE_IDLE)
@@ -344,6 +346,7 @@ void CRed::Idle_Aggro(_float fTimeDelta)
 void CRed::Move(_float fTimeDelta)
 {
 	m_pTransformCom->LookAt(m_vMovePos);
+	__super::None_Overlap(fTimeDelta);
 	m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * fTimeDelta));
 
 	if (m_bStateChange == true)
@@ -385,7 +388,7 @@ void CRed::Attack(_float fTimeDelta)
 	{
 		if (m_pModelCom->Get_Finished())
 		{
-			if (m_iAttackIndex == 3)
+			if (m_iAttackIndex == 2)
 				m_iAttackIndex = 0;
 			else
 				m_iAttackIndex++;

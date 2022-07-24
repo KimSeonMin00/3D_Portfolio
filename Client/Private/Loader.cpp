@@ -369,7 +369,7 @@ _uint CLoader::Loading_ForGamePlay()
 
 	/* For.Prototype_Component_Navigation*/
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Data/Navigation_Boss.dat")))))
+		CNavigation::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Data/Navigation.dat")))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을 생성 중입니다. "));
