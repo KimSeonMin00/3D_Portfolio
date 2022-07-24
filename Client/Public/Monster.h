@@ -41,7 +41,12 @@ public:
 
 	void		Damaged(_float fDamage)
 	{
-		m_fHealthPoint -= fDamage;
+		if (m_bHit == false)
+		{
+			m_fHealthPoint -= fDamage;
+			m_bHit = true;
+			m_fHitDelay = 0.f;
+		}
 	}
 
 protected:
@@ -59,6 +64,8 @@ protected:
 	_float		m_fMaxHealth = 1000.f;
 	_float		m_fHealthPoint = 1000.f;
 
+	_float		m_fHitDelay = 0.f;
+	_bool		m_bHit = false;
 protected:
 	_bool		m_bAirborne = false;
 	_float		m_fAirborneTime = 0.f;

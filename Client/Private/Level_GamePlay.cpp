@@ -144,7 +144,21 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Player"))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_RazorBeak"))))
+	_vector vPos;
+
+	vPos = XMVectorSet(1.f, 0.f, 1.f, 1.f);
+
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Wolf"), &vPos)))
+		return E_FAIL;
+
+	vPos = XMVectorSet(0.f, 0.f, 1.f, 1.f);
+
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Wolf"), &vPos)))
+		return E_FAIL;
+
+	vPos = XMVectorSet(0.f, 0.f, 2.f, 1.f);
+
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Wolf"), &vPos)))
 		return E_FAIL;
 
 	/*if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Boss"))))

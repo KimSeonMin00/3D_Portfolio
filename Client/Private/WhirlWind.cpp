@@ -42,23 +42,26 @@ void CWhirlWind::Late_Tick(_float fTimeDelta)
 
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	if (pGameInstance->Get_Layer_Size(LEVEL_GAMEPLAY, TEXT("Layer_Monster")) != 0)
+	_uint iLayerSize = pGameInstance->Get_Layer_Size(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+	if (iLayerSize != 0)
 	{
-
-		if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_HitSphere")))->Collision_Sphere(m_pSPHERECom))
+		for (_uint i = 0; i < iLayerSize; i++)
 		{
-
-			if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_HitBox")))->Collision_AABB(m_pSPHERECom))
+			if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_HitSphere"), i))->Collision_Sphere(m_pSPHERECom))
 			{
-				CMonster* pMonster = (CMonster*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
-				if (pMonster == nullptr)
-					return;
-				Safe_AddRef(pMonster);
 
-				pMonster->Set_Airborne();
+				if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_HitBox"), i))->Collision_AABB(m_pSPHERECom))
+				{
+					CMonster* pMonster = (CMonster*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), i);
+					if (pMonster == nullptr)
+						return;
+					Safe_AddRef(pMonster);
 
-				Safe_Release(pMonster);
+					pMonster->Set_Airborne();
 
+					Safe_Release(pMonster);
+
+				}
 			}
 		}
 	}

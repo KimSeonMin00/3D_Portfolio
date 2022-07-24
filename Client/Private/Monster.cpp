@@ -25,12 +25,24 @@ HRESULT CMonster::NativeConstruct(void * pArg)
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
 
+	if (pArg != nullptr)
+	{
+		_vector vPos;
+		memcpy(&vPos, pArg, sizeof(_vector));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+	}
+
 	return S_OK;
 }
 
 void CMonster::Tick(_float fTimeDelta)
 {
-
+	if (m_bHit == true)
+	{
+		m_fHitDelay += fTimeDelta;
+		if (m_fHitDelay > 0.2f)
+			m_bHit = false;
+	}
 }
 
 void CMonster::Late_Tick(_float fTimeDelta)

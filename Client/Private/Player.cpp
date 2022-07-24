@@ -83,14 +83,18 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 	{
 		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-		if (pGameInstance->Get_Layer_Size(LEVEL_GAMEPLAY, TEXT("Layer_Monster")) != 0)
+		_uint iLayerSize = pGameInstance->Get_Layer_Size(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+		if (iLayerSize != 0)
 		{
-			if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_HitSphere")))->Collision_Sphere(m_pSPHERECom))
+			for (_uint i = 0; i < iLayerSize; i++)
 			{
-				if (m_eState == STATE_Q || m_eState == STATE_ATTACK)
+				if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_HitSphere"), i))->Collision_Sphere(m_pSPHERECom))
 				{
-					if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBCom))
-						m_bHit = true;
+					if (m_eState == STATE_Q || m_eState == STATE_ATTACK)
+					{
+						if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_HitBox"), i))->Collision_AABB(m_pOBBCom))
+							Hit_Monster(i);
+					}
 				}
 			}
 		}
@@ -654,11 +658,6 @@ void CPlayer::Attack(_float fTimeDelta)
 			else
 				m_iAnimationIndex++;
 
-			if (m_bHit == true)
-			{
-				Hit_Monster();
-				m_bHit = false;
-			}
 			m_pModelCom->SetUp_AnimationIndex(m_iAnimationIndex);
 			m_pModelCom->Set_Initialize();
 		}
@@ -673,12 +672,6 @@ void CPlayer::Q_Skill(_float fTimeDelta)
 	{
 		m_bIsChanneling = false;
 		m_eState = m_eDoingState;
-
-		if (m_bHit == true)
-		{
-			Hit_Monster();
-			m_bHit = false;
-		}
 		return;
 	}
 
@@ -803,11 +796,11 @@ void CPlayer::Fall(_float fTimeDelta)
 	}
 }
 
-void CPlayer::Hit_Monster()
+void CPlayer::Hit_Monster(_uint iIndex)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	((CMonster*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_Monster")))->Damaged(m_fDamage);
+	((CMonster*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), iIndex))->Damaged(m_fDamage);
 
 	RELEASE_INSTANCE(CGameInstance);
 }

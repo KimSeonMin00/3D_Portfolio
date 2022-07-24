@@ -78,7 +78,7 @@ private:
 	void	Fall(_float fTimeDelta);
 
 private:
-	void	Hit_Monster();
+	void	Hit_Monster(_uint iIndex);
 
 private:
 	STATE			m_ePreState = STATE_END;

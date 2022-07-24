@@ -46,6 +46,12 @@ void CWolf::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
+	if (m_bAirborne == true)
+	{
+		Airborne(fTimeDelta);
+		return;
+	}
+
 	if (m_bStop == false && m_bStun == false)
 		Check_Loop(fTimeDelta);
 
