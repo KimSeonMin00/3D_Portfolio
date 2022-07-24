@@ -137,6 +137,8 @@ private:
 	_bool			m_bGrab = false;
 
 private:
+	list<CTransform*>			m_MonsterPosList;
+
 	_float			m_fDamage = 100.f;
 
 public:

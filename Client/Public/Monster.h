@@ -38,6 +38,10 @@ public:
 			m_fAirborneTime = 0.f;
 		}
 	};
+	_bool		Get_Airborne()
+	{
+		return m_bAirborne;
+	};
 
 	void		Damaged(_float fDamage)
 	{

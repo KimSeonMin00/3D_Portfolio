@@ -385,6 +385,32 @@ void CPlayer::Key_Input(_float fTimeDelta)
 			Safe_Release(pTerrain);
 		}
 
+		_uint iLayerSize = pGameInstance->Get_Layer_Size(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+		if (iLayerSize != 0)
+		{
+			for (_uint i = 0; i < iLayerSize; i++)
+			{
+				CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_Transform"), i);
+
+				if (pTransform != nullptr)
+				{
+					Safe_AddRef(pTransform);
+
+					_vector vTargetPos = pTransform->Get_State(CTransform::STATE_POSITION);
+					_float vDist = XMVectorGetX(XMVector3Length(vTargetPos - XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f)));
+					if (vDist < 5.f)
+					{
+						if (((CMonster*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), i))->Get_Airborne() == true)
+						{
+							Safe_AddRef(pTransform);
+							m_MonsterPosList.push_back(pTransform);
+						}
+					}
+					Safe_Release(pTransform);
+				}
+			}
+		}
+
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f));
 
 		m_pModelCom->SetUp_AnimationIndex(36);
@@ -766,8 +792,14 @@ void CPlayer::R_Skill(_float fTimeDelta)
 
 		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_pTransformCom->Get_State(CTransform::STATE_LOOK) * 2.f;
-		pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_R_Effect"), &vPos);
+		for (auto& iter = m_MonsterPosList.begin(); iter != m_MonsterPosList.end();)
+		{
+			_vector vPos = (*iter)->Get_State(CTransform::STATE_POSITION);
+			pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_R_Effect"), &vPos);
+			
+			Safe_Release(*iter);
+			iter = m_MonsterPosList.erase(iter);
+		}
 
 		RELEASE_INSTANCE(CGameInstance);
 
@@ -833,6 +865,11 @@ CGameObject * CPlayer::Clone(void * pArg)
 void CPlayer::Free()
 {
 	__super::Free();
+
+	for (auto& pMonsterPos : m_MonsterPosList)
+		Safe_Release(pMonsterPos);
+
+	m_MonsterPosList.clear();
 
 	Safe_Release(m_pSPHERECom);
 	Safe_Release(m_pOBBCom);
