@@ -67,12 +67,19 @@ HRESULT CMapObject::Render()
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
 		m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+		
 
 		if (m_bSelected == false)
+		{
+			m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(1.f, 1.f, 1.f, 1.f), sizeof(_vector));
 			m_pShaderCom->Begin(0);
+		}
 
 		else
+		{
+			m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(1.f, 0.f, 0.f, 1.f), sizeof(_vector));
 			m_pShaderCom->Begin(1);
+		}
 
 		m_pModelCom->Render(i);
 	}

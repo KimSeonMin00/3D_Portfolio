@@ -28,6 +28,9 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 	if (FAILED(Ready_Layer_Map(TEXT("Layer_Map"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
+		return E_FAIL;
+
 
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
@@ -144,68 +147,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Player"))))
 		return E_FAIL;
 
-	_vector vPos;
-
-	vPos = XMVectorSet(20.f, 0.f, 5.f, 1.f);
-
-	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Wolf"), &vPos)))
-		return E_FAIL;
-
-	vPos = XMVectorSet(20.f, 0.f, 10.f, 1.f);
-
-	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Wolf"), &vPos)))
-		return E_FAIL;
-
-	vPos = XMVectorSet(15.f, 0.f, 7.f, 1.f);
-
-	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Wolf"), &vPos)))
-		return E_FAIL;
-
-	vPos = XMVectorSet(17.f, 0.f, 9.f, 1.f);
-
-	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Wolf"), &vPos)))
-		return E_FAIL;
-
-	vPos = XMVectorSet(15.f, 0.f, 9.f, 1.f);
-
-	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Wolf"), &vPos)))
-		return E_FAIL;
-
-	vPos = XMVectorSet(30.f, 0.f, 7.f, 1.f);
-
-	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_RazorBeak"), &vPos)))
-		return E_FAIL;
-
-	vPos = XMVectorSet(40.f, 0.f, 15.f, 1.f);
-
-	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_RazorBeak"), &vPos)))
-		return E_FAIL;
-
-	vPos = XMVectorSet(45.f, 0.f, 12.f, 1.f);
-
-	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_RazorBeak"), &vPos)))
-		return E_FAIL;
-
-	vPos = XMVectorSet(30.f, 0.f, 10.f, 1.f);
-
-	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_RazorBeak"), &vPos)))
-		return E_FAIL;
-
-	vPos = XMVectorSet(40.f, 0.f, 10.f, 1.f);
-
-	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_RazorBeak"), &vPos)))
-		return E_FAIL;
-
-	vPos = XMVectorSet(45.f, 0.f, 15.f, 1.f);
-
-	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Red"), &vPos)))
-		return E_FAIL;
-
-	vPos = XMVectorSet(50.f, 0.f, 12.f, 1.f);
-
-	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Red"), &vPos)))
-		return E_FAIL;
-
 	/*if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Boss"))))
 		return E_FAIL;*/
 
@@ -268,6 +209,63 @@ HRESULT CLevel_GamePlay::Ready_Layer_Map(const _tchar * pLayerTag)
 
 	Safe_Release(pGameInstance);
 
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
+{
+	CGameInstance*	pGameInstance = CGameInstance::Get_Instance();
+	if (nullptr == pGameInstance)
+		return E_FAIL;
+
+	Safe_AddRef(pGameInstance);
+
+	HANDLE		hFile = CreateFile(TEXT("../Bin/Data/Monster_Test.dat"), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	DWORD	dwByte = 0;
+
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	_int iNumMonster = 0;
+
+	while (true)
+	{
+		_int	iMonsterIndex;
+		_float4x4 WorldMat;
+
+		ReadFile(hFile, &iMonsterIndex, sizeof(_int), &dwByte, nullptr);
+		ReadFile(hFile, &WorldMat, sizeof(_float4x4), &dwByte, nullptr);
+
+		if (0 == dwByte)
+		{
+			break;
+		}
+
+		if (iMonsterIndex == 0)
+			pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Wolf"));
+
+		else if (iMonsterIndex == 1)
+			pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_RazorBeak"));
+
+		else if (iMonsterIndex == 2)
+			pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Red"));
+
+		CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, pLayerTag, TEXT("Com_Transform"), iNumMonster);
+		Safe_AddRef(pTransform);
+
+		pTransform->Set_State(CTransform::STATE_RIGHT, XMLoadFloat4x4(&WorldMat).r[0]);
+		pTransform->Set_State(CTransform::STATE_UP, XMLoadFloat4x4(&WorldMat).r[1]);
+		pTransform->Set_State(CTransform::STATE_LOOK, XMLoadFloat4x4(&WorldMat).r[2]);
+		pTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat4x4(&WorldMat).r[3]);
+
+		Safe_Release(pTransform);
+
+		iNumMonster++;
+	}
+
+	CloseHandle(hFile);
+
+	Safe_Release(pGameInstance);
 	return S_OK;
 }
 

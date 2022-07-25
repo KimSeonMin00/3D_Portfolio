@@ -47,6 +47,7 @@ void CMonster::Tick(_float fTimeDelta)
 
 void CMonster::Late_Tick(_float fTimeDelta)
 {
+	m_bSelected = false;
 }
 
 HRESULT CMonster::Render()
@@ -81,6 +82,12 @@ void CMonster::Chase_Player(_float fTimeDelta)
 		return;
 
 	Safe_AddRef(pGameInstance);
+
+	if (pGameInstance->Get_Layer_Size(LEVEL_GAMEPLAY, TEXT("Layer_Player")) == 0)
+	{
+		Safe_Release(pGameInstance);
+		return;
+	}
 
 	CTransform* pPlayer_Transform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"));
 

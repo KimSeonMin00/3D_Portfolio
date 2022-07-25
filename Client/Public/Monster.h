@@ -53,6 +53,16 @@ public:
 		}
 	}
 
+	void		Set_Select()
+	{
+		m_bSelected = true;
+	}
+
+	_uint		Get_Index()
+	{
+		return m_iMonsterIndex;
+	}
+
 protected:
 	void	Chase_Player(_float fTimeDelta);
 	void	None_Overlap(_float fTimeDelta);
@@ -71,9 +81,14 @@ protected:
 
 	_float		m_fHitDelay = 0.f;
 	_bool		m_bHit = false;
+
+	_bool		m_bSelected = false;
 protected:
 	_bool		m_bAirborne = false;
 	_float		m_fAirborneTime = 0.f;
+
+protected:
+	_uint		m_iMonsterIndex = 0;
 
 protected:
 	CCollider*						m_pAABBCom = nullptr;

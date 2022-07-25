@@ -29,6 +29,7 @@ HRESULT CRazorBeak::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	m_PivotMatrix = m_pModelCom->Get_PivotMatrix();
+	m_iMonsterIndex = 1;
 
 	m_pModelCom->SetUp_AnimationIndex(14);
 	m_eState = STATE_IDLE;
@@ -54,29 +55,44 @@ void CRazorBeak::Tick(_float fTimeDelta)
 	if (m_bStop == false && m_bStun == false)
 		Check_Loop(fTimeDelta);
 
-	__super::Chase_Player(fTimeDelta);
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 
-	if (m_eState != STATE_DEATH)
+	if (pGameInstance == nullptr)
+		return;
+
+	Safe_AddRef(pGameInstance);
+
+	if (pGameInstance->Get_Layer_Size(LEVEL_GAMEPLAY, TEXT("Layer_Player")) == 0)
 	{
-		if (m_fHealthPoint < m_fMaxHealth)
-		{
-			if (m_fMoveDistTotal < 1.f)
-				m_eState = STATE_ATTACK;
-			else
-				m_eState = STATE_MOVE;
-		}
-		else
-		{
-			if (m_fMoveDistTotal < 5.f)
-				m_eState = STATE_AGGRO;
-			else
-				m_eState = STATE_IDLE;
-		}
+		m_eState = STATE_IDLE;
 	}
 
-	if (m_fHealthPoint <= 0.f)
+	else
 	{
-		m_eState = STATE_DEATH;
+		__super::Chase_Player(fTimeDelta);
+
+		if (m_eState != STATE_DEATH)
+		{
+			if (m_fHealthPoint < m_fMaxHealth)
+			{
+				if (m_fMoveDistTotal < 1.f)
+					m_eState = STATE_ATTACK;
+				else
+					m_eState = STATE_MOVE;
+			}
+			else
+			{
+				if (m_fMoveDistTotal < 5.f)
+					m_eState = STATE_AGGRO;
+				else
+					m_eState = STATE_IDLE;
+			}
+		}
+
+		if (m_fHealthPoint <= 0.f)
+		{
+			m_eState = STATE_DEATH;
+		}
 	}
 
 	Change_State(fTimeDelta);
@@ -90,6 +106,8 @@ void CRazorBeak::Tick(_float fTimeDelta)
 
 void CRazorBeak::Late_Tick(_float fTimeDelta)
 {
+	__super::Late_Tick(fTimeDelta);
+
 	if (nullptr == m_pRendererCom)
 		return;
 
@@ -115,7 +133,7 @@ HRESULT CRazorBeak::Render()
 
 		m_pShaderCom->Set_RawValue("g_vHitColor", &_float4(1.f, 0.f, 0.f, 1.f), sizeof(_float4));
 
-		if (m_pAABBCom->Get_IsCollision() == true)
+		if (m_pAABBCom->Get_IsCollision() == true || m_bSelected == true)
 			m_pShaderCom->Begin(1);
 
 		else

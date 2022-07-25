@@ -29,7 +29,7 @@ HRESULT CWolf::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	m_PivotMatrix = m_pModelCom->Get_PivotMatrix();
-
+	m_iMonsterIndex = 0;
 	//aggro : 15 non_aggro : 8 run : 3 attack : 4,5  death : 6 13 - a->n  17 n->a 19->spawn
 	m_pModelCom->SetUp_AnimationIndex(8);
 	m_eState = STATE_IDLE;
@@ -55,30 +55,47 @@ void CWolf::Tick(_float fTimeDelta)
 	if (m_bStop == false && m_bStun == false)
 		Check_Loop(fTimeDelta);
 
-	__super::Chase_Player(fTimeDelta);
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 
-	if (m_eState != STATE_DEATH)
+	if (pGameInstance == nullptr)
+		return;
+
+	Safe_AddRef(pGameInstance);
+
+	if (pGameInstance->Get_Layer_Size(LEVEL_GAMEPLAY, TEXT("Layer_Player")) == 0)
 	{
-		if (m_fHealthPoint < m_fMaxHealth)
+		m_eState = STATE_IDLE;
+	}
+
+	else
+	{
+		__super::Chase_Player(fTimeDelta);
+
+		if (m_eState != STATE_DEATH)
 		{
-			if (m_fMoveDistTotal < 1.f)
-				m_eState = STATE_ATTACK;
+			if (m_fHealthPoint < m_fMaxHealth)
+			{
+				if (m_fMoveDistTotal < 1.f)
+					m_eState = STATE_ATTACK;
+				else
+					m_eState = STATE_MOVE;
+			}
 			else
-				m_eState = STATE_MOVE;
+			{
+				if (m_fMoveDistTotal < 5.f)
+					m_eState = STATE_AGGRO;
+				else
+					m_eState = STATE_IDLE;
+			}
 		}
-		else
+
+		if (m_fHealthPoint <= 0.f)
 		{
-			if (m_fMoveDistTotal < 5.f)
-				m_eState = STATE_AGGRO;
-			else
-				m_eState = STATE_IDLE;
+			m_eState = STATE_DEATH;
 		}
 	}
 
-	if (m_fHealthPoint <= 0.f)
-	{
-		m_eState = STATE_DEATH;
-	}
+	Safe_Release(pGameInstance);
 
 	Change_State(fTimeDelta);
 
@@ -118,7 +135,7 @@ HRESULT CWolf::Render()
 
 		m_pShaderCom->Set_RawValue("g_vHitColor", &_float4(1.f, 0.f, 0.f, 1.f), sizeof(_float4));
 
-		if (m_pAABBCom->Get_IsCollision() == true)
+		if (m_pAABBCom->Get_IsCollision() == true || m_bSelected == true)
 			m_pShaderCom->Begin(1);
 
 		else

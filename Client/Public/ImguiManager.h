@@ -20,7 +20,7 @@ class CImguiManager final
 	:public CBase
 {
 public:
-	enum ToolList {TOOL_UI, TOOL_OBJECT, TOOL_NAVIGATION, TOOL_END};
+	enum ToolList {TOOL_UI, TOOL_OBJECT, TOOL_NAVIGATION, TOOL_MONSTER, TOOL_END};
 
 	typedef struct tagTriangle
 	{
@@ -46,6 +46,8 @@ private:
 	void	Navigation_Tool(_float TimeDelta);
 	_bool	Check_TrianglePoint(_float3& fPos);
 	void	Sort_TrianglePoint();
+
+	void	Monster_Tool();
 
 private:
 	CGameInstance* m_pGameInstance = nullptr;
@@ -73,6 +75,11 @@ private:
 	vector<CVIBuffer_Triangle*> m_Triangle;
 
 	CShader*				m_pShader = nullptr; 
+
+	//For Monster Tool
+	_uint	m_iNumMonster = 0;
+	_int	m_iMonsterIndex = 0;
+	_uint	m_iNumMonsterIndex = 3;
 
 	_bool					m_bEnableImgui = true;
 

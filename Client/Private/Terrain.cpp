@@ -84,7 +84,7 @@ HRESULT CTerrain::Render()
 		return E_FAIL;
 
 #ifdef _DEBUG
-	m_pNavigationCom->Render();
+	//m_pNavigationCom->Render();
 #endif // _DEBUG
 
 	return S_OK;
