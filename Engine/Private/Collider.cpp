@@ -371,14 +371,6 @@ void CCollider::Free()
 
 	if (false == m_isCloned)
 	{
-		Safe_Delete(m_pAABB);
-		Safe_Delete(m_pOBB);
-		Safe_Delete(m_pSPHERE);
-
-		Safe_Delete(m_pAABB_World);
-		Safe_Delete(m_pOBB_World);
-		Safe_Delete(m_pSPHERE_World);
-
 #ifdef _DEBUG	
 		Safe_Delete(m_pEffect);
 		Safe_Delete(m_pBatch);
@@ -388,4 +380,12 @@ void CCollider::Free()
 #ifdef _DEBUG
 	Safe_Release(m_pInputLayout);
 #endif // _DEBUG
+
+	Safe_Delete(m_pAABB);
+	Safe_Delete(m_pOBB);
+	Safe_Delete(m_pSPHERE);
+
+	Safe_Delete(m_pAABB_World);
+	Safe_Delete(m_pOBB_World);
+	Safe_Delete(m_pSPHERE_World);
 }

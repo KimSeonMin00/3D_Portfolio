@@ -97,6 +97,8 @@ void CRed::Tick(_float fTimeDelta)
 		}
 	}
 
+	Safe_Release(pGameInstance);
+
 	Change_State(fTimeDelta);
 
 	if (m_bStop == false)

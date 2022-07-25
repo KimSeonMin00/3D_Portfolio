@@ -1647,4 +1647,5 @@ void CVolibear::Free()
 	Safe_Release(m_pSPHEREAttackRange);
 	Safe_Release(m_pOBBRightHand);
 	Safe_Release(m_pOBBLeftHand);
+	Safe_Release(m_pOBBJaw);
 }

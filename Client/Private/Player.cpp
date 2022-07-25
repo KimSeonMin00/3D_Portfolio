@@ -871,6 +871,8 @@ void CPlayer::Free()
 
 	m_MonsterPosList.clear();
 
+	Safe_Release(m_pNavigationCom);
+	Safe_Release(m_pHitSphereCom);
 	Safe_Release(m_pSPHERECom);
 	Safe_Release(m_pOBBCom);
 	Safe_Release(m_pAABBCom);
