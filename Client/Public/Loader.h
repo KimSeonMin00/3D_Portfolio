@@ -35,6 +35,10 @@ public:
 	_uint Loading_ForLogo();
 	_uint Loading_ForGamePlay();
 	_uint Load_MapObject(LEVEL eLevel);
+	_uint Load_Player(LEVEL eLevel);
+	_uint Load_VoliBear(LEVEL eLevel);
+	_uint Load_Pantheon(LEVEL eLevel);
+	_uint Load_Monster(LEVEL eLevel);
 
 private:
 	ID3D11Device*			m_pDevice = nullptr;
