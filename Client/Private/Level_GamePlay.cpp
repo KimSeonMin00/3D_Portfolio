@@ -161,6 +161,16 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Wolf"), &vPos)))
 		return E_FAIL;
 
+	vPos = XMVectorSet(17.f, 0.f, 9.f, 1.f);
+
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Wolf"), &vPos)))
+		return E_FAIL;
+
+	vPos = XMVectorSet(15.f, 0.f, 9.f, 1.f);
+
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Wolf"), &vPos)))
+		return E_FAIL;
+
 	vPos = XMVectorSet(30.f, 0.f, 7.f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_RazorBeak"), &vPos)))
@@ -171,12 +181,27 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_RazorBeak"), &vPos)))
 		return E_FAIL;
 
-	vPos = XMVectorSet(45.f, 0.f, 10.f, 1.f);
+	vPos = XMVectorSet(45.f, 0.f, 12.f, 1.f);
+
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_RazorBeak"), &vPos)))
+		return E_FAIL;
+
+	vPos = XMVectorSet(30.f, 0.f, 10.f, 1.f);
+
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_RazorBeak"), &vPos)))
+		return E_FAIL;
+
+	vPos = XMVectorSet(40.f, 0.f, 10.f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_RazorBeak"), &vPos)))
 		return E_FAIL;
 
 	vPos = XMVectorSet(45.f, 0.f, 15.f, 1.f);
+
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Red"), &vPos)))
+		return E_FAIL;
+
+	vPos = XMVectorSet(50.f, 0.f, 12.f, 1.f);
 
 	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Red"), &vPos)))
 		return E_FAIL;
