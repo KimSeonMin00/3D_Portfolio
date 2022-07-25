@@ -282,7 +282,7 @@ HRESULT CPlayer_R_Effect::SetUp_Components()
 	if (FAILED(__super::Add_Components(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
 		return E_FAIL;
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxNonAnim"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Shader_VtxNonAnim"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Components(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxTex"), TEXT("Com_Shader_Rect"), (CComponent**)&m_pShaderCom_Rect)))
@@ -298,23 +298,23 @@ HRESULT CPlayer_R_Effect::SetUp_Components()
 		return E_FAIL;
 
 	/* For.Com_Model*/
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Player_R_Blast"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Model_Player_R_Blast"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	//Texture
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Player_R_Blast"), TEXT("Com_Texture_R_Blast"), (CComponent**)&m_pTexture)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Player_R_Blast"), TEXT("Com_Texture_R_Blast"), (CComponent**)&m_pTexture)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Player_Dash_Flash"), TEXT("Com_Texture_R_Spark"), (CComponent**)&m_pTextureSpark)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Player_Dash_Flash"), TEXT("Com_Texture_R_Spark"), (CComponent**)&m_pTextureSpark)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Player_R_String"), TEXT("Com_Texture_R_String"), (CComponent**)&m_pTextureString)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Player_R_String"), TEXT("Com_Texture_R_String"), (CComponent**)&m_pTextureString)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Player_R_Ring"), TEXT("Com_Texture_R_Ring"), (CComponent**)&m_pTexture_R_Ring)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Player_R_Ring"), TEXT("Com_Texture_R_Ring"), (CComponent**)&m_pTexture_R_Ring)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Player_R_Crack"), TEXT("Com_Texture_R_Crack"), (CComponent**)&m_pTexture_Crack)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Player_R_Crack"), TEXT("Com_Texture_R_Crack"), (CComponent**)&m_pTexture_Crack)))
 		return E_FAIL;
 
 	return S_OK;

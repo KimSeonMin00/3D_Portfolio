@@ -37,7 +37,7 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 
 			CLevel*		pLevel = nullptr;
 
-			
+			pGameInstance->Set_NextLevel(m_eNextLevelID);
 
 			switch (m_eNextLevelID)
 			{

@@ -34,6 +34,7 @@ public:
 	}
 
 protected:
+	_uint						m_iLevel = 0;
 	ID3D11Device*				m_pDevice = nullptr;
 	ID3D11DeviceContext*		m_pDeviceContext = nullptr;
 

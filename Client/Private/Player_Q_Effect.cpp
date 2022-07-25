@@ -126,10 +126,10 @@ HRESULT CPlayer_Q_Effect::SetUp_Components()
 	if (FAILED(__super::Add_Components(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxTex"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Yasuo_Q_Indicator"), TEXT("Com_Texture_Indicator"), (CComponent**)&m_pTexture_Indicator)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Yasuo_Q_Indicator"), TEXT("Com_Texture_Indicator"), (CComponent**)&m_pTexture_Indicator)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Yasuo_Q_Sword"), TEXT("Com_Texture_Sword"), (CComponent**)&m_pTexture_Sword)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Yasuo_Q_Sword"), TEXT("Com_Texture_Sword"), (CComponent**)&m_pTexture_Sword)))
 		return E_FAIL;
 }
 

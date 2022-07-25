@@ -150,23 +150,23 @@ HRESULT CWhirlWind_EQ::SetUp_Components()
 	if (FAILED(__super::Add_Components(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
 		return E_FAIL;
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxNonAnim"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Shader_VtxNonAnim"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	/* For.Com_Model*/
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_E_Q_Slash"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Model_E_Q_Slash"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Tornado_2"), TEXT("Com_Model_Wind"), (CComponent**)&m_pModel_InnerWind)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Model_Tornado_2"), TEXT("Com_Model_Wind"), (CComponent**)&m_pModel_InnerWind)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_E_Q_Black"), TEXT("Com_Texture_Black"), (CComponent**)&m_pTextureAlpha)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_E_Q_Black"), TEXT("Com_Texture_Black"), (CComponent**)&m_pTextureAlpha)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_E_Q_White"), TEXT("Com_Texture_White"), (CComponent**)&m_pTexture_White)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_E_Q_White"), TEXT("Com_Texture_White"), (CComponent**)&m_pTexture_White)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Tornado_Alpha"), TEXT("Com_Texture_Wind"), (CComponent**)&m_pTexture_InnerWind)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Tornado_Alpha"), TEXT("Com_Texture_Wind"), (CComponent**)&m_pTexture_InnerWind)))
 		return E_FAIL;
 
 	CCollider::COLLIDERDESC		ColliderDesc;
@@ -176,7 +176,7 @@ HRESULT CWhirlWind_EQ::SetUp_Components()
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	ColliderDesc.vAngle = _float3(0.f, 0.0f, 0.0f);
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_Hit_Sphere"), (CComponent**)&m_pSPHERECom, &ColliderDesc)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_Hit_Sphere"), (CComponent**)&m_pSPHERECom, &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;

@@ -82,7 +82,7 @@ void CPlayer_Q_Passive::Tick(_float fTimeDelta)
 
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	_vector vPos = ((CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION);
+	_vector vPos = ((CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 
 	m_fInitTime += fTimeDelta;
@@ -152,20 +152,20 @@ HRESULT CPlayer_Q_Passive::SetUp_Components()
 	if (FAILED(__super::Add_Components(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
 		return E_FAIL;
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxNonAnim"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Shader_VtxNonAnim"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	/* For.Com_Model*/
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Yasuo_Passive_Q"), TEXT("Com_Model_1"), (CComponent**)&m_pModelCom_1)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Model_Yasuo_Passive_Q"), TEXT("Com_Model_1"), (CComponent**)&m_pModelCom_1)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Yasuo_Passive_Q"), TEXT("Com_Model_2"), (CComponent**)&m_pModelCom_2)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Model_Yasuo_Passive_Q"), TEXT("Com_Model_2"), (CComponent**)&m_pModelCom_2)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Yasuo_Passive_Q_1"), TEXT("Com_Texture_Passive_Q_1"), (CComponent**)&m_pTexture_PassiveWind1)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Yasuo_Passive_Q_1"), TEXT("Com_Texture_Passive_Q_1"), (CComponent**)&m_pTexture_PassiveWind1)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Yasuo_Passive_Q_2"), TEXT("Com_Texture_Passive_Q_2"), (CComponent**)&m_pTexture_PassiveWind2)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Yasuo_Passive_Q_2"), TEXT("Com_Texture_Passive_Q_2"), (CComponent**)&m_pTexture_PassiveWind2)))
 		return E_FAIL;
 
 	return S_OK;

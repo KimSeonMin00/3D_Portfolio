@@ -45,6 +45,17 @@ HRESULT CGameObject::NativeConstruct(void * pArg)
 
 	Safe_AddRef(m_pTransformCom);
 
+	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+
+	if (pGameInstance == nullptr)
+		return E_FAIL;
+
+	Safe_AddRef(pGameInstance);
+
+	m_iLevel = pGameInstance->Get_NextLevel();
+
+	Safe_Release(pGameInstance);
+
 	return S_OK;
 }
 

@@ -109,7 +109,7 @@ HRESULT CEffect_Voli_E::Render()
 
 HRESULT CEffect_Voli_E::SetUp_Texture_Components()
 {
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Voli_E"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Voli_E"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 }
 

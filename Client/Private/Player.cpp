@@ -84,16 +84,16 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 	{
 		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-		_uint iLayerSize = pGameInstance->Get_Layer_Size(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+		_uint iLayerSize = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_Monster"));
 		if (iLayerSize != 0)
 		{
 			for (_uint i = 0; i < iLayerSize; i++)
 			{
-				if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_HitSphere"), i))->Collision_Sphere(m_pSPHERECom))
+				if (((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Monster"), TEXT("Com_HitSphere"), i))->Collision_Sphere(m_pSPHERECom))
 				{
 					if (m_eState == STATE_Q || m_eState == STATE_ATTACK)
 					{
-						if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_HitBox"), i))->Collision_AABB(m_pOBBCom))
+						if (((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Monster"), TEXT("Com_HitBox"), i))->Collision_AABB(m_pOBBCom))
 							Hit_Monster(i);
 					}
 				}
@@ -150,11 +150,11 @@ HRESULT CPlayer::SetUp_Components()
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnim"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Shader_VtxAnim"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	/* For.Com_Model*/
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Yasuo"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Model_Yasuo"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	/* For.Com_AABB*/
@@ -164,7 +164,7 @@ HRESULT CPlayer::SetUp_Components()
 	ColliderDesc.vScale = _float3(1.f, 2.f, 1.f);
 	ColliderDesc.vPosition = _float3(0.f, 1.f, 0.f);
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_HitBox"), (CComponent**)&m_pAABBCom, &ColliderDesc)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_HitBox"), (CComponent**)&m_pAABBCom, &ColliderDesc)))
 		return E_FAIL;
 
 	ColliderDesc.vScale = _float3(1.2f, 2.f, 1.2f);
@@ -172,7 +172,7 @@ HRESULT CPlayer::SetUp_Components()
 	ColliderDesc.vAngle = _float3(0.f, 0.0f, 0.0f);
 
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_HitSphere"), (CComponent**)&m_pHitSphereCom, &ColliderDesc)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_HitSphere"), (CComponent**)&m_pHitSphereCom, &ColliderDesc)))
 		return E_FAIL;
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
@@ -181,7 +181,7 @@ HRESULT CPlayer::SetUp_Components()
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	ColliderDesc.vAngle = _float3(0.f, 0.f, 0.f);
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"), TEXT("Com_Attack_HitBox"), (CComponent**)&m_pOBBCom, &ColliderDesc)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Collider_OBB"), TEXT("Com_Attack_HitBox"), (CComponent**)&m_pOBBCom, &ColliderDesc)))
 		return E_FAIL;
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
@@ -190,14 +190,14 @@ HRESULT CPlayer::SetUp_Components()
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	ColliderDesc.vAngle = _float3(0.f, 0.0f, 0.0f);
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_Attack_Range"), (CComponent**)&m_pSPHERECom, &ColliderDesc)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_Attack_Range"), (CComponent**)&m_pSPHERECom, &ColliderDesc)))
 		return E_FAIL;
 
 	/* For.Com_Navigation*/
 	CNavigation::NAVIGATIONDESC		NaviDesc;
 	NaviDesc.iCurrentIndex = 0;
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"), TEXT("Com_Navigation"), (CComponent**)&m_pNavigationCom, &NaviDesc)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Navigation"), TEXT("Com_Navigation"), (CComponent**)&m_pNavigationCom, &NaviDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -239,7 +239,7 @@ void CPlayer::Key_Input(_float fTimeDelta)
 		_float3 vPositionPicking = { 0.f, 0.f, 0.f };
 		_float3 vMoveDist = { 0.f, 0.f, 0.f };
 
-		CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
+		CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_BackGround"), 0);
 
 		if (nullptr != pTerrain)
 		{
@@ -265,7 +265,7 @@ void CPlayer::Key_Input(_float fTimeDelta)
 
 		_float3 vPositionPicking = { 0.f, 0.f, 0.f };
 
-		CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
+		CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_BackGround"), 0);
 
 		if (nullptr != pTerrain)
 		{
@@ -288,7 +288,7 @@ void CPlayer::Key_Input(_float fTimeDelta)
 
 		_float3 vPositionPicking = { 0.f, 0.f, 0.f };
 
-		CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
+		CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_BackGround"), 0);
 
 		if (nullptr != pTerrain)
 		{
@@ -298,7 +298,7 @@ void CPlayer::Key_Input(_float fTimeDelta)
 		}
 
 		m_pTransformCom->LookAt(XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f));
-		pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Q_Effect"), &m_pTransformCom->Get_WorldMatrix());
+		pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Q_Effect"), &m_pTransformCom->Get_WorldMatrix());
 		m_iQ_Time++;
 
 		if (m_iQ_Time == 1)
@@ -306,13 +306,13 @@ void CPlayer::Key_Input(_float fTimeDelta)
 
 		else if (m_iQ_Time == 2)
 		{
-			pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Q_Passive"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Q_Passive"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			m_iQAnimation_Index = 28;
 		}
 
 		else if (m_iQ_Time == 3)
 		{
-			pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Skill"), TEXT("Prototype_GameObject_WhirlWind_Normal"), &m_pTransformCom->Get_WorldMatrix());
+			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Skill"), TEXT("Prototype_GameObject_WhirlWind_Normal"), &m_pTransformCom->Get_WorldMatrix());
 			m_iQAnimation_Index = 29;
 		}
 
@@ -331,7 +331,7 @@ void CPlayer::Key_Input(_float fTimeDelta)
 
 		_float3 vPositionPicking = { 0.f, 0.f, 0.f };
 
-		CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
+		CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_BackGround"), 0);
 
 		if (nullptr != pTerrain)
 		{
@@ -352,7 +352,7 @@ void CPlayer::Key_Input(_float fTimeDelta)
 
 		_float3 vPositionPicking = { 0.f, 0.f, 0.f };
 
-		CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
+		CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_BackGround"), 0);
 
 		if (nullptr != pTerrain)
 		{
@@ -376,7 +376,7 @@ void CPlayer::Key_Input(_float fTimeDelta)
 
 		_float3 vPositionPicking = { 0.f, 0.f, 0.f };
 
-		CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
+		CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_BackGround"), 0);
 
 		if (nullptr != pTerrain)
 		{
@@ -385,12 +385,12 @@ void CPlayer::Key_Input(_float fTimeDelta)
 			Safe_Release(pTerrain);
 		}
 
-		_uint iLayerSize = pGameInstance->Get_Layer_Size(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+		_uint iLayerSize = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_Monster"));
 		if (iLayerSize != 0)
 		{
 			for (_uint i = 0; i < iLayerSize; i++)
 			{
-				CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_Transform"), i);
+				CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Monster"), TEXT("Com_Transform"), i);
 
 				if (pTransform != nullptr)
 				{
@@ -400,7 +400,7 @@ void CPlayer::Key_Input(_float fTimeDelta)
 					_float vDist = XMVectorGetX(XMVector3Length(vTargetPos - XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f)));
 					if (vDist < 5.f)
 					{
-						if (((CMonster*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), i))->Get_Airborne() == true)
+						if (((CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), i))->Get_Airborne() == true)
 						{
 							Safe_AddRef(pTransform);
 							m_MonsterPosList.push_back(pTransform);
@@ -752,7 +752,7 @@ void CPlayer::E_Skill(_float fTimeDelta)
 			m_iQ_Time++;
 
 
-			pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Skill"), TEXT("Prototype_GameObject_WhirlWind_EQ"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Skill"), TEXT("Prototype_GameObject_WhirlWind_EQ"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			if (m_iQ_Time == 3)
 			{
 				m_iQ_Time = 0;
@@ -795,7 +795,7 @@ void CPlayer::R_Skill(_float fTimeDelta)
 		for (auto& iter = m_MonsterPosList.begin(); iter != m_MonsterPosList.end();)
 		{
 			_vector vPos = (*iter)->Get_State(CTransform::STATE_POSITION);
-			pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_R_Effect"), &vPos);
+			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_R_Effect"), &vPos);
 			
 			Safe_Release(*iter);
 			iter = m_MonsterPosList.erase(iter);
@@ -833,7 +833,7 @@ void CPlayer::Hit_Monster(_uint iIndex)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	((CMonster*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), iIndex))->Damaged(m_fDamage);
+	((CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), iIndex))->Damaged(m_fDamage);
 
 	RELEASE_INSTANCE(CGameInstance);
 }

@@ -41,8 +41,6 @@ private:
 	CHierarchyNode*	m_pJawNode = nullptr;
 
 private:
-	void	Key_Input(_float fTimeDelta);
-
 	void	Change_State(_float fTimeDelta);
 	void	Check_Loop(_float fTimeDelta);
 	void	Update_State(_float fTimeDelta);

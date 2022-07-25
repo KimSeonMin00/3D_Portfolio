@@ -95,17 +95,17 @@ void CVolibear::Late_Tick(_float fTimeDelta)
 
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 	
-	if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_HitSphere")))->Collision_Sphere(m_pSPHEREAttackRange))
+	if (((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_HitSphere")))->Collision_Sphere(m_pSPHEREAttackRange))
 	{
 		if (m_eState == STATE_ATTACK || m_eState == STATE_W || m_eState == STATE_Q)
 		{
-			if (false == ((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBRightHand))
-				((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBLeftHand);
+			if (false == ((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBRightHand))
+				((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBLeftHand);
 		}
 
 		if (m_eState == STATE_W_BITE)
 		{
-			((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBJaw);
+			((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBJaw);
 		}
 	}
 
@@ -160,11 +160,11 @@ HRESULT CVolibear::SetUp_Components()
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnim"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Shader_VtxAnim"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	/* For.Com_Model*/
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Volibear"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Model_Volibear"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	CCollider::COLLIDERDESC		ColliderDesc;
@@ -173,7 +173,7 @@ HRESULT CVolibear::SetUp_Components()
 	ColliderDesc.vScale = _float3(1.5f, 3.f, 1.5f);
 	ColliderDesc.vPosition = _float3(0.f, 1.5f, 0.f);
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_HitBox"), (CComponent**)&m_pAABBCom, &ColliderDesc)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Collider_AABB"), TEXT("Com_HitBox"), (CComponent**)&m_pAABBCom, &ColliderDesc)))
 		return E_FAIL;
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
@@ -182,7 +182,7 @@ HRESULT CVolibear::SetUp_Components()
 	ColliderDesc.vAngle = _float3(0.f, 0.0f, 0.0f);
 
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_HitSphere"), (CComponent**)&m_pSphereCom, &ColliderDesc)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_HitSphere"), (CComponent**)&m_pSphereCom, &ColliderDesc)))
 		return E_FAIL;
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
@@ -190,7 +190,7 @@ HRESULT CVolibear::SetUp_Components()
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	ColliderDesc.vAngle = _float3(0.f, 0.0f, 0.0f);
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_AttackRange"), (CComponent**)&m_pSPHEREAttackRange, &ColliderDesc)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_AttackRange"), (CComponent**)&m_pSPHEREAttackRange, &ColliderDesc)))
 		return E_FAIL;
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
@@ -198,13 +198,13 @@ HRESULT CVolibear::SetUp_Components()
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	ColliderDesc.vAngle = _float3(0.f, 0.0f, 0.0f);
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"), TEXT("Com_RightHand"), (CComponent**)&m_pOBBRightHand, &ColliderDesc)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Collider_OBB"), TEXT("Com_RightHand"), (CComponent**)&m_pOBBRightHand, &ColliderDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"), TEXT("Com_LeftHand"), (CComponent**)&m_pOBBLeftHand, &ColliderDesc)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Collider_OBB"), TEXT("Com_LeftHand"), (CComponent**)&m_pOBBLeftHand, &ColliderDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"), TEXT("Com_Jaw"), (CComponent**)&m_pOBBJaw, &ColliderDesc)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Collider_OBB"), TEXT("Com_Jaw"), (CComponent**)&m_pOBBJaw, &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -270,135 +270,6 @@ void CVolibear::Update_HandCollider()
 
 	//m_pOBBCom->Update(m_pTransformCom->Get_WorldMatrix());
 	m_pOBBJaw->Update(XMLoadFloat4x4(&SocketMatrix));
-}
-
-void CVolibear::Key_Input(_float fTimeDelta)
-{
-	if (m_bIsChanneling == true)
-		return;
-
-	if (m_pModelCom->Get_IsChange() == true)
-		return;
-
-	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
-
-	if (nullptr == pGameInstance)
-		return;
-
-	Safe_AddRef(pGameInstance);
-
-	if (pGameInstance->Get_DIMButtonState(CInput_Device::DIMB_RBUTTON) & 0x80)
-	{
-		m_eState = STATE_MOVE;
-
-		_float3 vPositionPicking = { 0.f, 0.f, 0.f };
-		_float3 vMoveDist = { 0.f, 0.f, 0.f };
-
-		CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
-
-		if (nullptr != pTerrain)
-		{
-			Safe_AddRef(pTerrain);
-			vPositionPicking = pTerrain->Get_PickingPosition();
-			Safe_Release(pTerrain);
-		}
-
-		m_vMovePos = XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f);
-		m_pTransformCom->LookAt(m_vMovePos);
-
-		m_vMoveDir = m_vMovePos - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		XMStoreFloat3(&vMoveDist, XMVector3Length(m_vMoveDir));
-		m_fMoveDistTotal = vMoveDist.x;
-		m_vMoveDir = XMVector3Normalize(m_vMoveDir);
-		m_fMoveDist = 0.f;
-	}
-
-	if (pGameInstance->Get_DIMButtonState(CInput_Device::DIMB_LBUTTON) & 0x80)
-	{
-		m_eState = STATE_ATTACK;
-
-		_float3 vPositionPicking = { 0.f, 0.f, 0.f };
-
-		CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
-
-		if (nullptr != pTerrain)
-		{
-			Safe_AddRef(pTerrain);
-			vPositionPicking = pTerrain->Get_PickingPosition();
-			Safe_Release(pTerrain);
-		}
-
-		m_pTransformCom->LookAt(XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f));
-	}
-
-	if (pGameInstance->Get_DIKeyState(DIK_Q) & 0x80)
-	{
-		m_bQState = true;
-		m_bQAttack = false;
-		m_fQTime = 0.f;
-	}
-
-	if (pGameInstance->Get_DIKeyState(DIK_W) & 0x80)
-	{
-		m_eState = STATE_W;
-		m_bIsChanneling = true;
-
-		_float3 vPositionPicking = { 0.f, 0.f, 0.f };
-
-		CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
-
-		if (nullptr != pTerrain)
-		{
-			Safe_AddRef(pTerrain);
-			vPositionPicking = pTerrain->Get_PickingPosition();
-			Safe_Release(pTerrain);
-		}
-
-		m_pTransformCom->LookAt(XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f));
-	}
-
-	if (pGameInstance->Get_DIKeyState(DIK_E) & 0x80)
-	{
-		m_eState = STATE_E;
-		m_bIsChanneling = true;
-	}
-
-	if (m_bRState == false)
-	{
-		if (pGameInstance->Get_DIKeyState(DIK_R) & 0x80)
-		{
-			m_eState = STATE_R;
-			m_bRState = true;
-			m_bIsChanneling = true;
-			m_fRTime = 0.f;
-
-			_float3 vPositionPicking = { 0.f, 0.f, 0.f };
-			_float3 vMoveDist = { 0.f, 0.f, 0.f };
-
-			CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
-
-			if (nullptr != pTerrain)
-			{
-				Safe_AddRef(pTerrain);
-				vPositionPicking = pTerrain->Get_PickingPosition();
-				Safe_Release(pTerrain);
-			}
-
-			m_vMovePos = XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f);
-			m_pTransformCom->LookAt(m_vMovePos);
-
-			m_vMoveDir = m_vMovePos - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-			XMStoreFloat3(&vMoveDist, XMVector3Length(m_vMoveDir));
-			m_fMoveDistTotal = vMoveDist.x;
-			m_vMoveDir = XMVector3Normalize(m_vMoveDir);
-			m_fMoveDist = 0.f;
-
-			m_vOriginScale = m_pTransformCom->Get_Scaled();
-			m_pTransformCom->Set_Scaled(XMLoadFloat3(&m_vOriginScale) * 1.5);
-		}
-	}
-
-	Safe_Release(pGameInstance);
 }
 
 void CVolibear::Change_State(_float fTimeDelta)
@@ -1031,7 +902,7 @@ void CVolibear::E_Skill(_float fTimeDelta)
 
 			Safe_AddRef(pGameInstance);
 
-			pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Voli_E"), &(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
+			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Voli_E"), &(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 
 			Safe_Release(pGameInstance);
 
@@ -1195,11 +1066,11 @@ void CVolibear::Grab(_float fTimeDelta)
 
 	if (m_bGrab == false)
 	{
-		if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_HitSphere")))->Collision_Sphere(m_pSPHEREAttackRange))
+		if (((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_HitSphere")))->Collision_Sphere(m_pSPHEREAttackRange))
 		{
-			if (((CCollider*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBLeftHand))
+			if (((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBLeftHand))
 			{
-				((CPlayer*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_Player")))->Grabbed(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+				((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Grabbed(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 				m_bGrab = true;
 			}
 		}
@@ -1207,7 +1078,7 @@ void CVolibear::Grab(_float fTimeDelta)
 
 	else
 	{
-		CTransform* pPlayer_Transform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"));
+		CTransform* pPlayer_Transform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_Transform"));
 
 		if (pPlayer_Transform == nullptr)
 		{
@@ -1463,7 +1334,7 @@ void CVolibear::Pattern_5(_float fTimeDelta)
 
 				Safe_AddRef(pGameInstance);
 
-				pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Voli_E"), &m_vMovePos);
+				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Voli_E"), &m_vMovePos);
 
 				Safe_Release(pGameInstance);
 
@@ -1534,7 +1405,7 @@ void CVolibear::Pattern_6(_float fTimeDelta)
 
 			Safe_AddRef(pGameInstance);
 
-			((CPlayer*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_Player")))->Set_Fall();
+			((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Set_Fall();
 
 			Safe_Release(pGameInstance);
 

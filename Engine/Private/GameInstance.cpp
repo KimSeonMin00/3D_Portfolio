@@ -172,6 +172,22 @@ HRESULT CGameInstance::Open_Level(_uint iLevelID, CLevel * pNewLevel)
 	return m_pLevel_Manager->Open_Level(iLevelID, pNewLevel);
 }
 
+_uint CGameInstance::Get_NextLevel()
+{
+	if (nullptr == m_pLevel_Manager)
+		return 0;
+
+	return m_pLevel_Manager->Get_NextLevel();
+}
+
+void CGameInstance::Set_NextLevel(_uint iLevelID)
+{
+	if (nullptr == m_pLevel_Manager)
+		return;
+
+	m_pLevel_Manager->Set_NextLevel(iLevelID);
+}
+
 HRESULT CGameInstance::Add_Prototype(const _tchar * pPrototypeTag, CGameObject * pPrototype)
 {
 	if (nullptr == m_pObject_Manager)

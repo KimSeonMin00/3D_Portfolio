@@ -83,13 +83,13 @@ void CMonster::Chase_Player(_float fTimeDelta)
 
 	Safe_AddRef(pGameInstance);
 
-	if (pGameInstance->Get_Layer_Size(LEVEL_GAMEPLAY, TEXT("Layer_Player")) == 0)
+	if (pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_Player")) == 0)
 	{
 		Safe_Release(pGameInstance);
 		return;
 	}
 
-	CTransform* pPlayer_Transform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"));
+	CTransform* pPlayer_Transform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_Transform"));
 
 	if (pPlayer_Transform == nullptr)
 	{
@@ -117,14 +117,14 @@ void CMonster::None_Overlap(_float fTimeDelta)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	_uint iLayerSize = pGameInstance->Get_Layer_Size(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+	_uint iLayerSize = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_Monster"));
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	if (iLayerSize != 0)
 	{
 		for (_uint i = 0; i < iLayerSize; i++)
 		{
-			CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_Transform"), i);
+			CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Monster"), TEXT("Com_Transform"), i);
 
 			if (pTransform != nullptr || pTransform != m_pTransformCom)
 			{

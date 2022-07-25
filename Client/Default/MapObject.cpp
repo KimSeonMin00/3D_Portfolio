@@ -101,7 +101,7 @@ HRESULT CMapObject::SetUp_Components()
 	wsprintf(szPrototypeName, TEXT("Prototype_Component_Model_MapObject_%d"), m_iModelIndex);
 
 	/* For.Com_Model*/
-	if (FAILED(__super::Add_Components(LEVEL_GAMEPLAY, szPrototypeName, TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
+	if (FAILED(__super::Add_Components(m_iLevel, szPrototypeName, TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 
 	return S_OK;

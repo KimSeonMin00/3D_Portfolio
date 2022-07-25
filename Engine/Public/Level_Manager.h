@@ -20,8 +20,20 @@ public:
 	void Tick(_float fTimeDelta);
 	HRESULT Render();	
 
+public:
+	_uint	Get_NextLevel()
+	{
+		return m_iNextLevelID;
+	}
+
+	void	Set_NextLevel(_uint iNextLevel)
+	{
+		m_iNextLevelID = iNextLevel;
+	}
+
 private:
 	_uint					m_iLevelID = 0;
+	_uint					m_iNextLevelID = 0;
 	class CLevel*			m_pCurrentLevel = nullptr;
 
 public:
