@@ -208,47 +208,9 @@ _uint CLoader::Loading_ForGamePlay()
 		CVIBuffer_Terrain::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Terrain/Height.bmp")))))
 		return E_FAIL;
 
-	///* For.Prototype_Component_VIBuffer_Cube. */
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Cube"),
-	//	CVIBuffer_Cube::Create(m_pGraphic_Device))))
-	//	return E_FAIL;
-
-	///* For.Prototype_Component_Texture_Default. */
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Default"),
-	//	CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Default%d.jpg"), 2))))
-	//	return E_FAIL;
-
-
 	///* For.Prototype_Component_Texture_Terrain . */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"),
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Meshes/Map/earth_river_dragoncamp_ground_a.dds")))))
-		return E_FAIL;
-
-	///* For.Prototype_Component_Texture_SkyBox. */
-	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_SkyBox"),
-	//	CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../Bin/Resources/Textures/SkyBox/Sky_%d.dds"), 4))))
-	//	return E_FAIL;
-
-	Load_Player(LEVEL_GAMEPLAY);
-
-	Load_Monster(LEVEL_GAMEPLAY);
-
-	Load_MapObject(LEVEL_GAMEPLAY);
-
-	lstrcpy(m_szLoadingText, TEXT("콜라이더를 생성 중입니다. "));
-	/* For.Prototype_Component_Collider_AABB. */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_AABB"),
-		CCollider::Create(m_pDevice, m_pDeviceContext, CCollider::TYPE_AABB))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Collider_OBB. */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_OBB"),
-		CCollider::Create(m_pDevice, m_pDeviceContext, CCollider::TYPE_OBB))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Collider_SPHERE. */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider_SPHERE"),
-		CCollider::Create(m_pDevice, m_pDeviceContext, CCollider::TYPE_SPHERE))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을 생성 중입니다. "));
@@ -258,17 +220,30 @@ _uint CLoader::Loading_ForGamePlay()
 		CNavigation::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Data/Navigation.dat")))))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("셰이더을 생성 중입니다. "));
-	/* For.Prototype_Component_Shader_Cube */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxNonAnim"),
-		CShader::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_VtxNonAnim.hlsl"), VTXNONANIM_DECLARATION::Elements, VTXNONANIM_DECLARATION::iNumElement))))
-		return E_FAIL;
+	///* For.Prototype_Component_VIBuffer_Cube. */
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Cube"),
+	//	CVIBuffer_Cube::Create(m_pGraphic_Device))))
+	//	return E_FAIL;
 
-	/* For.Prototype_Component_Shader_VtxAnim */
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnim"),
-		CShader::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnim.hlsl"), VTXANIM_DECLARATION::Elements, VTXANIM_DECLARATION::iNumElement))))
-		return E_FAIL;
+	///* For.Prototype_Component_Texture_Default. */
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Default"),
+	//	CTexture::Create(m_pGraphic_Device, CTexture::TYPE_DEFAULT, TEXT("../Bin/Resources/Textures/Default%d.jpg"), 2))))
+	//	return E_FAIL;
+	
+	///* For.Prototype_Component_Texture_SkyBox. */
+	//if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_SkyBox"),
+	//	CTexture::Create(m_pGraphic_Device, CTexture::TYPE_CUBEMAP, TEXT("../Bin/Resources/Textures/SkyBox/Sky_%d.dds"), 4))))
+	//	return E_FAIL;
 
+	Load_Collider(LEVEL_GAMEPLAY);
+
+	Load_Shader(LEVEL_GAMEPLAY);
+
+	Load_Player(LEVEL_GAMEPLAY);
+
+	Load_Monster(LEVEL_GAMEPLAY);
+
+	Load_MapObject(LEVEL_GAMEPLAY);
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
@@ -278,7 +253,54 @@ _uint CLoader::Loading_ForGamePlay()
 
 	Safe_Release(pGameInstance);
 
-	return _uint();
+	return S_OK;
+}
+
+_uint CLoader::Load_Collider(LEVEL eLevel)
+{
+	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
+	Safe_AddRef(pGameInstance);
+
+	lstrcpy(m_szLoadingText, TEXT("콜라이더를 생성 중입니다. "));
+	/* For.Prototype_Component_Collider_AABB. */
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Collider_AABB"),
+		CCollider::Create(m_pDevice, m_pDeviceContext, CCollider::TYPE_AABB))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Collider_OBB. */
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Collider_OBB"),
+		CCollider::Create(m_pDevice, m_pDeviceContext, CCollider::TYPE_OBB))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Collider_SPHERE. */
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Collider_SPHERE"),
+		CCollider::Create(m_pDevice, m_pDeviceContext, CCollider::TYPE_SPHERE))))
+		return E_FAIL;
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+_uint CLoader::Load_Shader(LEVEL eLevel)
+{
+	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
+	Safe_AddRef(pGameInstance);
+
+	lstrcpy(m_szLoadingText, TEXT("셰이더을 생성 중입니다. "));
+	/* For.Prototype_Component_Shader_Cube */
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Shader_VtxNonAnim"),
+		CShader::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_VtxNonAnim.hlsl"), VTXNONANIM_DECLARATION::Elements, VTXNONANIM_DECLARATION::iNumElement))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxAnim */
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
+		CShader::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnim.hlsl"), VTXANIM_DECLARATION::Elements, VTXANIM_DECLARATION::iNumElement))))
+		return E_FAIL;
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
 }
 
 _uint CLoader::Load_MapObject(LEVEL eLevel)

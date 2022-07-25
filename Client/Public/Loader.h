@@ -34,6 +34,9 @@ public:
 	HRESULT NativeConstruct(LEVEL eNextLevelID);
 	_uint Loading_ForLogo();
 	_uint Loading_ForGamePlay();
+
+	_uint Load_Collider(LEVEL eLevel);
+	_uint Load_Shader(LEVEL eLevel);
 	_uint Load_MapObject(LEVEL eLevel);
 	_uint Load_Player(LEVEL eLevel);
 	_uint Load_VoliBear(LEVEL eLevel);
