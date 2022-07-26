@@ -34,6 +34,7 @@ public:
 	HRESULT NativeConstruct(LEVEL eNextLevelID);
 	_uint Loading_ForLogo();
 	_uint Loading_ForGamePlay();
+	_uint Loading_ForBoss();
 
 	_uint Load_Collider(LEVEL eLevel);
 	_uint Load_Shader(LEVEL eLevel);

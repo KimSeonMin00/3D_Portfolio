@@ -106,7 +106,7 @@ void CCamera_Free::Look_Player()
 
 	Safe_AddRef(pGameInstance);
 
-	CTransform* pPlayerTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"));
+	CTransform* pPlayerTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_Transform"));
 
 	if (pPlayerTransform == nullptr)
 	{
@@ -134,7 +134,7 @@ void CCamera_Free::Look_Boss()
 
 	Safe_AddRef(pGameInstance);
 
-	CTransform* pBossTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Com_Transform"));
+	CTransform* pBossTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Monster"), TEXT("Com_Transform"));
 
 	if (pBossTransform == nullptr)
 	{

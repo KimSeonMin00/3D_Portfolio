@@ -49,6 +49,10 @@ _uint APIENTRY EntryFunction(void* pArg)
 	case LEVEL_GAMEPLAY:
 		iProgress = pLoader->Loading_ForGamePlay();
 		break;
+
+	case LEVEL_BOSS:
+		iProgress = pLoader->Loading_ForBoss();
+		break;
 	}
 
 	LeaveCriticalSection(&pLoader->Get_CriticalSection());
@@ -250,6 +254,49 @@ _uint CLoader::Loading_ForGamePlay()
 	m_isFinished = true;
 
 #pragma endregion
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+_uint CLoader::Loading_ForBoss()
+{
+	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
+	Safe_AddRef(pGameInstance);
+
+	lstrcpy(m_szLoadingText, TEXT("지형을 생성 중입니다. "));
+
+	///* For.Prototype_Component_VIBuffer_Terrain. */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_BOSS, TEXT("Prototype_Component_VIBuffer_Terrain"),
+		CVIBuffer_Terrain::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Terrain/Height.bmp")))))
+		return E_FAIL;
+
+	///* For.Prototype_Component_Texture_Terrain . */
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_BOSS, TEXT("Prototype_Component_Texture_Terrain"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Meshes/Map/earth_river_dragoncamp_ground_a.dds")))))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("네비게이션을 생성 중입니다. "));
+
+	/* For.Prototype_Component_Navigation*/
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_BOSS, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Data/Navigation_Boss.dat")))))
+		return E_FAIL;
+
+	Load_Collider(LEVEL_BOSS);
+
+	Load_Shader(LEVEL_BOSS);
+
+	Load_Player(LEVEL_BOSS);
+
+	Load_Pantheon(LEVEL_BOSS);
+
+	Load_MapObject(LEVEL_BOSS);
+
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
 
 	Safe_Release(pGameInstance);
 

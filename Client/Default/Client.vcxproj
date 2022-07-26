@@ -170,6 +170,7 @@
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\Effect_Voli_E.h" />
     <ClInclude Include="..\Public\ImguiManager.h" />
+    <ClInclude Include="..\Public\Level_Boss.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
@@ -210,6 +211,7 @@
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\Effect_Voli_E.cpp" />
     <ClCompile Include="..\Private\ImguiManager.cpp" />
+    <ClCompile Include="..\Private\Level_Boss.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />

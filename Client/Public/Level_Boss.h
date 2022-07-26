@@ -5,11 +5,12 @@
 
 BEGIN(Client)
 
-class CLevel_GamePlay final : public CLevel
+class CLevel_Boss
+	:public CLevel
 {
 private:
-	explicit CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
-	virtual ~CLevel_GamePlay() = default;
+	explicit CLevel_Boss(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	virtual ~CLevel_Boss() = default;
 
 public:
 	virtual HRESULT NativeConstruct();
@@ -25,13 +26,9 @@ private:
 	HRESULT Ready_Layer_Monster(const _tchar* pLayerTag);
 	HRESULT Ready_Layer_UI(const _tchar* pLayerTag);
 
-private:
-	_float m_fTimeAcc = 0.f;
-	
 public:
-	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
+	static CLevel_Boss* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);
 	virtual void Free() override;
 };
 
 END
-

@@ -1,16 +1,16 @@
 #include "stdafx.h"
-#include "..\Public\Level_GamePlay.h"
+#include "..\Public\Level_Boss.h"
 #include "GameInstance.h"
-#include "Camera_Free.h"
-#include "Level_Loading.h"
+#include "Camera.h"
 
-CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
-	: CLevel(pDevice, pDeviceContext)
+CLevel_Boss::CLevel_Boss(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
+	:CLevel(pDevice, pDeviceContext)
 {
 }
 
-HRESULT CLevel_GamePlay::NativeConstruct()
+HRESULT CLevel_Boss::NativeConstruct()
 {
+
 	if (FAILED(__super::NativeConstruct()))
 		return E_FAIL;
 
@@ -32,7 +32,6 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
 		return E_FAIL;
 
-
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
 
@@ -40,28 +39,12 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 	return S_OK;
 }
 
-void CLevel_GamePlay::Tick(_float fTimeDelta)
+void CLevel_Boss::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
-
-	m_fTimeAcc += fTimeDelta;
-
-	if (m_fTimeAcc >= 2.f)
-	{
-		CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
-		Safe_AddRef(pGameInstance);
-
-		if (pGameInstance->Get_DIKeyState(DIK_RETURN) & 0x80)
-		{
-			if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pDeviceContext, LEVEL_BOSS))))
-				return;
-		}
-
-		Safe_Release(pGameInstance);
-	}
 }
 
-HRESULT CLevel_GamePlay::Render()
+HRESULT CLevel_Boss::Render()
 {
 	if (FAILED(__super::Render()))
 		return E_FAIL;
@@ -69,7 +52,7 @@ HRESULT CLevel_GamePlay::Render()
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_LightDesc()
+HRESULT CLevel_Boss::Ready_LightDesc()
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -100,9 +83,8 @@ HRESULT CLevel_GamePlay::Ready_LightDesc()
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
+HRESULT CLevel_Boss::Ready_Layer_Camera(const _tchar * pLayerTag)
 {
-
 	CGameInstance*	pGameInstance = CGameInstance::Get_Instance();
 	if (nullptr == pGameInstance)
 		return E_FAIL;
@@ -121,7 +103,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	CameraDesc.fNear = 0.2f;
 	CameraDesc.fFar = 300.f;
 
-	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Camera_Free"), &CameraDesc)))
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_BOSS, pLayerTag, TEXT("Prototype_GameObject_Camera_Free"), &CameraDesc)))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
@@ -129,7 +111,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
+HRESULT CLevel_Boss::Ready_Layer_BackGround(const _tchar * pLayerTag)
 {
 	CGameInstance*	pGameInstance = CGameInstance::Get_Instance();
 	if (nullptr == pGameInstance)
@@ -137,45 +119,42 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const _tchar * pLayerTag)
 
 	Safe_AddRef(pGameInstance);
 
-	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Terrain"))))
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_BOSS, pLayerTag, TEXT("Prototype_GameObject_Terrain"))))
 		return E_FAIL;
 
 	/*if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Sky"))))
-		return E_FAIL;*/
+	return E_FAIL;*/
+
+	CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_BOSS, TEXT("Layer_Player"), TEXT("Com_Transform"));
+
+	Safe_Release(pTransform);
+
+	pTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(12.f, 0.f, 5.f, 1.f));
+
+	Safe_Release(pTransform);
 
 	Safe_Release(pGameInstance);
 
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_Player(const _tchar * pLayerTag)
+HRESULT CLevel_Boss::Ready_Layer_Player(const _tchar * pLayerTag)
 {
-
 	CGameInstance*	pGameInstance = CGameInstance::Get_Instance();
 	if (nullptr == pGameInstance)
 		return E_FAIL;
 
 	Safe_AddRef(pGameInstance);
 
-	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Player"))))
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_BOSS, pLayerTag, TEXT("Prototype_GameObject_Player"))))
 		return E_FAIL;
-
-
-	/*if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Boss"))))
-		return E_FAIL;*/
-
-	/*if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Pantheon"))))
-		return E_FAIL;*/
-
-	/*if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Map"), TEXT("Prototype_GameObject_MapObject"))))
-		return E_FAIL;*/
 
 	Safe_Release(pGameInstance);
 
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_Map(const _tchar * pLayerTag)
+HRESULT CLevel_Boss::Ready_Layer_Map(const _tchar * pLayerTag)
 {
 	CGameInstance*	pGameInstance = CGameInstance::Get_Instance();
 	if (nullptr == pGameInstance)
@@ -183,7 +162,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Map(const _tchar * pLayerTag)
 
 	Safe_AddRef(pGameInstance);
 	//HANDLE		hFile = CreateFile(TEXT("../Bin/Data/TestMap.dat"), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	HANDLE		hFile = CreateFile(TEXT("../Bin/Data/TestMap.dat"), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	HANDLE		hFile = CreateFile(TEXT("../Bin/Data/BossMap.dat"), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	DWORD	dwByte = 0;
 
 	if (INVALID_HANDLE_VALUE == hFile)
@@ -204,7 +183,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Map(const _tchar * pLayerTag)
 			break;
 		}
 
-		pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_MapObject"), &iMapModelIndex);
+		pGameInstance->Add_Layer(LEVEL_BOSS, pLayerTag, TEXT("Prototype_GameObject_MapObject"), &iMapModelIndex);
 
 		CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, pLayerTag, TEXT("Com_Transform"), iNumObject);
 		Safe_AddRef(pTransform);
@@ -226,7 +205,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Map(const _tchar * pLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
+HRESULT CLevel_Boss::Ready_Layer_Monster(const _tchar * pLayerTag)
 {
 	CGameInstance*	pGameInstance = CGameInstance::Get_Instance();
 	if (nullptr == pGameInstance)
@@ -234,85 +213,33 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const _tchar * pLayerTag)
 
 	Safe_AddRef(pGameInstance);
 
-	HANDLE		hFile = CreateFile(TEXT("../Bin/Data/Monster_Test.dat"), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	DWORD	dwByte = 0;
-
-	if (INVALID_HANDLE_VALUE == hFile)
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_BOSS, pLayerTag, TEXT("Prototype_GameObject_Pantheon"))))
 		return E_FAIL;
 
-	_int iNumMonster = 0;
-
-	while (true)
-	{
-		_int	iMonsterIndex;
-		_float4x4 WorldMat;
-
-		ReadFile(hFile, &iMonsterIndex, sizeof(_int), &dwByte, nullptr);
-		ReadFile(hFile, &WorldMat, sizeof(_float4x4), &dwByte, nullptr);
-
-		if (0 == dwByte)
-		{
-			break;
-		}
-
-		if (iMonsterIndex == 0)
-			pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Wolf"));
-
-		else if (iMonsterIndex == 1)
-			pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_RazorBeak"));
-
-		else if (iMonsterIndex == 2)
-			pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Red"));
-
-		CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, pLayerTag, TEXT("Com_Transform"), iNumMonster);
-		Safe_AddRef(pTransform);
-
-		pTransform->Set_State(CTransform::STATE_RIGHT, XMLoadFloat4x4(&WorldMat).r[0]);
-		pTransform->Set_State(CTransform::STATE_UP, XMLoadFloat4x4(&WorldMat).r[1]);
-		pTransform->Set_State(CTransform::STATE_LOOK, XMLoadFloat4x4(&WorldMat).r[2]);
-		pTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat4x4(&WorldMat).r[3]);
-
-		Safe_Release(pTransform);
-
-		iNumMonster++;
-	}
-
-	CloseHandle(hFile);
-
 	Safe_Release(pGameInstance);
+
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_UI(const _tchar * pLayerTag)
+HRESULT CLevel_Boss::Ready_Layer_UI(const _tchar * pLayerTag)
 {
-	CGameInstance*	pGameInstance = CGameInstance::Get_Instance();
-	if (nullptr == pGameInstance)
-		return E_FAIL;
-
-	Safe_AddRef(pGameInstance);
-
-	/*if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_UI"))))
-		return E_FAIL;*/
-
-	Safe_Release(pGameInstance);
-
-	return S_OK;	
+	return S_OK;
 }
 
-CLevel_GamePlay * CLevel_GamePlay::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
+CLevel_Boss * CLevel_Boss::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 {
-	CLevel_GamePlay*	pInstance = new CLevel_GamePlay(pDevice, pDeviceContext);
+	CLevel_Boss*	pInstance = new CLevel_Boss(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct()))
 	{
-		MSGBOX(TEXT("Failed to Created : CLevel_GamePlay"));
+		MSGBOX(TEXT("Failed to Created : CLevel_Boss"));
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CLevel_GamePlay::Free()
+void CLevel_Boss::Free()
 {
 	__super::Free();
 }
