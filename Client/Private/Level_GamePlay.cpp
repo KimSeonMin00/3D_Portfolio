@@ -51,11 +51,9 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 		CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
 		Safe_AddRef(pGameInstance);
 
-		if (pGameInstance->Get_DIKeyState(DIK_RETURN) & 0x80)
-		{
-			if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pDeviceContext, LEVEL_BOSS))))
-				return;
-		}
+		
+		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pDeviceContext, LEVEL_BOSS))))
+			return;
 
 		Safe_Release(pGameInstance);
 	}

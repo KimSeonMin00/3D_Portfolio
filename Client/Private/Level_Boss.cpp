@@ -125,14 +125,6 @@ HRESULT CLevel_Boss::Ready_Layer_BackGround(const _tchar * pLayerTag)
 	/*if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Sky"))))
 	return E_FAIL;*/
 
-	CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_BOSS, TEXT("Layer_Player"), TEXT("Com_Transform"));
-
-	Safe_Release(pTransform);
-
-	pTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(12.f, 0.f, 5.f, 1.f));
-
-	Safe_Release(pTransform);
-
 	Safe_Release(pGameInstance);
 
 	return S_OK;
@@ -148,6 +140,14 @@ HRESULT CLevel_Boss::Ready_Layer_Player(const _tchar * pLayerTag)
 
 	if (FAILED(pGameInstance->Add_Layer(LEVEL_BOSS, pLayerTag, TEXT("Prototype_GameObject_Player"))))
 		return E_FAIL;
+
+	CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_BOSS, TEXT("Layer_Player"), TEXT("Com_Transform"));
+
+	Safe_AddRef(pTransform);
+
+	pTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(12.f, 0.f, 5.f, 1.f));
+
+	Safe_Release(pTransform);
 
 	Safe_Release(pGameInstance);
 
@@ -185,7 +185,7 @@ HRESULT CLevel_Boss::Ready_Layer_Map(const _tchar * pLayerTag)
 
 		pGameInstance->Add_Layer(LEVEL_BOSS, pLayerTag, TEXT("Prototype_GameObject_MapObject"), &iMapModelIndex);
 
-		CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, pLayerTag, TEXT("Com_Transform"), iNumObject);
+		CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_BOSS, pLayerTag, TEXT("Com_Transform"), iNumObject);
 		Safe_AddRef(pTransform);
 
 		pTransform->Set_State(CTransform::STATE_RIGHT, XMLoadFloat4x4(&WorldMat).r[0]);
