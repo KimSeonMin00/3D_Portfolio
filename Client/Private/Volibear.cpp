@@ -63,27 +63,35 @@ void CVolibear::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
-	if (m_bAirborne == true)
-		m_eState = STATE_STUN;
-
-	if(m_bStop == false && m_bStun == false)
-		Check_Loop(fTimeDelta);
-
-	
-	/*if (m_bAirborne == false && m_pModelCom->Get_IsChange() == false)
+	if (m_fHealthPoint <= 0.f)
 	{
-		Pattern_Phase1(fTimeDelta);
-	}*/
+		m_eState = STATE_DEATH;
+	}
 
-	Change_State(fTimeDelta);
+	else
+	{
+		if (m_bAirborne == true)
+			m_eState = STATE_STUN;
 
-	if(m_bStop == false)
-		Update_State(fTimeDelta);
+		if (m_bStop == false && m_bStun == false)
+			Check_Loop(fTimeDelta);
 
-	m_pAABBCom->Update(m_pTransformCom->Get_WorldMatrix());
-	m_pSphereCom->Update(m_pTransformCom->Get_WorldMatrix());
-	Update_HandCollider();
-	m_pSPHEREAttackRange->Update(m_pTransformCom->Get_WorldMatrix());
+
+		if (m_bAirborne == false && m_pModelCom->Get_IsChange() == false)
+		{
+			Pattern_Phase1(fTimeDelta);
+		}
+
+		Change_State(fTimeDelta);
+
+		if (m_bStop == false)
+			Update_State(fTimeDelta);
+
+		m_pAABBCom->Update(m_pTransformCom->Get_WorldMatrix());
+		m_pSphereCom->Update(m_pTransformCom->Get_WorldMatrix());
+		Update_HandCollider();
+		m_pSPHEREAttackRange->Update(m_pTransformCom->Get_WorldMatrix());
+	}
 }
 
 void CVolibear::Late_Tick(_float fTimeDelta)
@@ -334,6 +342,11 @@ void CVolibear::Check_Loop(_float fTimeDelta)
 		break;
 
 	case STATE_R:
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Check_Looped(fTimeDelta);
+		break;
+
+	case STATE_DEATH:
 		if (m_pModelCom->Get_IsChange() == false)
 			m_pModelCom->Check_Looped(fTimeDelta);
 		break;
@@ -598,6 +611,10 @@ void CVolibear::Update_State(_float fTimeDelta)
 
 	case STATE_R:
 		R_Skill(fTimeDelta);
+		break;
+
+	case STATE_DEATH:
+		Death(fTimeDelta);
 		break;
 
 	case STATE_FLY:
@@ -958,6 +975,35 @@ void CVolibear::R_Skill(_float fTimeDelta)
 			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 			m_pModelCom->Set_Initialize();
 			
+		}
+
+		m_pModelCom->Play_Animation(fTimeDelta);
+	}
+}
+
+void CVolibear::Death(_float fTimeDelta)
+{
+	if (m_bStateChange == true)
+	{
+		m_iCurrentIndex = 13;
+
+		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
+		if (m_pModelCom->Get_IsChange() == false)
+		{
+			m_bStateChange = false;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
+		}
+	}
+
+	else
+	{
+		if (m_pModelCom->Get_Finished())
+		{
+			m_bIsChanneling = false;
+			m_eState = m_eDoingState;
+			m_bDead = true;
+			return;
 		}
 
 		m_pModelCom->Play_Animation(fTimeDelta);

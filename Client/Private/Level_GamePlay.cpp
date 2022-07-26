@@ -59,6 +59,21 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 
 		RELEASE_INSTANCE(CGameInstance);	
 	}
+
+	else
+	{
+		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+		_uint iLayerSize = pGameInstance->Get_Layer_Size(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+		if (iLayerSize == 0)
+		{
+			if(pGameInstance->Get_DIKeyState(DIK_RETURN) & 0x80)
+				if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pDeviceContext, LEVEL_BOSS))))
+					return;
+		}
+
+		RELEASE_INSTANCE(CGameInstance);
+	}
 }
 
 HRESULT CLevel_GamePlay::Render()
