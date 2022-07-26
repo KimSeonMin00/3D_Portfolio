@@ -135,7 +135,7 @@ HRESULT CRazorBeak::Render()
 
 		m_pShaderCom->Set_RawValue("g_vHitColor", &_float4(1.f, 0.f, 0.f, 1.f), sizeof(_float4));
 
-		if (m_pAABBCom->Get_IsCollision() == true || m_bSelected == true)
+		if (m_bSelected == true)
 			m_pShaderCom->Begin(1);
 
 		else

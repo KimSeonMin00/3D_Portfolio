@@ -53,13 +53,19 @@ public:
 		m_bHit = bHit;
 	};
 
-	void		Damaged(_float fDamage)
+	_bool		Damaged(_float fDamage)
 	{
+		if (m_fHealthPoint <= 0.f)
+			return false;
+
 		if (m_bHit == false)
 		{
 			m_bHit = true;
 			m_fHealthPoint -= fDamage;
+			return true;
 		}
+
+		return false;
 	}
 
 	void		Set_Select()

@@ -213,7 +213,7 @@ HRESULT CLevel_Boss::Ready_Layer_Monster(const _tchar * pLayerTag)
 
 	Safe_AddRef(pGameInstance);
 
-	if (FAILED(pGameInstance->Add_Layer(LEVEL_BOSS, pLayerTag, TEXT("Prototype_GameObject_Pantheon"))))
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_BOSS, pLayerTag, TEXT("Prototype_GameObject_Boss"))))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

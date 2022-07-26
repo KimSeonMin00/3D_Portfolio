@@ -7,7 +7,7 @@ class CPantheon
 	final : public CMonster
 {
 public:
-	enum STATE { STATE_IDLE, STATE_MOVE, STATE_ATTACK, STATE_Q, STATE_W, STATE_E, STATE_R, STATE_END };
+	enum STATE { STATE_INIT, STATE_IDLE, STATE_MOVE, STATE_ATTACK, STATE_Q, STATE_W, STATE_E, STATE_R, STATE_DEATH, STATE_END };
 
 protected:
 	explicit CPantheon(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
@@ -34,6 +34,7 @@ private:
 	void	Check_Loop(_float fTimeDelta);
 	void	Update_State(_float fTimeDelta);
 
+	void	Init(_float fTimeDelta);
 	void	Idle(_float fTimeDelta);
 	void	Move(_float fTimeDelta);
 	void	Attack(_float fTimeDelta);
@@ -41,6 +42,7 @@ private:
 	void	W_Skill(_float fTimeDelta);
 	void	E_Skill(_float fTimeDelta);
 	void	R_Skill(_float fTimeDelta);
+	void	Death(_float fTimeDelta);
 
 	void	Pattern_1(_float fTimeDelta);
 

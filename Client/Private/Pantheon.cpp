@@ -32,9 +32,9 @@ HRESULT CPantheon::NativeConstruct(void * pArg)
 
 	m_pModelCom->SetUp_AnimationIndex(12);
 	m_eState = STATE_IDLE;
-	m_ePreState = STATE_MOVE;
+	m_ePreState = STATE_INIT;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(12.f, 0.f, 17.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.f, 0.f, 15.f, 1.f));
 	m_pTransformCom->LookAt(XMVectorSet(0.f, 0.f, 0.f, 1.f));
 	
 	m_pTransformCom->Set_Scaled(XMVectorSet(0.75f, 0.75f, 0.75f, 0.f));
@@ -49,23 +49,32 @@ void CPantheon::Tick(_float fTimeDelta)
 	if (m_bStop == false)
 		Check_Loop(fTimeDelta);
 
-	//Key_Input(fTimeDelta);
-	if(m_fInitTime < 5.f)
-		m_fInitTime += fTimeDelta;
-	
-	else
+	if (m_fHealthPoint <= 0.f)
 	{
-		if (m_bAirborne == false && m_pModelCom->Get_IsChange() == false)
-		{
-			Pattern_1(fTimeDelta);
-		}
+		m_eState = STATE_DEATH;
 	}
 
+	else
+	{
+		//Key_Input(fTimeDelta);
+		if (m_fInitTime < 5.f)
+			m_fInitTime += fTimeDelta;
+
+		else
+		{
+			if (m_bAirborne == false && m_pModelCom->Get_IsChange() == false)
+			{
+				Pattern_1(fTimeDelta);
+			}
+		}
+	}
 	Change_State(fTimeDelta);
 
 	if (m_bStop == false)
 		Update_State(fTimeDelta);
 
+	m_pAABBCom->Update(m_pTransformCom->Get_WorldMatrix());
+	m_pSphereCom->Update(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CPantheon::Late_Tick(_float fTimeDelta)
@@ -216,6 +225,10 @@ void CPantheon::Check_Loop(_float fTimeDelta)
 {
 	switch (m_eState)
 	{
+	case STATE_INIT:
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Check_Looped(fTimeDelta);
+
 	case STATE_IDLE:
 		if (m_pModelCom->Get_IsChange() == false)
 			m_pModelCom->Check_Looped(fTimeDelta);
@@ -250,6 +263,11 @@ void CPantheon::Check_Loop(_float fTimeDelta)
 			m_pModelCom->Check_Looped(fTimeDelta);
 		break;
 
+	case STATE_DEATH:
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Check_Looped(fTimeDelta);
+		break;
+
 	default:
 		break;
 	}
@@ -259,6 +277,10 @@ void CPantheon::Update_State(_float fTimeDelta)
 {
 	switch (m_eState)
 	{
+	case STATE_INIT:
+		Init(fTimeDelta);
+		break;
+
 	case STATE_IDLE:
 		Idle(fTimeDelta);
 		break;
@@ -287,8 +309,42 @@ void CPantheon::Update_State(_float fTimeDelta)
 		R_Skill(fTimeDelta);
 		break;
 
+	case STATE_DEATH:
+		Death(fTimeDelta);
+		break;
+
 	default:
 		break;
+	}
+}
+
+void CPantheon::Init(_float fTimeDelta)
+{
+	if (m_bStateChange == true)
+	{
+		m_bIsChanneling = true;
+		m_iCurrentIndex = 77;
+
+		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
+		if (m_pModelCom->Get_IsChange() == false)
+		{
+			m_bStateChange = false;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
+		}
+	}
+
+	else
+	{
+		if (m_pModelCom->Get_Finished())
+		{
+			m_bIsChanneling = false;
+			m_eState = STATE_IDLE;
+			return;
+		}
+
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Play_Animation(fTimeDelta);
 	}
 }
 
@@ -299,6 +355,11 @@ void CPantheon::Idle(_float fTimeDelta)
 		_double ChangeDelay = 0.0;
 		switch (m_eDoingState)
 		{
+		case STATE_INIT:
+			m_iCurrentIndex = 79;
+			ChangeDelay = 3.0;
+			break;
+
 		case STATE_ATTACK:
 			m_iCurrentIndex = 15;
 			ChangeDelay = 3.0;
@@ -577,6 +638,37 @@ void CPantheon::E_Skill(_float fTimeDelta)
 
 void CPantheon::R_Skill(_float fTimeDelta)
 {
+}
+
+void CPantheon::Death(_float fTimeDelta)
+{
+	if (m_bStateChange == true)
+	{
+		m_bIsChanneling = true;
+		m_iCurrentIndex = 11;
+
+		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
+		if (m_pModelCom->Get_IsChange() == false)
+		{
+			m_bStateChange = false;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
+		}
+	}
+
+	else
+	{
+		if (m_pModelCom->Get_Finished())
+		{
+			m_bIsChanneling = false;
+			m_eState = m_eDoingState;
+			m_bDead = true;
+			return;
+		}
+
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Play_Animation(fTimeDelta);
+	}
 }
 
 void CPantheon::Pattern_1(_float fTimeDelta)

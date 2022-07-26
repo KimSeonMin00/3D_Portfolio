@@ -43,6 +43,22 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 void CLevel_GamePlay::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+
+	if (m_bBossSpawned == false)
+	{
+		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+		_uint iLayerSize = pGameInstance->Get_Layer_Size(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
+		if (iLayerSize == 0)
+		{
+			if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Pantheon"))))
+				return;
+
+			m_bBossSpawned = true;
+		}
+
+		RELEASE_INSTANCE(CGameInstance);	
+	}
 }
 
 HRESULT CLevel_GamePlay::Render()

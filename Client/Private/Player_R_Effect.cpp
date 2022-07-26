@@ -389,6 +389,7 @@ void CPlayer_R_Effect::Free()
 	Safe_Release(m_pRect_Crack);
 	Safe_Release(m_pTexture);
 	Safe_Release(m_pTextureSpark);
+	Safe_Release(m_pTextureString);
 	Safe_Release(m_pTexture_R_Ring);
 	Safe_Release(m_pTexture_Crack);
 	Safe_Release(m_pShaderCom);

@@ -27,6 +27,7 @@ private:
 
 private:
 	_float m_fTimeAcc = 0.f;
+	_bool  m_bBossSpawned = false;
 	
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

@@ -237,5 +237,6 @@ void CPlayer_Attack_Effect::Free()
 	Safe_Release(m_pWind_Buffer);
 	Safe_Release(m_pTexture_Slash);
 	Safe_Release(m_pTexture_Wind);
+	Safe_Release(m_pTexture_Flash);
 	Safe_Release(m_pShaderCom);
 }

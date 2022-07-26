@@ -252,6 +252,8 @@ _uint CLoader::Loading_ForGamePlay()
 
 	Load_Monster(LEVEL_GAMEPLAY);
 
+	Load_Pantheon(LEVEL_GAMEPLAY);
+
 	Load_MapObject(LEVEL_GAMEPLAY);
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
@@ -295,7 +297,7 @@ _uint CLoader::Loading_ForBoss()
 
 	Load_Player(LEVEL_BOSS);
 
-	Load_Pantheon(LEVEL_BOSS);
+	Load_VoliBear(LEVEL_BOSS);
 
 	Load_MapObject(LEVEL_BOSS);
 

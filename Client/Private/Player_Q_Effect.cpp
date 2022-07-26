@@ -180,5 +180,6 @@ void CPlayer_Q_Effect::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTexture_Indicator);
 	Safe_Release(m_pTexture_Sword);
+	Safe_Release(m_pVIBuffer_RectCom);
 	Safe_Release(m_pShaderCom);
 }
