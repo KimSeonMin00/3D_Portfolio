@@ -55,7 +55,7 @@ PS_OUT PS_MAIN_RECT(PS_IN In)
 
 	vector		vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
 
-	Out.vColor = vMtrlDiffuse;
+	Out.vColor = g_vColor * vMtrlDiffuse;
 	Out.vColor.a = Out.vColor.a * g_Alpha;
 
 	return Out;
@@ -79,8 +79,8 @@ PS_OUT PS_MAIN_ALPHA(PS_IN In)
 
 	vector		vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
 
-	Out.vColor = vMtrlDiffuse;
-	Out.vColor.a = Out.vColor.a * g_Alpha;
+	Out.vColor = g_vColor * vMtrlDiffuse;
+	Out.vColor.a = vMtrlDiffuse.x * g_Alpha;
 
 	return Out;
 }
@@ -101,17 +101,28 @@ technique11 DefaultTechinque
 	pass Rect_Color
 	{
 		SetBlendState(BS_AlphaBlend, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
-		SetDepthStencilState(DSS_Default, 0);
+		SetDepthStencilState(DSS_None_ZTest_And_Write, 0);
 		SetRasterizerState(RS_Default);
 
 		VertexShader = compile vs_5_0 VS_MAIN_RECT();
 		GeometryShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN_RECT_COLOR();
+		PixelShader = compile ps_5_0 PS_MAIN_RECT();
 	}
 
 	pass Rect_Alpha
 	{
 		SetBlendState(BS_One, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_None_ZTest_And_Write, 0);
+		SetRasterizerState(RS_Default);
+
+		VertexShader = compile vs_5_0 VS_MAIN_RECT();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_RECT();
+	}
+
+	pass Rect_Alpha_BLACK
+	{
+		SetBlendState(BS_AlphaBlend, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
 		SetDepthStencilState(DSS_None_ZTest_And_Write, 0);
 		SetRasterizerState(RS_Default);
 

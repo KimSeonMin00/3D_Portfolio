@@ -833,6 +833,10 @@ void CPlayer::Hit_Monster(_uint iIndex)
 
 	((CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), iIndex))->Damaged(m_fDamage);
 
+	CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Monster"), TEXT("Com_Transform"), iIndex);
+
+	pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Attack_Effect"), &pTransform->Get_State(CTransform::STATE_POSITION));
+
 	RELEASE_INSTANCE(CGameInstance);
 }
 

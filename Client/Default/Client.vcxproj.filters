@@ -112,6 +112,9 @@
     <Filter Include="01.Levels\Boss">
       <UniqueIdentifier>{6489e1c5-b18f-49a2-9ef9-ec1dd298a1f8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Player\Effect\Attack">
+      <UniqueIdentifier>{0b871eb8-f6b7-4a84-ba6f-b4c4e1fe264a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -240,6 +243,9 @@
     <ClInclude Include="..\Public\Level_Boss.h">
       <Filter>01.Levels\Boss</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Player_Attack_Effect.h">
+      <Filter>02.GameObjects\Player\Effect\Attack</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -352,6 +358,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_Boss.cpp">
       <Filter>01.Levels\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_Attack_Effect.cpp">
+      <Filter>02.GameObjects\Player\Effect\Attack</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -43,20 +43,6 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 void CLevel_GamePlay::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
-
-	m_fTimeAcc += fTimeDelta;
-
-	if (m_fTimeAcc >= 2.f)
-	{
-		CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
-		Safe_AddRef(pGameInstance);
-
-		
-		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pDeviceContext, LEVEL_BOSS))))
-			return;
-
-		Safe_Release(pGameInstance);
-	}
 }
 
 HRESULT CLevel_GamePlay::Render()
