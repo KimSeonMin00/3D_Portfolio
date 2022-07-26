@@ -35,12 +35,38 @@ HRESULT CPlayer_Attack_Effect::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
+	m_SlashTA.fScale = XMVectorSet(0.5f, 0.2f, 1.f, 0.f);
+	m_WindTA.fScale = XMVectorSet(0.5f, 0.5f, 1.f, 0.f);
+
 	return S_OK;
 }
 
 void CPlayer_Attack_Effect::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+
+	m_SlashTA.fScale += XMVectorSet(40.f, 0.f, 0.f, 0.f) * fTimeDelta;
+	if (XMVectorGetX(m_SlashTA.fScale) >= 2.f)
+		m_SlashTA.fAlpha -= 8.f * fTimeDelta;
+
+	if (m_bFlash == true)
+	{
+		m_WindTA.fScale += XMVectorSet(20.f, 20.f, 0.f, 0.f) * fTimeDelta;
+
+		if (XMVectorGetX(m_WindTA.fScale) > 4.f)
+		{
+			m_bFlash = false;
+			m_WindTA.fScale = XMVectorSet(0.1f, 0.1f, 1.f, 0.f);
+		}
+	}
+
+	else
+	{
+		m_WindTA.fScale += XMVectorSet(4.f, 4.f, 0.f, 0.f) * fTimeDelta;
+		m_WindTA.fAlpha -= 4.f * fTimeDelta;
+		if (m_WindTA.fAlpha <= 0.f)
+			m_bDead = true;
+	}
 }
 
 void CPlayer_Attack_Effect::Late_Tick(_float fTimeDelta)
@@ -69,7 +95,7 @@ HRESULT CPlayer_Attack_Effect::Render_Slash()
 	_matrix WorldMat;
 	_matrix ViewMat;
 
-	WorldMat = XMMatrixIdentity() * m_pTransformCom->Get_WorldMatrix();
+	WorldMat = XMMatrixIdentity() * XMMatrixScaling(XMVectorGetX(m_SlashTA.fScale), XMVectorGetY(m_SlashTA.fScale), XMVectorGetZ(m_SlashTA.fScale)) * m_pTransformCom->Get_WorldMatrix();
 	_float xScale = XMVectorGetX(XMVector3Length(WorldMat.r[0]));
 	_float yScale = XMVectorGetX(XMVector3Length(WorldMat.r[1]));
 	_float zScale = XMVectorGetX(XMVector3Length(WorldMat.r[2]));
@@ -107,7 +133,7 @@ HRESULT CPlayer_Attack_Effect::Render_Wind()
 	_matrix WorldMat;
 	_matrix ViewMat;
 
-	WorldMat = XMMatrixIdentity() * m_pTransformCom->Get_WorldMatrix();
+	WorldMat = XMMatrixIdentity() * XMMatrixScaling(XMVectorGetX(m_WindTA.fScale), XMVectorGetY(m_WindTA.fScale), XMVectorGetZ(m_WindTA.fScale)) * m_pTransformCom->Get_WorldMatrix();
 	_float xScale = XMVectorGetX(XMVector3Length(WorldMat.r[0]));
 	_float yScale = XMVectorGetX(XMVector3Length(WorldMat.r[1]));
 	_float zScale = XMVectorGetX(XMVector3Length(WorldMat.r[2]));
@@ -125,9 +151,17 @@ HRESULT CPlayer_Attack_Effect::Render_Wind()
 
 	RELEASE_INSTANCE(CGameInstance);
 
-	m_pTexture_Wind->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture");
+	if (m_bFlash == true)
+	{
+		m_pTexture_Flash->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture");
+		m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(1.f, 1.f, 1.f, 1.f), sizeof(_vector));
+	}
 
-	m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(0.f, 1.f, 1.f, 1.f), sizeof(_vector));
+	else
+	{
+		m_pTexture_Wind->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture");
+		m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(0.f, 1.f, 1.f, 1.f), sizeof(_vector));
+	}
 
 	m_pShaderCom->Set_RawValue("g_Alpha", &m_WindTA.fAlpha, sizeof(_float));
 
@@ -159,6 +193,8 @@ HRESULT CPlayer_Attack_Effect::SetUp_Components()
 	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Player_Attack_Wind"), TEXT("Com_Texture_Wind"), (CComponent**)&m_pTexture_Wind)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Player_Attack_Flash"), TEXT("Com_Texture_Flash"), (CComponent**)&m_pTexture_Flash)))
+		return E_FAIL;
 
 	return S_OK;
 }

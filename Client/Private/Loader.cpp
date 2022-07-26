@@ -1139,6 +1139,10 @@ _uint CLoader::Load_Player(LEVEL eLevel)
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_basic_attack_wind_ring_02.dds")))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Player_Attack_Flash"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_base_ba_crit_flare.dds")))))
+		return E_FAIL;
+
 	_matrix		PivotMatrix;
 
 	PivotMatrix = XMMatrixScaling(0.0001f, 0.0001f, 0.0001f) * XMMatrixRotationY(XMConvertToRadians(180.0f));

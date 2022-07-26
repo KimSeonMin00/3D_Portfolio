@@ -40,6 +40,8 @@ private:
 	TRANSFORMALPHA m_SlashTA;
 	TRANSFORMALPHA m_WindTA;
 
+	_bool			m_bFlash = true;
+
 private:
 	CShader*					m_pShaderCom = nullptr;
 	CRenderer*					m_pRendererCom = nullptr;
@@ -47,6 +49,7 @@ private:
 	CVIBuffer_Rect*				m_pWind_Buffer = nullptr;
 	CTexture*					m_pTexture_Slash = nullptr;
 	CTexture*					m_pTexture_Wind = nullptr;
+	CTexture*					m_pTexture_Flash = nullptr;
 
 public:
 	HRESULT SetUp_Components();

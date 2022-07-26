@@ -183,7 +183,7 @@ HRESULT CPlayer_R_Effect::Render_Flash()
 
 		m_pShaderCom_Rect->Set_RawValue("g_Alpha", &m_vecRing[i]->fAlpha, sizeof(_float));
 
-		m_pShaderCom_Rect->Begin(1);
+		m_pShaderCom_Rect->Begin(2);
 
 		m_pRect_Spark->Render();
 	}

@@ -88,6 +88,8 @@ HRESULT CPlayer_Q_Effect::Render()
 		if (FAILED(m_pTexture_Sword->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture")))
 			return E_FAIL;
 
+		m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(1.f, 1.f, 1.f, 1.f), sizeof(_vector));
+
 		_float fAlpha = 1.f;
 		m_pShaderCom->Set_RawValue("g_Alpha", &fAlpha, sizeof(_float));
 
@@ -99,7 +101,7 @@ HRESULT CPlayer_Q_Effect::Render()
 		if (FAILED(m_pTexture_Indicator->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture")))
 			return E_FAIL;
 
-		m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(0.f, 1.f, 1.f, 1.f), sizeof(_vector));
+		m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(1.f, 1.f, 1.f, 1.f), sizeof(_vector));
 
 		_float fAlpha = 0.1f;
  		m_pShaderCom->Set_RawValue("g_Alpha", &fAlpha, sizeof(_float));

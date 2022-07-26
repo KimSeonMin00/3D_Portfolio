@@ -678,6 +678,25 @@ void CPlayer::Attack(_float fTimeDelta)
 	{
 		if (m_pModelCom->Get_Finished())
 		{
+			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+			_uint iLayerSize = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_Monster"));
+			if (iLayerSize != 0)
+			{
+				for (_uint i = 0; i < iLayerSize; i++)
+				{
+					CMonster* pMonster = ((CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), i));
+
+					Safe_AddRef(pMonster);
+
+					pMonster->Set_BeHit(false);
+
+					Safe_Release(pMonster);
+				}
+			}
+
+			RELEASE_INSTANCE(CGameInstance);
+
 			if (m_iAnimationIndex == 3)
 				m_iAnimationIndex = 0;
 			else
@@ -695,6 +714,25 @@ void CPlayer::Q_Skill(_float fTimeDelta)
 {
 	if (m_pModelCom->Get_Finished())
 	{
+		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+		_uint iLayerSize = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_Monster"));
+		if (iLayerSize != 0)
+		{
+			for (_uint i = 0; i < iLayerSize; i++)
+			{
+				CMonster* pMonster = ((CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), i));
+
+				Safe_AddRef(pMonster);
+
+				pMonster->Set_BeHit(false);
+
+				Safe_Release(pMonster);
+			}
+		}
+
+		RELEASE_INSTANCE(CGameInstance);
+
 		m_bIsChanneling = false;
 		m_eState = m_eDoingState;
 		return;
@@ -831,11 +869,20 @@ void CPlayer::Hit_Monster(_uint iIndex)
 {
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-	((CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), iIndex))->Damaged(m_fDamage);
+	CMonster* pMonster = ((CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), iIndex));
 
-	CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Monster"), TEXT("Com_Transform"), iIndex);
+	Safe_AddRef(pMonster);
 
-	pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Attack_Effect"), &pTransform->Get_State(CTransform::STATE_POSITION));
+	if (pMonster->Get_BeHit() == false)
+	{
+		pMonster->Damaged(m_fDamage);
+
+		CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Monster"), TEXT("Com_Transform"), iIndex);
+
+		pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Attack_Effect"), &pTransform->Get_State(CTransform::STATE_POSITION));
+	}
+
+	Safe_Release(pMonster);
 
 	RELEASE_INSTANCE(CGameInstance);
 }

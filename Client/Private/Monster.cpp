@@ -37,12 +37,7 @@ HRESULT CMonster::NativeConstruct(void * pArg)
 
 void CMonster::Tick(_float fTimeDelta)
 {
-	if (m_bHit == true)
-	{
-		m_fHitDelay += fTimeDelta;
-		if (m_fHitDelay > 0.2f)
-			m_bHit = false;
-	}
+
 }
 
 void CMonster::Late_Tick(_float fTimeDelta)

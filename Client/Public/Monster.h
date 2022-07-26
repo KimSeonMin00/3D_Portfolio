@@ -43,13 +43,22 @@ public:
 		return m_bAirborne;
 	};
 
+	_bool		Get_BeHit()
+	{
+		return m_bHit;
+	};
+
+	void		Set_BeHit(_bool bHit)
+	{
+		m_bHit = bHit;
+	};
+
 	void		Damaged(_float fDamage)
 	{
 		if (m_bHit == false)
 		{
-			m_fHealthPoint -= fDamage;
 			m_bHit = true;
-			m_fHitDelay = 0.f;
+			m_fHealthPoint -= fDamage;
 		}
 	}
 
