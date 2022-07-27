@@ -158,7 +158,7 @@ HRESULT CWhirlWind_Normal::Render()
 		if (FAILED(SetUp_ConstantTable(i)))
 			return E_FAIL;
 
-		m_pTextureAlpha->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
+		m_pTextureAlpha_2->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
 
 		_float2 MoveTex = _float2(-0.f, 0.f);
 
@@ -166,7 +166,7 @@ HRESULT CWhirlWind_Normal::Render()
 
 		m_pShaderCom->Set_RawValue("g_Alpha", &m_vScaleAlpha[i]->fAlpha, sizeof(_float));
 
-		m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(1.f, 1.f, 1.f, 1.f), sizeof(_vector));
+		m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(0.f, 1.f, 1.f, 1.f), sizeof(_vector));
 
 		m_pShaderCom->Begin(2);
 

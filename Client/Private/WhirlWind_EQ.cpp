@@ -130,11 +130,15 @@ HRESULT CWhirlWind_EQ::Render()
 			else
 				m_pTextureAlpha->Bind_OnShader(m_pShaderCom, "g_AlphaTexture");
 
+			_float2 MoveTex = _float2(0.f, 0.f);
+
+			m_pShaderCom->Set_RawValue("g_vMoveTex", &MoveTex, sizeof(_float2));
+
 			m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(1.f, 1.f, 1.f, 1.f), sizeof(_vector));
 
 			m_pShaderCom->Set_RawValue("g_Alpha", &m_vecEqData[i]->fAlpha, sizeof(_float));
 
-			m_pShaderCom->Begin(2);
+			m_pShaderCom->Begin(3);
 
 			m_pModelCom->Render(0);
 		}

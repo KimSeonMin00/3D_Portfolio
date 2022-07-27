@@ -206,7 +206,7 @@ HRESULT CPlayer_R_Effect::Render_Wind()
 
 		m_pShaderCom->Set_RawValue("g_vMoveTex", &m_vecTransformAlpha[i]->vTextureMove, sizeof(_float2));
 
-		m_pShaderCom->Begin(3);
+		m_pShaderCom->Begin(2);
 
 		m_pModelCom->Render(0);
 	}

@@ -146,7 +146,7 @@ PS_OUT PS_MAIN_MOVE(PS_IN In)
 
 	Out.vColor = g_vColor * vMtrlAlpha;
 
-	Out.vColor.a = vMtrlAlpha.x * g_Alpha;
+	Out.vColor.a = vMtrlAlpha.a * g_Alpha;
 
 	return Out;
 }
@@ -177,7 +177,7 @@ technique11 DefaultTechinque
 
 	pass Effect
 	{
-		SetBlendState(BS_AlphaBlend, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
+		SetBlendState(BS_One, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
 		SetDepthStencilState(DSS_None_ZTest_And_Write, 0);
 		SetRasterizerState(RS_NonCulling);
 
@@ -194,7 +194,7 @@ technique11 DefaultTechinque
 
 		VertexShader = compile vs_5_0 VS_MAIN_RECT();
 		GeometryShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN_MOVE();
+		PixelShader = compile ps_5_0 PS_MAIN_EFFECT();
 	}
 
 }

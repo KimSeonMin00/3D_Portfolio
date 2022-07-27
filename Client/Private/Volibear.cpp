@@ -70,9 +70,6 @@ void CVolibear::Tick(_float fTimeDelta)
 
 	else
 	{
-		if (m_bAirborne == true)
-			m_eState = STATE_STUN;
-
 		if (m_bStop == false && m_bStun == false)
 			Check_Loop(fTimeDelta);
 

@@ -136,10 +136,10 @@ HRESULT CPlayer_Q_Passive::Render()
 		m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(0.5f, 1.f, 1.f, 1.f), sizeof(_vector));
 		m_pShaderCom->Set_RawValue("g_vMoveTex", &m_vecTransformAlpha[i]->vTextureMove, sizeof(_float2));
 
-		if (FAILED(m_pTexture_PassiveWind2->Bind_OnShader(m_pShaderCom, "g_AlphaTexture")))
+		if (FAILED(m_pTexture_PassiveWind1->Bind_OnShader(m_pShaderCom, "g_AlphaTexture")))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(3);
+		m_pShaderCom->Begin(2);
 
 		m_pModelCom_2->Render(0);
 	}

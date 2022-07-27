@@ -101,6 +101,8 @@ void CMonster::Chase_Player(_float fTimeDelta)
 
 	m_vMovePos = vPlayerPos;
 
+	m_pTransformCom->LookAt(m_vMovePos);
+
 	m_fMoveDistTotal = XMVectorGetX(XMVector3Length(vPlayerPos - vPos));
 
 	m_fMoveDist = 0.f;
