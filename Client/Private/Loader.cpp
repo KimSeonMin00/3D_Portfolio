@@ -8,6 +8,7 @@
 #include "UI.h"
 #include "Player.h"
 #include "WhirlWind_Normal.h"
+#include "Player_Q_Dirt.h"
 #include "WhirlWind_EQ.h"
 #include "Player_Q_Effect.h"
 #include "Player_Q_Passive.h"
@@ -137,6 +138,10 @@ _uint CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_WhirlWind_Normal"),
 		CWhirlWind_Normal::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Yasuo_Q_Dirt"),
+		CPlayer_Q_Dirt::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_WhirlWind_EQ"),
@@ -1145,6 +1150,10 @@ _uint CLoader::Load_Player(LEVEL eLevel)
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_base_ba_crit_flare.dds")))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Player_Q_Dirt"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_base_q_ground_dirt_mis_%d.dds"), 4))))
+		return E_FAIL;
+
 	_matrix		PivotMatrix;
 
 	PivotMatrix = XMMatrixScaling(0.0001f, 0.0001f, 0.0001f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
@@ -1175,6 +1184,10 @@ _uint CLoader::Load_Player(LEVEL eLevel)
 
 	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Model_Player_R_Blast"),
 		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Effect/", "r_ground_blast.fbx", CModel::TYPE_NONANIM, PivotMatrix))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Model_Player_Q_Rock"),
+		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Effect/", "q_ground_rock.fbx", CModel::TYPE_NONANIM, PivotMatrix))))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

@@ -180,6 +180,7 @@
     <ClInclude Include="..\Public\Pantheon.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\Player_Attack_Effect.h" />
+    <ClInclude Include="..\Public\Player_Q_Dirt.h" />
     <ClInclude Include="..\Public\Player_Q_Effect.h" />
     <ClInclude Include="..\Public\Player_Q_Passive.h" />
     <ClInclude Include="..\Public\Player_R_Effect.h" />
@@ -222,6 +223,7 @@
     <ClCompile Include="..\Private\Pantheon.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\Player_Attack_Effect.cpp" />
+    <ClCompile Include="..\Private\Player_Q_Dirt.cpp" />
     <ClCompile Include="..\Private\Player_Q_Effect.cpp" />
     <ClCompile Include="..\Private\Player_Q_Passive.cpp" />
     <ClCompile Include="..\Private\Player_R_Effect.cpp" />

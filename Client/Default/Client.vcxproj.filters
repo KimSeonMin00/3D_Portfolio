@@ -115,6 +115,9 @@
     <Filter Include="02.GameObjects\Player\Effect\Attack">
       <UniqueIdentifier>{0b871eb8-f6b7-4a84-ba6f-b4c4e1fe264a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Player\WhirlWind\WhirlWind_Normal\Q_Dirt">
+      <UniqueIdentifier>{c403ff75-e427-461a-ac96-4c756842f7da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -246,6 +249,9 @@
     <ClInclude Include="..\Public\Player_Attack_Effect.h">
       <Filter>02.GameObjects\Player\Effect\Attack</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Player_Q_Dirt.h">
+      <Filter>02.GameObjects\Player\WhirlWind\WhirlWind_Normal\Q_Dirt</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -361,6 +367,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player_Attack_Effect.cpp">
       <Filter>02.GameObjects\Player\Effect\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_Q_Dirt.cpp">
+      <Filter>02.GameObjects\Player\WhirlWind\WhirlWind_Normal\Q_Dirt</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

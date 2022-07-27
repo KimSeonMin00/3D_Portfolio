@@ -27,11 +27,7 @@ public:
 	virtual HRESULT Render();
 
 private:
-	HRESULT		Render_Crack();
-
-private:
-	_float			m_fCrack_Scale = 2.f;
-	_float			m_fCrack_Alpha = 1.f;
+	_float			m_fCrack_Scale = 1.f;
 
 public:
 	HRESULT SetUp_Components();
@@ -42,7 +38,6 @@ private:
 	CModel*							m_pModelCom_2 = nullptr;
 	CShader*							m_pShaderCom_Rect = nullptr;
 	CVIBuffer_Rect*				m_pCrack_Rect = nullptr;
-	CTexture*						m_pTexture_Crack = nullptr;
 	CTexture*						m_pTextureAlpha_2 = nullptr;
 
 private:

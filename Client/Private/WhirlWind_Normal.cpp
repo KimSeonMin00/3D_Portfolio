@@ -59,6 +59,18 @@ void CWhirlWind_Normal::Tick(_float fTimeDelta)
 		tScaleAlpha->bTurn = m_bTurn;
 		m_vScaleAlpha.push_back(tScaleAlpha);
 		m_bTurn = !m_bTurn;
+
+		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+		_matrix WorldMat;
+
+		WorldMat = m_pTransformCom->Get_WorldMatrix();
+		WorldMat.r[2] = m_vMoveDir;
+
+		pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Q_Dirt"), &WorldMat);
+
+		RELEASE_INSTANCE(CGameInstance);
+
 		m_fAddMatrixTime = 0.f;
 	}
 
@@ -195,40 +207,7 @@ HRESULT CWhirlWind_Normal::Render()
 		m_pModelCom_2->Render(0);
 	}
 
-	//Render_Crack();
-
 	m_pSPHERECom->Render();
-
-	return S_OK;
-}
-
-HRESULT CWhirlWind_Normal::Render_Crack()
-{
-	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-
-	_float4x4		WorldMatrix;
-	_matrix		WorldMat;
-	WorldMat = XMMatrixIdentity() * XMMatrixScaling(m_fCrack_Scale, m_fCrack_Scale, 1.f) * XMMatrixRotationX(XMConvertToRadians(90.f));
-
-	WorldMat.r[3] = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 0.2f, 0.f, 0.f);
-
-	XMStoreFloat4x4(&WorldMatrix, XMMatrixTranspose(WorldMat));
-	m_pShaderCom_Rect->Set_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4));
-
-	m_pShaderCom_Rect->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_VIEW), sizeof(_float4x4));
-	m_pShaderCom_Rect->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_PROJ), sizeof(_float4x4));
-
-	RELEASE_INSTANCE(CGameInstance);
-
-	m_pTexture_Crack->Bind_OnShader(m_pShaderCom_Rect, "g_DiffuseTexture");
-
-	m_pShaderCom_Rect->Set_RawValue("g_vColor", &XMVectorSet(1.f, 1.f, 1.f, 1.f), sizeof(_vector));
-
-	m_pShaderCom_Rect->Set_RawValue("g_Alpha", &m_fCrack_Alpha, sizeof(_float));
-
-	m_pShaderCom_Rect->Begin(2);
-
-	m_pCrack_Rect->Render();
 
 	return S_OK;
 }
@@ -263,9 +242,6 @@ HRESULT CWhirlWind_Normal::SetUp_Components()
 
 
 	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Tornado_Alpha"), TEXT("Com_Alpha_Texture_2"), (CComponent**)&m_pTextureAlpha_2)))
-		return E_FAIL;
-
-	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Player_Q_Crack"), TEXT("Com_Texture_Q_Crack"), (CComponent**)&m_pTexture_Crack)))
 		return E_FAIL;
 
 	CCollider::COLLIDERDESC		ColliderDesc;
@@ -367,7 +343,6 @@ void CWhirlWind_Normal::Free()
 
 	m_vScaleAlpha_2.clear();
 
-	Safe_Release(m_pTexture_Crack);
 	Safe_Release(m_pCrack_Rect);
 	Safe_Release(m_pShaderCom_Rect);
 
