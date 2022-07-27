@@ -11,6 +11,7 @@
 #include "Player_Q_Dirt.h"
 #include "WhirlWind_EQ.h"
 #include "Player_Q_Effect.h"
+#include "Player_Q_Hit_Effect.h"
 #include "Player_Q_Passive.h"
 #include "Player_R_Effect.h"
 #include "Player_Attack_Effect.h"
@@ -150,6 +151,10 @@ _uint CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Yasuo_Q_Effect"),
 		CPlayer_Q_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Yasuo_Q_Hit_Effect"),
+		CPlayer_Q_Hit_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Yasuo_Q_Passive"),
@@ -1153,6 +1158,15 @@ _uint CLoader::Load_Player(LEVEL eLevel)
 	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Player_Q_Dirt"),
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_base_q_ground_dirt_mis_%d.dds"), 4))))
 		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Player_Q_Hit"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_q_tornado_blast.dds")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Player_Q_Hit_Tar"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_base_q_hit_spark_tar_%d.dds"), 4))))
+		return E_FAIL;
+
 
 	_matrix		PivotMatrix;
 
