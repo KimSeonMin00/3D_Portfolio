@@ -32,6 +32,9 @@ public:
 	void		Airborne(_float fTimeDelta);
 	void		Set_Airborne()
 	{
+		if (m_fHealthPoint <= 0.f)
+			return;
+
 		if (m_bAirborne == false)
 		{
 			m_bAirborne = true;

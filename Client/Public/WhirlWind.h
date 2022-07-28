@@ -28,6 +28,14 @@ public:
 	virtual HRESULT Render();
 
 protected:
+	void							Clear_MonsterIndex();
+
+protected:
+	_bool							m_bAirborne = true;
+
+	vector<_uint*>				m_vecMonsterIndex;
+
+protected:
 	CRenderer*						m_pRendererCom = nullptr;
 	CModel*							m_pModelCom = nullptr;
 	CShader*						m_pShaderCom = nullptr;

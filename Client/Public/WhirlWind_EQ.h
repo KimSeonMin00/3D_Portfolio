@@ -39,6 +39,7 @@ private:
 	_float							m_fAddModelTime = 0.f;
 	
 private:
+	_bool							m_bHit = true;
 	_float							m_fLiveTime = 0.f;
 
 public:

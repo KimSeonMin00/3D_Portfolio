@@ -63,6 +63,7 @@ public:
 
 private:
 	void	Key_Input(_float fTimeDelta);
+	_bool	Cast_R(_float fTimeDelta);
 
 	void	Change_State(_float fTimeDelta);
 	void	Update_State(_float fTimeDelta);
@@ -79,6 +80,7 @@ private:
 
 private:
 	void	Hit_Monster(_uint iIndex);
+	void	Initialize_Hit();
 
 private:
 	STATE			m_ePreState = STATE_END;

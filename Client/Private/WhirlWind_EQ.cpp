@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\WhirlWind_EQ.h"
 #include "GameInstance.h"
+#include "Monster.h"
 
 CWhirlWind_EQ::CWhirlWind_EQ(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
 	:CWhirlWind(pDevice, pDevice_Context)
@@ -29,6 +30,14 @@ HRESULT CWhirlWind_EQ::NativeConstruct(void * pArg)
 	_vector	vPos;
 
 	memcpy(&vPos, pArg, sizeof(_vector));
+
+	if (XMVectorGetW(vPos) == 2.f)
+		m_bAirborne = true;
+
+	else
+		m_bAirborne = false;
+
+	vPos = XMVectorSetW(vPos, 1.f);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION,vPos + XMVectorSet(0.f, 0.5f, 0.f, 0.f));
 	m_fLiveTime = 0.f;
@@ -95,6 +104,31 @@ void CWhirlWind_EQ::Tick(_float fTimeDelta)
 void CWhirlWind_EQ::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
+
+	if(m_bAirborne == true)
+		m_bAirborne = false;
+
+	if (m_bHit == true)
+	{
+		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+		for (auto& pIndex : m_vecMonsterIndex)
+		{
+			CMonster* pMonster = (CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), *pIndex);
+
+			if (pMonster->Damaged(50.f) == true)
+			{
+				CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Monster"), TEXT("Com_Transform"), *pIndex);
+
+				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Q_Hit_Effect"), &pTransform->Get_State(CTransform::STATE_POSITION));
+			}
+		}
+		RELEASE_INSTANCE(CGameInstance);
+
+		m_bHit = false;
+	}
+
+	__super::Clear_MonsterIndex();
 }
 
 HRESULT CWhirlWind_EQ::Render()

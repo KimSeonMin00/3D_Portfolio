@@ -368,54 +368,71 @@ void CPlayer::Key_Input(_float fTimeDelta)
 
 	if (pGameInstance->Get_DIKeyState(DIK_R) & 0x80)
 	{
-		m_eState = STATE_R;
-		m_bWeapon_Out = true;
-		m_bIsChanneling = true;
-
-		_float3 vPositionPicking = { 0.f, 0.f, 0.f };
-
-		CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_BackGround"), 0);
-
-		if (nullptr != pTerrain)
-		{
-			Safe_AddRef(pTerrain);
-			vPositionPicking = pTerrain->Get_PickingPosition();
-			Safe_Release(pTerrain);
-		}
-
-		_uint iLayerSize = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_Monster"));
-		if (iLayerSize != 0)
-		{
-			for (_uint i = 0; i < iLayerSize; i++)
-			{
-				CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Monster"), TEXT("Com_Transform"), i);
-
-				if (pTransform != nullptr)
-				{
-					Safe_AddRef(pTransform);
-
-					_vector vTargetPos = pTransform->Get_State(CTransform::STATE_POSITION);
-					_float vDist = XMVectorGetX(XMVector3Length(vTargetPos - XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f)));
-					if (vDist < 5.f)
-					{
-						if (((CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), i))->Get_Airborne() == true)
-						{
-							Safe_AddRef(pTransform);
-							m_MonsterPosList.push_back(pTransform);
-						}
-					}
-					Safe_Release(pTransform);
-				}
-			}
-		}
-
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f));
-
-		m_pModelCom->SetUp_AnimationIndex(36);
-		m_pModelCom->Set_Initialize();
+		Cast_R(fTimeDelta);
 	}
 
 	Safe_Release(pGameInstance);
+}
+
+_bool CPlayer::Cast_R(_float fTimeDelta)
+{
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_float3 vPositionPicking = { 0.f, 0.f, 0.f };
+
+	CTerrain* pTerrain = (CTerrain*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_BackGround"), 0);
+
+	if (nullptr != pTerrain)
+	{
+		Safe_AddRef(pTerrain);
+		vPositionPicking = pTerrain->Get_PickingPosition();
+		Safe_Release(pTerrain);
+	}
+
+	_uint iLayerSize = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_Monster"));
+	if (iLayerSize != 0)
+	{
+		for (_uint i = 0; i < iLayerSize; i++)
+		{
+			CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Monster"), TEXT("Com_Transform"), i);
+
+			if (pTransform != nullptr)
+			{
+				Safe_AddRef(pTransform);
+
+				_vector vTargetPos = pTransform->Get_State(CTransform::STATE_POSITION);
+				_float vDist = XMVectorGetX(XMVector3Length(vTargetPos - XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f)));
+				if (vDist < 5.f)
+				{
+					if (((CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), i))->Get_Airborne() == true)
+					{
+						Safe_AddRef(pTransform);
+						m_MonsterPosList.push_back(pTransform);
+					}
+				}
+				Safe_Release(pTransform);
+			}
+		}
+
+		if (m_MonsterPosList.size() == 0)
+		{
+			RELEASE_INSTANCE(CGameInstance);
+			return false;
+		}
+	}
+
+	m_eState = STATE_R;
+	m_bWeapon_Out = true;
+	m_bIsChanneling = true;
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f));
+
+	m_pModelCom->SetUp_AnimationIndex(36);
+	m_pModelCom->Set_Initialize();
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	return true;
 }
 
 void CPlayer::Change_State(_float fTimeDelta)
@@ -424,25 +441,7 @@ void CPlayer::Change_State(_float fTimeDelta)
 	{
 		m_bStateChange = true;
 		m_eDoingState = m_ePreState;
-
-		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-
-		_uint iLayerSize = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_Monster"));
-		if (iLayerSize != 0)
-		{
-			for (_uint i = 0; i < iLayerSize; i++)
-			{
-				CMonster* pMonster = ((CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), i));
-
-				Safe_AddRef(pMonster);
-
-				pMonster->Set_BeHit(false);
-
-				Safe_Release(pMonster);
-			}
-		}
-
-		RELEASE_INSTANCE(CGameInstance);
+		Initialize_Hit();
 
 		switch (m_eState)
 		{
@@ -733,24 +732,7 @@ void CPlayer::Q_Skill(_float fTimeDelta)
 {
 	if (m_pModelCom->Get_Finished())
 	{
-		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-
-		_uint iLayerSize = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_Monster"));
-		if (iLayerSize != 0)
-		{
-			for (_uint i = 0; i < iLayerSize; i++)
-			{
-				CMonster* pMonster = ((CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), i));
-
-				Safe_AddRef(pMonster);
-
-				pMonster->Set_BeHit(false);
-
-				Safe_Release(pMonster);
-			}
-		}
-
-		RELEASE_INSTANCE(CGameInstance);
+		Initialize_Hit();
 
 		m_bIsChanneling = false;
 		m_eState = m_eDoingState;
@@ -808,15 +790,30 @@ void CPlayer::E_Skill(_float fTimeDelta)
 
 			m_iQ_Time++;
 
-			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Skill"), TEXT("Prototype_GameObject_WhirlWind_EQ"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
 			if (m_iQ_Time == 3)
 			{
+				vPos = XMVectorSetW(vPos, 2.f);
 				m_iQ_Time = 0;
 			}
 
+			Initialize_Hit();
+			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Skill"), TEXT("Prototype_GameObject_WhirlWind_EQ"), &vPos);			
 			m_bE_Q_Used = true;
 			m_pModelCom->SetUp_AnimationIndex(25);
 			m_pModelCom->Set_Initialize();
+		}
+	}
+	else
+	{
+		if (pGameInstance->Get_DIKeyState(DIK_R) & 0x80)
+		{
+			if (Cast_R(fTimeDelta) == true)
+			{
+				Safe_Release(pGameInstance);
+				return;
+			}
 		}
 	}
 
@@ -930,6 +927,28 @@ void CPlayer::Hit_Monster(_uint iIndex)
 	}
 
 	Safe_Release(pMonster);
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
+void CPlayer::Initialize_Hit()
+{
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_uint iLayerSize = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_Monster"));
+	if (iLayerSize != 0)
+	{
+		for (_uint i = 0; i < iLayerSize; i++)
+		{
+			CMonster* pMonster = ((CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), i));
+
+			Safe_AddRef(pMonster);
+
+			pMonster->Set_BeHit(false);
+
+			Safe_Release(pMonster);
+		}
+	}
 
 	RELEASE_INSTANCE(CGameInstance);
 }

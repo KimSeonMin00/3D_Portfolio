@@ -55,14 +55,27 @@ void CWhirlWind::Late_Tick(_float fTimeDelta)
 					CMonster* pMonster = (CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), i);
 					if (pMonster == nullptr)
 						return;
+
 					Safe_AddRef(pMonster);
 
-					pMonster->Set_Airborne();
+					if (m_bAirborne == true)
+					{
+						pMonster->Set_Airborne();
+					}
+
+					_uint* iIndex = new _uint;
+
+					*iIndex = i;
+
+					m_vecMonsterIndex.push_back(iIndex);
 
 					Safe_Release(pMonster);
 
 				}
 			}
+
+
+			
 		}
 	}
 
@@ -74,6 +87,16 @@ void CWhirlWind::Late_Tick(_float fTimeDelta)
 HRESULT CWhirlWind::Render()
 {
 	return S_OK;
+}
+
+void CWhirlWind::Clear_MonsterIndex()
+{
+	for (auto& pIndex : m_vecMonsterIndex)
+	{
+		Safe_Delete(pIndex);
+	}
+
+	m_vecMonsterIndex.clear();
 }
 
 void CWhirlWind::Free()
