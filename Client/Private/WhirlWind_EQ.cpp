@@ -68,6 +68,10 @@ void CWhirlWind_EQ::Tick(_float fTimeDelta)
 	{
 		EQDATA* pEqData = new EQDATA;
 
+		pEqData->fRadian = m_fRadian;
+
+		m_fRadian += XMConvertToRadians(15.f);
+
 		if (m_iModel == 3)
 		{
 			pEqData->bWhite = false;
@@ -104,31 +108,6 @@ void CWhirlWind_EQ::Tick(_float fTimeDelta)
 void CWhirlWind_EQ::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
-
-	if(m_bAirborne == true)
-		m_bAirborne = false;
-
-	if (m_bHit == true)
-	{
-		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-
-		for (auto& pIndex : m_vecMonsterIndex)
-		{
-			CMonster* pMonster = (CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), *pIndex);
-
-			if (pMonster->Damaged(50.f) == true)
-			{
-				CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Monster"), TEXT("Com_Transform"), *pIndex);
-
-				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Q_Hit_Effect"), &pTransform->Get_State(CTransform::STATE_POSITION));
-			}
-		}
-		RELEASE_INSTANCE(CGameInstance);
-
-		m_bHit = false;
-	}
-
-	__super::Clear_MonsterIndex();
 }
 
 HRESULT CWhirlWind_EQ::Render()
@@ -233,7 +212,7 @@ HRESULT CWhirlWind_EQ::SetUp_ConstantTable(_uint iNumModel)
 
 	else
 	{
-		InstanceMatrix = XMMatrixIdentity() * XMMatrixScaling(m_vecEqData[iNumModel]->fScale, m_vecEqData[iNumModel]->fScale, m_vecEqData[iNumModel]->fScale);
+		InstanceMatrix = XMMatrixIdentity() * XMMatrixScaling(m_vecEqData[iNumModel]->fScale, m_vecEqData[iNumModel]->fScale, m_vecEqData[iNumModel]->fScale) * XMMatrixRotationY(m_vecEqData[iNumModel]->fRadian);
 	}
 	XMStoreFloat4x4(&WorldMatrix, XMMatrixTranspose(InstanceMatrix *  m_pTransformCom->Get_WorldMatrix()));
 	m_pShaderCom->Set_RawValue("g_WorldMatrix", &WorldMatrix, sizeof(_float4x4));

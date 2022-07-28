@@ -56,6 +56,19 @@ void CWhirlWind::Late_Tick(_float fTimeDelta)
 					if (pMonster == nullptr)
 						return;
 
+					_bool bHit = false;
+					for (auto& pIndex : m_vecMonsterIndex)
+					{
+						if (pIndex == pMonster)
+						{
+							bHit = true;
+							break;
+						}
+					}
+
+					if (bHit == true)
+						break;
+
 					Safe_AddRef(pMonster);
 
 					if (m_bAirborne == true)
@@ -63,19 +76,16 @@ void CWhirlWind::Late_Tick(_float fTimeDelta)
 						pMonster->Set_Airborne();
 					}
 
-					_uint* iIndex = new _uint;
+					if (pMonster->Damaged(50.f) == true)
+					{
+						CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Monster"), TEXT("Com_Transform"), i);
 
-					*iIndex = i;
+						pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Q_Hit_Effect"), &pTransform->Get_State(CTransform::STATE_POSITION));
+					}
 
-					m_vecMonsterIndex.push_back(iIndex);
-
-					Safe_Release(pMonster);
-
+					m_vecMonsterIndex.push_back(pMonster);
 				}
-			}
-
-
-			
+			}		
 		}
 	}
 
@@ -93,7 +103,7 @@ void CWhirlWind::Clear_MonsterIndex()
 {
 	for (auto& pIndex : m_vecMonsterIndex)
 	{
-		Safe_Delete(pIndex);
+		Safe_Release(pIndex);
 	}
 
 	m_vecMonsterIndex.clear();

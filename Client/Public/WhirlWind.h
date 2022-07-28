@@ -33,7 +33,7 @@ protected:
 protected:
 	_bool							m_bAirborne = true;
 
-	vector<_uint*>				m_vecMonsterIndex;
+	vector<CGameObject*>		m_vecMonsterIndex;
 
 protected:
 	CRenderer*						m_pRendererCom = nullptr;
@@ -46,4 +46,3 @@ public:
 	virtual CGameObject* Clone(void* pArg) = 0;
 	virtual void Free() override;
 };
-

@@ -29,8 +29,10 @@ public:
 private:
 	_float							m_fTime = 0.f;
 	_float							m_fScale = 1.f;
+	_float							m_fAlpha = 1.f;
 
 	_bool							m_bSword = false;
+	_bool							m_bCrack = false;
 
 private:
 	CShader*						m_pShaderCom = nullptr;
@@ -38,6 +40,7 @@ private:
 	CVIBuffer_Rect*			m_pVIBuffer_RectCom = nullptr;
 	CTexture*					m_pTexture_Indicator = nullptr;
 	CTexture*					m_pTexture_Sword = nullptr;
+	CTexture*					m_pTexture_Crack = nullptr;
 
 public:
 	HRESULT SetUp_Components();

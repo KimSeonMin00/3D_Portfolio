@@ -158,8 +158,6 @@ void CWhirlWind_Normal::Tick(_float fTimeDelta)
 void CWhirlWind_Normal::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
-
-	__super::Clear_MonsterIndex();
 }
 
 HRESULT CWhirlWind_Normal::Render()

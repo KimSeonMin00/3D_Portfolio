@@ -33,12 +33,19 @@ HRESULT CPlayer_Q_Effect::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, WorldMat.r[2]);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, WorldMat.r[3]);
 
-	m_pTransformCom->Set_Scaled(XMVectorSet(1.f, 4.f, 1.f, 0.f));
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	if (XMVectorGetY(vPos) < 0.3f)
+	{
+		m_bCrack = true;
+		m_pTransformCom->Set_Scaled(XMVectorSet(0.5f, 2.f, 0.5f, 0.f));
+	}
+	else
+	{
+		m_bCrack = false;
+		m_pTransformCom->Set_Scaled(XMVectorSet(1.f, 4.f, 1.f, 0.f));
+	}
 	m_pTransformCom->Go_Straight(1.f);
 	m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(90.f) / XMConvertToRadians(60.f));
-	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	vPos = XMVectorSetY(vPos, 0.5f);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
@@ -51,20 +58,28 @@ void CPlayer_Q_Effect::Tick(_float fTimeDelta)
 	__super::Tick(fTimeDelta);
 
 	m_fTime += fTimeDelta;
-	if (m_fTime >= 0.1f)
+
+	if (m_bCrack == true)
 	{
-		m_bSword = true;
+		m_fAlpha -= fTimeDelta;
 	}
 
-	if (m_bSword == true)
+	else
 	{
-		m_fScale -= 10.f * fTimeDelta;
-		if (m_fScale <= 0.f)
-			m_bDead = true;
+		if (m_fTime >= 0.1f)
+		{
+			m_bSword = true;
+		}
 
-		m_pTransformCom->Set_Scaled(XMVectorSet(m_fScale, 4.f, 1.f, 0.f));
+		if (m_bSword == true)
+		{
+			m_fScale -= 10.f * fTimeDelta;
+			if (m_fScale <= 0.f)
+				m_bDead = true;
+
+			m_pTransformCom->Set_Scaled(XMVectorSet(m_fScale, 4.f, 1.f, 0.f));
+		}
 	}
-	
 }
 
 void CPlayer_Q_Effect::Late_Tick(_float fTimeDelta)
@@ -83,32 +98,45 @@ HRESULT CPlayer_Q_Effect::Render()
 	if (FAILED(SetUp_ConstantTable()))
 		return E_FAIL;
 
-	if (m_bSword == true)
+	if (m_bCrack == true)
 	{
-		if (FAILED(m_pTexture_Sword->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture")))
+		if (FAILED(m_pTexture_Crack->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture")))
 			return E_FAIL;
 
 		m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(1.f, 1.f, 1.f, 1.f), sizeof(_vector));
 
-		_float fAlpha = 1.f;
-		m_pShaderCom->Set_RawValue("g_Alpha", &fAlpha, sizeof(_float));
+		m_pShaderCom->Set_RawValue("g_Alpha", &m_fAlpha, sizeof(_float));
 
 		m_pShaderCom->Begin(0);
 	}
-
 	else
 	{
-		if (FAILED(m_pTexture_Indicator->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture")))
-			return E_FAIL;
+		if (m_bSword == true)
+		{
+			if (FAILED(m_pTexture_Sword->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture")))
+				return E_FAIL;
 
-		m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(1.f, 1.f, 1.f, 1.f), sizeof(_vector));
+			m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(1.f, 1.f, 1.f, 1.f), sizeof(_vector));
 
-		_float fAlpha = 0.1f;
- 		m_pShaderCom->Set_RawValue("g_Alpha", &fAlpha, sizeof(_float));
+			_float fAlpha = 1.f;
+			m_pShaderCom->Set_RawValue("g_Alpha", &fAlpha, sizeof(_float));
 
-		m_pShaderCom->Begin(2);
+			m_pShaderCom->Begin(0);
+		}
+
+		else
+		{
+			if (FAILED(m_pTexture_Indicator->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture")))
+				return E_FAIL;
+
+			m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(1.f, 1.f, 1.f, 1.f), sizeof(_vector));
+
+			_float fAlpha = 0.1f;
+			m_pShaderCom->Set_RawValue("g_Alpha", &fAlpha, sizeof(_float));
+
+			m_pShaderCom->Begin(2);
+		}
 	}
-
 	m_pVIBuffer_RectCom->Render();
 
 	return S_OK;
@@ -132,6 +160,9 @@ HRESULT CPlayer_Q_Effect::SetUp_Components()
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Yasuo_Q_Sword"), TEXT("Com_Texture_Sword"), (CComponent**)&m_pTexture_Sword)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Player_Q_Ground_Crack"), TEXT("Com_Texture_Crack"), (CComponent**)&m_pTexture_Crack)))
 		return E_FAIL;
 }
 
@@ -180,6 +211,7 @@ void CPlayer_Q_Effect::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTexture_Indicator);
 	Safe_Release(m_pTexture_Sword);
+	Safe_Release(m_pTexture_Crack);
 	Safe_Release(m_pVIBuffer_RectCom);
 	Safe_Release(m_pShaderCom);
 }

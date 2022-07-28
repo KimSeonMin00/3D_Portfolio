@@ -296,7 +296,17 @@ void CPlayer::Key_Input(_float fTimeDelta)
 		}
 
 		m_pTransformCom->LookAt(XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f));
-		pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Q_Effect"), &m_pTransformCom->Get_WorldMatrix());
+
+		_matrix WorldMat = m_pTransformCom->Get_WorldMatrix();
+		if (m_iQ_Time == 2)
+		{
+			WorldMat.r[3] = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 0.1f, 0.f, 0.f);
+		}
+		else
+		{
+			WorldMat.r[3] = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 0.5f, 0.f, 0.f);
+		}
+		pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Q_Effect"), &WorldMat);
 		m_iQ_Time++;
 
 		if (m_iQ_Time == 1)

@@ -1149,6 +1149,10 @@ _uint CLoader::Load_Player(LEVEL eLevel)
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_q_tornado_ground_shape_cas.dds")))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Player_Q_Ground_Crack"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_base_q_groud_crack.dds")))))
+		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Player_R_Crack"),
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_base_r_ground_crack.dds")))))
 		return E_FAIL;
