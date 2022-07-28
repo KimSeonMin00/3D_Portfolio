@@ -786,13 +786,6 @@ void CPlayer::W_Skill(_float fTimeDelta)
 
 void CPlayer::E_Skill(_float fTimeDelta)
 {
-	if (m_pModelCom->Get_Finished())
-	{
-		m_bIsChanneling = false;
-		m_bE_Q_Used = false;
-		m_eState = STATE_IDLE;
-	}
-
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();
 
 	if (nullptr == pGameInstance)
@@ -802,10 +795,18 @@ void CPlayer::E_Skill(_float fTimeDelta)
 
 	if (m_bE_Q_Used == false)
 	{
+		m_fAfterImageTime += fTimeDelta;
+
+		if (m_fAfterImageTime >= 0.1f)
+		{
+			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_E_AF"), &m_pTransformCom->Get_WorldMatrix());
+			m_fAfterImageTime = 0.f;
+		}
+
 		if (pGameInstance->Get_DIKeyState(DIK_Q) & 0x80)
 		{
-			m_iQ_Time++;
 
+			m_iQ_Time++;
 
 			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Skill"), TEXT("Prototype_GameObject_WhirlWind_EQ"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			if (m_iQ_Time == 3)
@@ -821,17 +822,39 @@ void CPlayer::E_Skill(_float fTimeDelta)
 
 	Safe_Release(pGameInstance);
 
-	if (m_fDashDist <= 4.f)
+	if (m_bE_Q_Used == true)
 	{
-		m_pTransformCom->Go_Straight(_double(8.f * fTimeDelta));
-		m_fDashDist += 8.f * fTimeDelta;
+		if (m_fDashDist <= 4.f)
+		{
+			m_pTransformCom->Go_Straight(_double(8.f * fTimeDelta));
+			m_fDashDist += 8.f * fTimeDelta;
+		}
+
+		if (m_pModelCom->Get_Finished())
+		{
+			m_bIsChanneling = false;
+			m_bE_Q_Used = false;
+			m_eState = STATE_IDLE;
+			m_fAfterImageTime = 0.1f;
+		}
+
 	}
 
-	else if (m_bE_Q_Used == false)
+	else
 	{
-		m_eState = STATE_IDLE;
-		m_bIsChanneling = false;
-		m_bE_Q_Used = false;
+		if (m_fDashDist <= 4.f)
+		{
+			m_pTransformCom->Go_Straight(_double(8.f * fTimeDelta));
+			m_fDashDist += 8.f * fTimeDelta;
+		}
+
+		else
+		{
+			m_eState = STATE_IDLE;
+			m_bIsChanneling = false;
+			m_bE_Q_Used = false;
+			m_fAfterImageTime = 0.1f;
+		}
 	}
 
 	if (m_pModelCom->Get_IsChange() == false)

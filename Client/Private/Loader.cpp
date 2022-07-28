@@ -10,6 +10,7 @@
 #include "WhirlWind_Normal.h"
 #include "Player_Q_Dirt.h"
 #include "WhirlWind_EQ.h"
+#include "Player_E_AfterImage.h"
 #include "Player_Q_Effect.h"
 #include "Player_Q_Hit_Effect.h"
 #include "Player_Q_Passive.h"
@@ -147,6 +148,10 @@ _uint CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_WhirlWind_EQ"),
 		CWhirlWind_EQ::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Yasuo_E_AF"),
+		CPlayer_E_AfterImage::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Yasuo_Q_Effect"),
@@ -1202,6 +1207,10 @@ _uint CLoader::Load_Player(LEVEL eLevel)
 
 	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Model_Player_Q_Rock"),
 		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Effect/", "q_ground_rock.fbx", CModel::TYPE_NONANIM, PivotMatrix))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Model_Player_E_AF"),
+		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Effect/", "e_AfterImage.fbx", CModel::TYPE_NONANIM, PivotMatrix))))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

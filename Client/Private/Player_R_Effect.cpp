@@ -124,6 +124,8 @@ void CPlayer_R_Effect::Tick(_float fTimeDelta)
 void CPlayer_R_Effect::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
+	if (m_pRendererCom == nullptr)
+		return;
 
 	m_pRendererCom->Add_RenderList(CRenderer::RENDER_ALPHABLEND, this);
 }
@@ -269,7 +271,7 @@ HRESULT CPlayer_R_Effect::Render_Crack()
 
 	m_pShaderCom_Rect->Set_RawValue("g_Alpha", &m_fCrackAlpha, sizeof(_float));
 
-	m_pShaderCom_Rect->Begin(2);
+	m_pShaderCom_Rect->Begin(0);
 
 	m_pRect_Crack->Render();
 

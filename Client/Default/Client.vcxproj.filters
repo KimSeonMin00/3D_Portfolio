@@ -121,6 +121,9 @@
     <Filter Include="02.GameObjects\Player\Effect\R">
       <UniqueIdentifier>{62924dbc-e128-4752-91e3-44d0b9f067a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Player\Effect\E">
+      <UniqueIdentifier>{539c4f07-dc1d-41cb-9f28-214e089e7e24}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -258,6 +261,9 @@
     <ClInclude Include="..\Public\Player_Q_Hit_Effect.h">
       <Filter>02.GameObjects\Player\Effect\Q\Hit</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Player_E_AfterImage.h">
+      <Filter>02.GameObjects\Player\Effect\E</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -379,6 +385,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player_Q_Hit_Effect.cpp">
       <Filter>02.GameObjects\Player\Effect\Q\Hit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_E_AfterImage.cpp">
+      <Filter>02.GameObjects\Player\Effect\E</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

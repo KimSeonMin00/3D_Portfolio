@@ -128,6 +128,7 @@ private:
 	_bool			m_bE_Q_Used = false;
 
 	_float			m_fDashDist = 0.f;
+	_float			m_fAfterImageTime = 0.2f;
 
 private:
 	_float			m_fYdir = 1.f;
