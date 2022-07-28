@@ -38,6 +38,7 @@ HRESULT CPlayer_Q_Hit_Effect::NativeConstruct(void * pArg)
 	{
 		TRANSFORMALPHA* pTA = new TRANSFORMALPHA;
 
+		pTA->iIndex = rand() % 4;
 		pTA->fScale = _float(rand() % 4 + 1) * 0.1f;
 		_float fDegree = rand() % 360;
 		pTA->fRadian = XMConvertToRadians(fDegree);
@@ -182,7 +183,7 @@ HRESULT CPlayer_Q_Hit_Effect::Render_Tar()
 
 		RELEASE_INSTANCE(CGameInstance);
 
-		m_pTexture_Flash_Tar->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture");
+		m_pTexture_Flash_Tar->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture", pTA->iIndex);
 
 		m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(1.f, 1.f, 1.f, 1.f), sizeof(_vector));
 

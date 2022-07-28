@@ -16,6 +16,7 @@ class CPlayer_Q_Hit_Effect
 public:
 	typedef struct tagTranformAlpha
 	{
+		_int		iIndex = 0;
 		_float		fScale = 1.f;
 		_float      fRadian = 0.f;
 		_float		fSpeed = 1.f;
