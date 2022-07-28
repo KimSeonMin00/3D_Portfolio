@@ -39,9 +39,10 @@ HRESULT CPlayer_Q_Hit_Effect::NativeConstruct(void * pArg)
 		TRANSFORMALPHA* pTA = new TRANSFORMALPHA;
 
 		pTA->fScale = _float(rand() % 4 + 1) * 0.1f;
-		pTA->fRadian = XMConvertToRadians(_float(rand() % 360));
+		_float fDegree = rand() % 360;
+		pTA->fRadian = XMConvertToRadians(fDegree);
 		pTA->fSpeed = _float(rand() % 10 + 10) * 0.1f;
-		pTA->vDir = XMVector3TransformNormal(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMMatrixRotationZ(pTA->fRadian));
+		pTA->vDir = XMVector3TransformNormal(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMMatrixRotationZ(XMConvertToRadians(fDegree)));
 		pTA->vPos = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 
 		m_vecTA.push_back(pTA);
@@ -56,7 +57,7 @@ void CPlayer_Q_Hit_Effect::Tick(_float fTimeDelta)
 
 	if (m_bFlash == true)
 	{
-		m_fFlashAlpha += 4.f * fTimeDelta;
+		m_fFlashAlpha += 6.f * fTimeDelta;
 		m_fScale -= 12.f * fTimeDelta;
 
 		if (m_fScale <= 0.f)
@@ -71,7 +72,7 @@ void CPlayer_Q_Hit_Effect::Tick(_float fTimeDelta)
 
 		for (auto& pTA : m_vecTA)
 		{
-			pTA->vPos += pTA->vDir * pTA->fSpeed * fTimeDelta * 8.f;
+			pTA->vPos += pTA->vDir * pTA->fSpeed * fTimeDelta * 6.f;
 
 			/*if (m_fScale > 0.f)
 				pTA->fScale -= 0.01f * fTimeDelta;
@@ -159,17 +160,21 @@ HRESULT CPlayer_Q_Hit_Effect::Render_Tar()
 		XMStoreFloat3(&vPos, pTA->vPos);
 
 		WorldMat = XMMatrixIdentity()
-			* XMMatrixScaling(pTA->fScale * 0.5f, pTA->fScale * 4.f, 1.f)
-			* XMMatrixRotationZ(pTA->fRadian)
+			* XMMatrixScaling(pTA->fScale * 0.5f , pTA->fScale * 3.f, 1.f)
 			* XMMatrixTranslation(vPos.x, vPos.y, vPos.z)
 			* m_pTransformCom->Get_WorldMatrix();
 
-	/*	ViewMat = pGameInstance->Get_TransformMatrix(CPipeline::D3DTS_VIEW);
-		ViewMat = XMMatrixInverse(nullptr, ViewMat);
+		_float xScale = XMVectorGetX(XMVector3Length(WorldMat.r[0]));
+		_float yScale = XMVectorGetX(XMVector3Length(WorldMat.r[1]));
+		_float zScale = XMVectorGetX(XMVector3Length(WorldMat.r[2]));
 
-		WorldMat.r[0] *= ViewMat.r[0];
-		WorldMat.r[1] *= ViewMat.r[1];
-		WorldMat.r[2] *= ViewMat.r[2];*/
+		ViewMat = pGameInstance->Get_TransformMatrix(CPipeline::D3DTS_VIEW);
+		ViewMat = XMMatrixInverse(nullptr, ViewMat);
+		ViewMat *= XMMatrixRotationAxis(ViewMat.r[2], pTA->fRadian);
+
+		WorldMat.r[0] = ViewMat.r[0] * xScale;
+		WorldMat.r[1] = ViewMat.r[1] * yScale;
+		WorldMat.r[2] = ViewMat.r[2] * zScale;
 
 		m_pShaderCom->Set_RawValue("g_WorldMatrix", &XMMatrixTranspose(WorldMat), sizeof(_float4x4));
 		m_pShaderCom->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_VIEW), sizeof(_float4x4));

@@ -678,6 +678,7 @@ void CPantheon::Pattern_1(_float fTimeDelta)
 		m_eState = STATE_W;
 		m_bIsChanneling = true;
 		__super::Chase_Player(fTimeDelta);
+		m_pTransformCom->LookAt(m_vMovePos);
 		m_iPattern_AttackTime = 0;
 		m_iPattern_AttackTime++;
 	}

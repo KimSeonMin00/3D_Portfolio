@@ -56,7 +56,7 @@ private:
 
 	_bool		m_bFlash = true;
 	_float		m_fFlashAlpha = 0.1f;
-	_float		m_fScale = 2.f;
+	_float		m_fScale = 3.f;
 
 	_float		m_fLiveTime = 0.f;
 

@@ -63,6 +63,9 @@ void CVolibear::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
+	if (m_bStop == false && m_bStun == false)
+		Check_Loop(fTimeDelta);
+
 	if (m_fHealthPoint <= 0.f)
 	{
 		m_eState = STATE_DEATH;
@@ -70,25 +73,22 @@ void CVolibear::Tick(_float fTimeDelta)
 
 	else
 	{
-		if (m_bStop == false && m_bStun == false)
-			Check_Loop(fTimeDelta);
-
-
 		if (m_bAirborne == false && m_pModelCom->Get_IsChange() == false)
 		{
 			Pattern_Phase1(fTimeDelta);
 		}
-
-		Change_State(fTimeDelta);
-
-		if (m_bStop == false)
-			Update_State(fTimeDelta);
-
-		m_pAABBCom->Update(m_pTransformCom->Get_WorldMatrix());
-		m_pSphereCom->Update(m_pTransformCom->Get_WorldMatrix());
-		Update_HandCollider();
-		m_pSPHEREAttackRange->Update(m_pTransformCom->Get_WorldMatrix());
 	}
+
+	Change_State(fTimeDelta);
+
+	if (m_bStop == false)
+		Update_State(fTimeDelta);
+
+	m_pAABBCom->Update(m_pTransformCom->Get_WorldMatrix());
+	m_pSphereCom->Update(m_pTransformCom->Get_WorldMatrix());
+	Update_HandCollider();
+	m_pSPHEREAttackRange->Update(m_pTransformCom->Get_WorldMatrix());
+
 }
 
 void CVolibear::Late_Tick(_float fTimeDelta)
@@ -1146,6 +1146,7 @@ void CVolibear::Pattern_1(_float fTimeDelta)
 	{
 		m_fPatternTime += fTimeDelta;
 		__super::Chase_Player(fTimeDelta);
+		m_pTransformCom->LookAt(m_vMovePos);
 		m_bQState = true;
 
 
@@ -1188,6 +1189,7 @@ void CVolibear::Pattern_2(_float fTimeDelta)
 		m_eState = STATE_ATTACK;
 		m_bIsChanneling = true;
 		__super::Chase_Player(fTimeDelta);
+		m_pTransformCom->LookAt(m_vMovePos);
 		m_iPattern_AttackTime++;
 	}
 
@@ -1239,6 +1241,7 @@ void CVolibear::Pattern_3(_float fTimeDelta)
 		m_eState = STATE_ATTACK;
 		m_bIsChanneling = true;
 		__super::Chase_Player(fTimeDelta);
+		m_pTransformCom->LookAt(m_vMovePos);
 		m_iPattern_AttackTime++;
 	}
 
@@ -1278,6 +1281,7 @@ void CVolibear::Pattern_4(_float fTimeDelta)
 		m_eState = STATE_R;
 		m_bIsChanneling = true;
 		__super::Chase_Player(fTimeDelta);
+		m_pTransformCom->LookAt(m_vMovePos);
 		m_iPattern_AttackTime++;
 	}
 
@@ -1296,12 +1300,14 @@ void CVolibear::Pattern_4(_float fTimeDelta)
 			{
 				m_eState = STATE_W;
 				__super::Chase_Player(fTimeDelta);
+				m_pTransformCom->LookAt(m_vMovePos);
 				m_iPattern_AttackTime++;
 			}
 			else if (m_iPattern_AttackTime == 3)
 			{
 				m_eState = STATE_Q;
 				__super::Chase_Player(fTimeDelta);
+				m_pTransformCom->LookAt(m_vMovePos);
 				m_iPattern_AttackTime++;
 			}
 			else if (m_iPattern_AttackTime == 4)
@@ -1412,6 +1418,7 @@ void CVolibear::Pattern_6(_float fTimeDelta)
 
 		//Safe_Release(pGameInstance);
 		__super::Chase_Player(fTimeDelta);
+		m_pTransformCom->LookAt(m_vMovePos);
 
 		if (m_fMoveDistTotal > 2.f)
 		{

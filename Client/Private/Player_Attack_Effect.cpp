@@ -102,7 +102,10 @@ HRESULT CPlayer_Attack_Effect::Render_Slash()
 
 	ViewMat = pGameInstance->Get_TransformMatrix(CPipeline::D3DTS_VIEW);
 	ViewMat = XMMatrixInverse(nullptr, ViewMat);
-	
+	ViewMat *= XMMatrixRotationAxis(ViewMat.r[2], XMConvertToRadians(30.f));
+
+	WorldMat.r[0] = ViewMat.r[0] * xScale;
+	WorldMat.r[1] = ViewMat.r[1] * yScale;
 	WorldMat.r[2] = ViewMat.r[2] * zScale;
 
 	m_pShaderCom->Set_RawValue("g_WorldMatrix", &XMMatrixTranspose(WorldMat), sizeof(_float4x4));

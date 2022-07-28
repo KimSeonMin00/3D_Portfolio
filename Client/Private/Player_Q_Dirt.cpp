@@ -58,7 +58,7 @@ HRESULT CPlayer_Q_Dirt::NativeConstruct(void * pArg)
 		pTARock->fRadian = XMConvertToRadians(_float(rand() % 180));
 		pTARock->vPos = XMVectorSet(0.f, 0.f, 0.f, 0.f);
 		pTARock->vDir = XMVector3Normalize(XMVectorSet(_float(rand() % 10), 0.f, _float(rand() % 10), 0.f));
-		pTARock->vAxis = XMVector3Normalize(XMVectorSet(_float(rand() % 10), _float(rand() % 10), _float(rand() % 10), 0.f));
+		pTARock->vAxis = XMVector3Normalize(XMVectorSet(_float(rand() % 10 + 1), _float(rand() % 10), _float(rand() % 10), 0.f));
 		
 
 		m_vecTARock.push_back(pTARock);
@@ -164,11 +164,15 @@ HRESULT CPlayer_Q_Dirt::SetUp_ConstantTable(_uint iIndex)
 	WorldMat = XMMatrixIdentity() * XMMatrixTranslation(vPos.x, vPos.y, vPos.z) * m_pTransformCom->Get_WorldMatrix();
 
 	_matrix ViewMat;
+	_float xScale = XMVectorGetX(XMVector3Length(WorldMat.r[0]));
+	_float yScale = XMVectorGetX(XMVector3Length(WorldMat.r[1]));
 	_float zScale = XMVectorGetX(XMVector3Length(WorldMat.r[2]));
 
 	ViewMat = pGameInstance->Get_TransformMatrix(CPipeline::D3DTS_VIEW);
 	ViewMat = XMMatrixInverse(nullptr, ViewMat);
 
+	WorldMat.r[0] = ViewMat.r[0] * xScale;
+	WorldMat.r[1] = ViewMat.r[1] * yScale;
 	WorldMat.r[2] = ViewMat.r[2] * zScale;
 
 	m_pShaderCom->Set_RawValue("g_WorldMatrix", &XMMatrixTranspose(WorldMat), sizeof(_float4x4));
