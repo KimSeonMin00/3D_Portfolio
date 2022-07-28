@@ -11,6 +11,7 @@
 #include "Player_Q_Dirt.h"
 #include "WhirlWind_EQ.h"
 #include "Player_E_AfterImage.h"
+#include "Player_E_Effect.h"
 #include "Player_Q_Effect.h"
 #include "Player_Q_Hit_Effect.h"
 #include "Player_Q_Passive.h"
@@ -152,6 +153,10 @@ _uint CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Yasuo_E_AF"),
 		CPlayer_E_AfterImage::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Yasuo_E_Effect"),
+		CPlayer_E_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Yasuo_Q_Effect"),
@@ -1171,6 +1176,11 @@ _uint CLoader::Load_Player(LEVEL eLevel)
 	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Player_Q_Hit_Tar"),
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_base_q_hit_spark_tar_%d.dds"), 4))))
 		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Yasuo_E_Ring"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_base_e_dash_ring_%d.dds"), 4))))
+		return E_FAIL;
+
 
 
 	_matrix		PivotMatrix;

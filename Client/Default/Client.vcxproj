@@ -181,6 +181,7 @@
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\Player_Attack_Effect.h" />
     <ClInclude Include="..\Public\Player_E_AfterImage.h" />
+    <ClInclude Include="..\Public\Player_E_Effect.h" />
     <ClInclude Include="..\Public\Player_Q_Dirt.h" />
     <ClInclude Include="..\Public\Player_Q_Effect.h" />
     <ClInclude Include="..\Public\Player_Q_Hit_Effect.h" />
@@ -226,6 +227,7 @@
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\Player_Attack_Effect.cpp" />
     <ClCompile Include="..\Private\Player_E_AfterImage.cpp" />
+    <ClCompile Include="..\Private\Player_E_Effect.cpp" />
     <ClCompile Include="..\Private\Player_Q_Dirt.cpp" />
     <ClCompile Include="..\Private\Player_Q_Effect.cpp" />
     <ClCompile Include="..\Private\Player_Q_Hit_Effect.cpp" />

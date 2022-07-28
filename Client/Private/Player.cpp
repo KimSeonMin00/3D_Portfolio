@@ -360,6 +360,7 @@ void CPlayer::Key_Input(_float fTimeDelta)
 		}
 
 		m_pTransformCom->LookAt(XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f));
+		pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_E_Effect"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 		m_iEAnimation_Index = 35;
 		m_pModelCom->SetUp_AnimationIndex(m_iEAnimation_Index);
