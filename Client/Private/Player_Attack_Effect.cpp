@@ -36,6 +36,7 @@ HRESULT CPlayer_Attack_Effect::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	m_SlashTA.fScale = XMVectorSet(0.5f, 0.2f, 1.f, 0.f);
+	m_SlashTA.fRadian = XMConvertToRadians(rand() % 360);
 	m_WindTA.fScale = XMVectorSet(0.5f, 0.5f, 1.f, 0.f);
 
 	return S_OK;
@@ -81,6 +82,8 @@ HRESULT CPlayer_Attack_Effect::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
+
+
 	Render_Wind();
 
 	Render_Slash();
@@ -102,7 +105,7 @@ HRESULT CPlayer_Attack_Effect::Render_Slash()
 
 	ViewMat = pGameInstance->Get_TransformMatrix(CPipeline::D3DTS_VIEW);
 	ViewMat = XMMatrixInverse(nullptr, ViewMat);
-	ViewMat *= XMMatrixRotationAxis(ViewMat.r[2], XMConvertToRadians(30.f));
+	ViewMat *= XMMatrixRotationAxis(ViewMat.r[2], m_SlashTA.fRadian);
 
 	WorldMat.r[0] = ViewMat.r[0] * xScale;
 	WorldMat.r[1] = ViewMat.r[1] * yScale;

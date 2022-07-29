@@ -10,12 +10,14 @@
 #include "WhirlWind_Normal.h"
 #include "Player_Q_Dirt.h"
 #include "WhirlWind_EQ.h"
+#include "WhirlWind_Hit_Effect.h"
 #include "Player_E_AfterImage.h"
 #include "Player_E_Effect.h"
 #include "Player_Q_Effect.h"
 #include "Player_Q_Hit_Effect.h"
 #include "Player_Q_Passive.h"
 #include "Player_R_Effect.h"
+#include "Player_R_Hit_Effect.h"
 #include "Player_Attack_Effect.h"
 
 #include "Volibear.h"
@@ -151,6 +153,10 @@ _uint CLoader::Loading_ForGamePlay()
 		CWhirlWind_EQ::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_WirlWind_Hit_Effect"),
+		CWhirlWind_Hit_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Yasuo_E_AF"),
 		CPlayer_E_AfterImage::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
@@ -173,6 +179,10 @@ _uint CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Yasuo_R_Effect"),
 		CPlayer_R_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
+	if(FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Yasuo_R_Hit_Effect"),
+		CPlayer_R_Hit_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Yasuo_Attack_Effect"),
@@ -1185,6 +1195,21 @@ _uint CLoader::Load_Player(LEVEL eLevel)
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_base_e_dash_ring_%d.dds"), 4))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Player_R_Flash"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_base_r_hit_flash_tar_2.dds")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Player_R_Blood"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_base_r_hit_streak_tar_%d.dds"), 4))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Tornado_Smoke"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_passive_smoke_%d.dds"), 15))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Tornado_Flash"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_base_q_wind_hit_flash.dds")))))
+		return E_FAIL;
 
 
 	_matrix		PivotMatrix;

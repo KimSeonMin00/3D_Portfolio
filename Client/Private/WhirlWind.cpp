@@ -54,7 +54,10 @@ void CWhirlWind::Late_Tick(_float fTimeDelta)
 				{
 					CMonster* pMonster = (CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), i);
 					if (pMonster == nullptr)
+					{
+						RELEASE_INSTANCE(CGameInstance);
 						return;
+					}
 
 					_bool bHit = false;
 					for (auto& pIndex : m_vecMonsterIndex)
@@ -62,28 +65,31 @@ void CWhirlWind::Late_Tick(_float fTimeDelta)
 						if (pIndex == pMonster)
 						{
 							bHit = true;
-							break;
 						}
 					}
 
-					if (bHit == true)
-						break;
-
-					Safe_AddRef(pMonster);
-
-					if (m_bAirborne == true)
+					if (bHit == false)
 					{
-						pMonster->Set_Airborne();
-					}
 
-					if (pMonster->Damaged(50.f) == true)
-					{
+						Safe_AddRef(pMonster);
+
 						CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Monster"), TEXT("Com_Transform"), i);
 
-						pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Q_Hit_Effect"), &pTransform->Get_State(CTransform::STATE_POSITION));
-					}
+						if (m_bAirborne == true)
+						{
+							pMonster->Set_Airborne();
 
-					m_vecMonsterIndex.push_back(pMonster);
+							pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_WirlWind_Hit_Effect"), &pTransform->Get_State(CTransform::STATE_POSITION));
+						}
+
+						if (pMonster->Damaged(50.f) == true)
+						{
+
+							pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Q_Hit_Effect"), &pTransform->Get_State(CTransform::STATE_POSITION));
+						}
+
+						m_vecMonsterIndex.push_back(pMonster);
+					}
 				}
 			}		
 		}
@@ -112,6 +118,8 @@ void CWhirlWind::Clear_MonsterIndex()
 void CWhirlWind::Free()
 {
 	__super::Free();
+
+	Clear_MonsterIndex();
 
 	Safe_Release(m_pSPHERECom);
 

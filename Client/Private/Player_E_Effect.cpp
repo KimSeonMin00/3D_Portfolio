@@ -232,6 +232,13 @@ void CPlayer_E_Effect::Free()
 {
 	__super::Free();
 
+	for (auto& pTA : m_vecTARing)
+	{
+		Safe_Delete(pTA);
+	}
+
+	m_vecTARing.clear();
+
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pTexture_Flash);
 	Safe_Release(m_pTexture_Ring);

@@ -17,6 +17,7 @@ public:
 	typedef struct tagTranformAlpha
 	{
 		_float		fAlpha = 1.f;
+		_float		fRadian = 0.f;
 		_vector		fScale = XMVectorSet(1.f, 1.f, 1.f, 0.f);
 	}TRANSFORMALPHA;
 

@@ -62,7 +62,7 @@ void CPantheon::Tick(_float fTimeDelta)
 
 		else
 		{
-			if (m_bAirborne == false && m_pModelCom->Get_IsChange() == false)
+			if (m_pModelCom->Get_IsChange() == false)
 			{
 				Pattern_1(fTimeDelta);
 			}

@@ -102,8 +102,8 @@ protected:
 	void	None_Overlap(_float fTimeDelta);
 
 protected://For Move
-	_vector			m_vMovePos;
-	_vector			m_vMoveDir;
+	_vector				m_vMovePos;
+	_vector				m_vMoveDir;
 	_float				m_fMoveDistTotal = 0.f;
 	_float				m_fMoveDist = 0.f;
 

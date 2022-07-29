@@ -187,6 +187,7 @@
     <ClInclude Include="..\Public\Player_Q_Hit_Effect.h" />
     <ClInclude Include="..\Public\Player_Q_Passive.h" />
     <ClInclude Include="..\Public\Player_R_Effect.h" />
+    <ClInclude Include="..\Public\Player_R_Hit_Effect.h" />
     <ClInclude Include="..\Public\RazorBeak.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\UI.h" />
@@ -194,6 +195,7 @@
     <ClInclude Include="..\Public\Voli_Ghost.h" />
     <ClInclude Include="..\Public\WhirlWind.h" />
     <ClInclude Include="..\Public\WhirlWind_EQ.h" />
+    <ClInclude Include="..\Public\WhirlWind_Hit_Effect.h" />
     <ClInclude Include="..\Public\WhirlWind_Normal.h" />
     <ClInclude Include="..\Public\Wolf.h" />
     <ClInclude Include="..\Public\Red.h" />
@@ -233,6 +235,7 @@
     <ClCompile Include="..\Private\Player_Q_Hit_Effect.cpp" />
     <ClCompile Include="..\Private\Player_Q_Passive.cpp" />
     <ClCompile Include="..\Private\Player_R_Effect.cpp" />
+    <ClCompile Include="..\Private\Player_R_Hit_Effect.cpp" />
     <ClCompile Include="..\Private\RazorBeak.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\UI.cpp" />
@@ -240,6 +243,7 @@
     <ClCompile Include="..\Private\Voli_Ghost.cpp" />
     <ClCompile Include="..\Private\WhirlWind.cpp" />
     <ClCompile Include="..\Private\WhirlWind_EQ.cpp" />
+    <ClCompile Include="..\Private\WhirlWind_Hit_Effect.cpp" />
     <ClCompile Include="..\Private\WhirlWind_Normal.cpp" />
     <ClCompile Include="..\Private\Wolf.cpp" />
     <ClCompile Include="..\Private\Red.cpp" />

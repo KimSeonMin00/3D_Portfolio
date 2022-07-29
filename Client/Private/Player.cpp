@@ -900,11 +900,11 @@ void CPlayer::R_Skill(_float fTimeDelta)
 
 	}
 
-	if (m_iAttackCount < 5)
+	if (m_iAttackCount < 3)
 	{
 		m_fRAttackTime += fTimeDelta;
 
-		if (m_fRAttackTime >= 0.2f)
+		if (m_fRAttackTime >= 0.3f)
 		{
 
 			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
@@ -912,7 +912,8 @@ void CPlayer::R_Skill(_float fTimeDelta)
 			for (auto& iter = m_MonsterPosList.begin(); iter != m_MonsterPosList.end();)
 			{
 				_vector vPos = (*iter)->Get_State(CTransform::STATE_POSITION);
-				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Attack_Effect"), &vPos);
+				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_R_Hit_Effect"), &vPos);
+				iter++;
 			}
 
 			RELEASE_INSTANCE(CGameInstance);

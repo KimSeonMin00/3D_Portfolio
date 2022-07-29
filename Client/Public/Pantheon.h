@@ -61,14 +61,6 @@ private:
 
 	_uint			m_iCurrentIndex = 0;
 
-private://For Move
-	_vector			m_vMovePos;
-	_vector			m_vMoveDir;
-	_float			m_fMoveDistTotal = 0.f;
-	_float			m_fMoveDist = 0.f;
-
-	_float			m_fMoveSpeed = 2.f;
-
 private://For Attack
 	_bool			m_bAttackIndex_Change = false;
 	_bool			m_bW_3Attack = false;
