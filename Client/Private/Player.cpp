@@ -387,6 +387,9 @@ void CPlayer::Key_Input(_float fTimeDelta)
 
 _bool CPlayer::Cast_R(_float fTimeDelta)
 {
+	m_fRAttackTime = 0.1f;
+	m_iAttackCount = 0;
+
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 	_float3 vPositionPicking = { 0.f, 0.f, 0.f };
@@ -417,6 +420,7 @@ _bool CPlayer::Cast_R(_float fTimeDelta)
 				{
 					if (((CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), i))->Get_Airborne() == true)
 					{
+						((CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), i))->Set_Drop();
 						Safe_AddRef(pTransform);
 						m_MonsterPosList.push_back(pTransform);
 					}
@@ -430,6 +434,11 @@ _bool CPlayer::Cast_R(_float fTimeDelta)
 			RELEASE_INSTANCE(CGameInstance);
 			return false;
 		}
+	}
+	else
+	{
+		RELEASE_INSTANCE(CGameInstance);
+		return false;
 	}
 
 	m_eState = STATE_R;
@@ -889,6 +898,28 @@ void CPlayer::R_Skill(_float fTimeDelta)
 
 		RELEASE_INSTANCE(CGameInstance);
 
+	}
+
+	if (m_iAttackCount < 5)
+	{
+		m_fRAttackTime += fTimeDelta;
+
+		if (m_fRAttackTime >= 0.2f)
+		{
+
+			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+			for (auto& iter = m_MonsterPosList.begin(); iter != m_MonsterPosList.end();)
+			{
+				_vector vPos = (*iter)->Get_State(CTransform::STATE_POSITION);
+				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Attack_Effect"), &vPos);
+			}
+
+			RELEASE_INSTANCE(CGameInstance);
+
+			m_fRAttackTime = 0.f;
+			m_iAttackCount++;
+		}
 	}
 
 	m_pModelCom->Play_Animation(fTimeDelta);

@@ -54,6 +54,12 @@ void CRed::Tick(_float fTimeDelta)
 		return;
 	}
 
+	if (m_bDrop == true)
+	{
+		Drop(fTimeDelta);
+		return;
+	}
+
 	if (m_bStop == false && m_bStun == false)
 		Check_Loop(fTimeDelta);
 

@@ -69,6 +69,28 @@ void CMonster::Airborne(_float fTimeDelta)
 	
 }
 
+void CMonster::Drop(_float fTimeDelta)
+{
+	m_fDropTime += fTimeDelta;
+
+	if (m_fDropTime <= 1.f)
+	{
+		m_pTransformCom->Go_Direction(XMVectorSet(0.f, 1.f, 0.f, 0.f), 0.5f * fTimeDelta);
+		m_fHeight = XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	}
+
+	else
+	{
+		m_pTransformCom->Go_Direction(XMVectorSet(0.f, -1.f, 0.f, 0.f), 5.f * m_fHeight * fTimeDelta);
+
+		if (XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)) <= 0.f)
+		{
+			m_fDropTime = 0.f;
+			m_bDrop = false;
+		}
+	}
+}
+
 void CMonster::Chase_Player(_float fTimeDelta)
 {
 	CGameInstance* pGameInstance = CGameInstance::Get_Instance();

@@ -132,6 +132,11 @@ private:
 	_float			m_fDashDist = 0.f;
 	_float			m_fAfterImageTime = 0.2f;
 
+	//For R
+private:
+	_float			m_fRAttackTime = 0.f;
+	_uint			m_iAttackCount = 0;
+
 private:
 	_float			m_fYdir = 1.f;
 

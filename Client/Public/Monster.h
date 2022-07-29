@@ -30,6 +30,7 @@ public:
 
 public:
 	void		Airborne(_float fTimeDelta);
+	void		Drop(_float	fTimeDelta);
 	void		Set_Airborne()
 	{
 		if (m_fHealthPoint <= 0.f)
@@ -41,6 +42,21 @@ public:
 			m_fAirborneTime = 0.f;
 		}
 	};
+
+	void		Set_Drop()
+	{
+		if (m_fHealthPoint <= 0.f)
+			return;
+
+		if (m_bDrop == false)
+		{
+			m_bAirborne = false;
+			m_fAirborneTime = 0.f;
+			m_bDrop = true;
+			m_fDropTime = 0.f;
+		}
+	};
+	
 	_bool		Get_Airborne()
 	{
 		return m_bAirborne;
@@ -104,6 +120,10 @@ protected:
 protected:
 	_bool		m_bAirborne = false;
 	_float		m_fAirborneTime = 0.f;
+
+	_bool		m_bDrop = false;
+	_float		m_fDropTime = 0.f;
+	_float		m_fHeight = 0.f;
 
 protected:
 	_uint		m_iMonsterIndex = 0;
