@@ -44,6 +44,14 @@ HRESULT CPlayer_R_Effect::NativeConstruct(void * pArg)
 		m_vecString.push_back(pString);
 	}
 
+	for (_int i = 0; i < 4; i++)
+	{
+		TRANSFORMALPHA* pSmoke = new TRANSFORMALPHA;
+
+		pSmoke->iIndex = rand() % 4;
+		m_vecSmoke.push_back(pSmoke);
+	}
+
 	return S_OK;
 }
 
@@ -118,6 +126,11 @@ void CPlayer_R_Effect::Tick(_float fTimeDelta)
 					m_bDead = true;
 			}
 		}
+
+		for (auto& pSmoke : m_vecSmoke)
+		{
+			pSmoke->fScale += XMVectorSet(2.f, 2.f, 2.f, 0.f)* fTimeDelta;
+		}
 	}
 }
 
@@ -142,6 +155,8 @@ HRESULT CPlayer_R_Effect::Render()
 		Render_Crack();
 
 		Render_Wind();
+
+		Render_Smoke();
 
 		Render_Flash();	
 	}
@@ -278,6 +293,53 @@ HRESULT CPlayer_R_Effect::Render_Crack()
 	return S_OK;
 }
 
+HRESULT CPlayer_R_Effect::Render_Smoke()
+{
+	for (_int i = 0; i < m_vecSmoke.size(); i++)
+	{
+		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+		_matrix WorldMat;
+		_matrix ViewMat;
+
+		_float3 vPos;
+		XMStoreFloat3(&vPos, m_vecSmoke[i]->vPos);
+
+		WorldMat = XMMatrixIdentity() * 
+			XMMatrixScaling(XMVectorGetX(m_vecSmoke[i]->fScale), XMVectorGetX(m_vecSmoke[i]->fScale), 1.f) *
+			m_pTransformCom->Get_WorldMatrix();
+
+		_float xScale = XMVectorGetX(XMVector3Length(WorldMat.r[0]));
+		_float yScale = XMVectorGetX(XMVector3Length(WorldMat.r[1]));
+		_float zScale = XMVectorGetX(XMVector3Length(WorldMat.r[2]));
+
+		ViewMat = pGameInstance->Get_TransformMatrix(CPipeline::D3DTS_VIEW);
+		ViewMat = XMMatrixInverse(nullptr, ViewMat);
+
+		WorldMat.r[0] = ViewMat.r[0] * xScale;
+		WorldMat.r[1] = ViewMat.r[1] * yScale;
+		WorldMat.r[2] = ViewMat.r[2] * zScale;
+
+		m_pShaderCom_Rect->Set_RawValue("g_WorldMatrix", &XMMatrixTranspose(WorldMat), sizeof(_float4x4));
+		m_pShaderCom_Rect->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_VIEW), sizeof(_float4x4));
+		m_pShaderCom_Rect->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_PROJ), sizeof(_float4x4));
+
+		RELEASE_INSTANCE(CGameInstance);
+
+		m_pTexture_Smoke->Bind_OnShader(m_pShaderCom_Rect, "g_DiffuseTexture");
+
+		m_pShaderCom_Rect->Set_RawValue("g_vColor", &XMVectorSet(1.f, 1.f, 1.f, 1.f), sizeof(_vector));
+
+		m_pShaderCom_Rect->Set_RawValue("g_Alpha", &m_fAlpha, sizeof(_float));
+
+		m_pShaderCom_Rect->Begin(1);
+
+		m_pRect_String->Render();
+	}
+
+	return S_OK;
+}
+
 HRESULT CPlayer_R_Effect::SetUp_Components()
 {
 	/* For.Com_Renderer */
@@ -317,6 +379,9 @@ HRESULT CPlayer_R_Effect::SetUp_Components()
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Player_R_Crack"), TEXT("Com_Texture_R_Crack"), (CComponent**)&m_pTexture_Crack)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Player_Smoke"), TEXT("Com_Texture_R_Smoke"), (CComponent**)&m_pTexture_Smoke)))
 		return E_FAIL;
 
 	return S_OK;
@@ -394,6 +459,7 @@ void CPlayer_R_Effect::Free()
 	Safe_Release(m_pTextureString);
 	Safe_Release(m_pTexture_R_Ring);
 	Safe_Release(m_pTexture_Crack);
+	Safe_Release(m_pTexture_Smoke);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pShaderCom_Rect);
 }

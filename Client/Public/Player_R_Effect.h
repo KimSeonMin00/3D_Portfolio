@@ -17,6 +17,7 @@ class CPlayer_R_Effect final
 public:
 	typedef struct tagTranformAlpha
 	{
+		_int			iIndex = 0;
 		_float2		vTextureMove = _float2(0.f, -0.5f);
 		_float		fAlpha = 1.f;
 		_vector		fScale = XMVectorSet(1.f, 1.f, 1.f, 0.f);
@@ -40,6 +41,7 @@ private:
 	HRESULT Render_Wind();
 	HRESULT Render_String();
 	HRESULT Render_Crack();
+	HRESULT Render_Smoke();
 
 private:
 	_float						m_fAddTime = 0.2f;
@@ -51,6 +53,7 @@ private:
 	_bool						m_bStringFall = false;
 
 	vector<TRANSFORMALPHA*>		m_vecRing;
+	vector<TRANSFORMALPHA*>		m_vecSmoke;
 
 private:
 	_float						m_fFlashScale = 0.1f;
@@ -73,6 +76,7 @@ private:
 	CTexture*					m_pTextureString = nullptr;
 	CTexture*					m_pTexture_R_Ring = nullptr;
 	CTexture*					m_pTexture_Crack = nullptr;
+	CTexture*					m_pTexture_Smoke = nullptr;
 
 public:
 	HRESULT SetUp_Components();
