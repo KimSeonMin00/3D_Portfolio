@@ -169,6 +169,7 @@
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\Effect_Voli_E.h" />
+    <ClInclude Include="..\Public\Hit_Effect_Normal.h" />
     <ClInclude Include="..\Public\ImguiManager.h" />
     <ClInclude Include="..\Public\Level_Boss.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
@@ -217,6 +218,7 @@
     <ClCompile Include="..\Private\Camera_Free.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\Effect_Voli_E.cpp" />
+    <ClCompile Include="..\Private\Hit_Effect_Normal.cpp" />
     <ClCompile Include="..\Private\ImguiManager.cpp" />
     <ClCompile Include="..\Private\Level_Boss.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />

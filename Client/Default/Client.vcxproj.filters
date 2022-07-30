@@ -133,6 +133,9 @@
     <Filter Include="02.GameObjects\Player\WhirlWind\WhirlWind_Hit_Effect">
       <UniqueIdentifier>{8329329b-aea2-4ad9-bcee-d95830899da9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Monster\Normal\Effect">
+      <UniqueIdentifier>{3d41e322-cc2d-40fe-9443-faa73a57eb75}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -282,6 +285,9 @@
     <ClInclude Include="..\Public\WhirlWind_Hit_Effect.h">
       <Filter>02.GameObjects\Player\WhirlWind\WhirlWind_Hit_Effect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Hit_Effect_Normal.h">
+      <Filter>02.GameObjects\Monster\Normal\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -415,6 +421,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\WhirlWind_Hit_Effect.cpp">
       <Filter>02.GameObjects\Player\WhirlWind\WhirlWind_Hit_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Hit_Effect_Normal.cpp">
+      <Filter>02.GameObjects\Monster\Normal\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

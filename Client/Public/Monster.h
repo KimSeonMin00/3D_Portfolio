@@ -113,8 +113,9 @@ protected:
 	_float		m_fMaxHealth = 1000.f;
 	_float		m_fHealthPoint = 1000.f;
 
-	_float		m_fHitDelay = 0.f;
+	_float		m_fHitTime = 0.f;
 	_bool		m_bHit = false;
+	_bool		m_bHitPlayer = false;
 
 	_bool		m_bSelected = false;
 protected:

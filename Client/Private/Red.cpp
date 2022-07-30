@@ -399,6 +399,9 @@ void CRed::Attack(_float fTimeDelta)
 {
 	if (m_bStateChange == true)
 	{
+		m_bHitPlayer = false;
+		m_fHitTime = 0.f;
+
 		m_iCurrentIndex = m_iAttackIndex;
 
 		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
@@ -419,8 +422,25 @@ void CRed::Attack(_float fTimeDelta)
 			else
 				m_iAttackIndex++;
 
+			m_bHitPlayer =false;
+			m_fHitTime = 0.f;
 			m_pModelCom->SetUp_AnimationIndex(m_iAttackIndex);
 			m_pModelCom->Set_Initialize();
+		}
+
+		if (m_bHitPlayer == false)
+		{
+			m_fHitTime += fTimeDelta;
+			if (m_fHitTime >= 0.5f)
+			{
+				m_bHitPlayer = true;
+
+				CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Hit_Effect_Normal"), &m_vMovePos);
+
+				RELEASE_INSTANCE(CGameInstance);
+			}
 		}
 
 		m_pModelCom->Play_Animation(fTimeDelta);
