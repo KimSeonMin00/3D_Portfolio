@@ -136,6 +136,9 @@
     <Filter Include="02.GameObjects\Monster\Normal\Effect">
       <UniqueIdentifier>{3d41e322-cc2d-40fe-9443-faa73a57eb75}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\UI\Player_Hit_UI">
+      <UniqueIdentifier>{f9457b8b-1660-4970-82f1-45494495be89}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -288,6 +291,9 @@
     <ClInclude Include="..\Public\Hit_Effect_Normal.h">
       <Filter>02.GameObjects\Monster\Normal\Effect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Player_Hit_UI.h">
+      <Filter>02.GameObjects\UI\Player_Hit_UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -424,6 +430,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Hit_Effect_Normal.cpp">
       <Filter>02.GameObjects\Monster\Normal\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player_Hit_UI.cpp">
+      <Filter>02.GameObjects\UI\Player_Hit_UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

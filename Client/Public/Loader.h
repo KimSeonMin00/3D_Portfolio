@@ -43,6 +43,7 @@ public:
 	_uint Load_VoliBear(LEVEL eLevel);
 	_uint Load_Pantheon(LEVEL eLevel);
 	_uint Load_Monster(LEVEL eLevel);
+	_uint Load_UI(LEVEL eLevel);
 
 private:
 	ID3D11Device*			m_pDevice = nullptr;

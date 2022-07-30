@@ -28,13 +28,6 @@ HRESULT CUI::NativeConstruct(void * pArg)
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
-	m_fSizeX = 100.f;
-	m_fSizeY = 100.f;
-	m_fX = g_iWinCX >> 1;
-	m_fY = g_iWinCY >> 1;
-	m_pTransformCom->Set_Scaled(XMVectorSet(m_fSizeX, m_fSizeY, 1.f, 0.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_fX - (g_iWinCX >> 1), -m_fY + (g_iWinCY >> 1), 0.f, 1.f));
-
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixTranspose(XMMatrixOrthographicLH(g_iWinCX, g_iWinCY, 0.f, 1.f)));
 
 	return S_OK;
@@ -51,7 +44,7 @@ void CUI::Late_Tick(_float fTimeDelta)
 
 	m_bSelectedByImgui = false;
 
-	m_pRendererCom->Add_RenderList(CRenderer::RENDER_PRIORITY, this);
+	m_pRendererCom->Add_RenderList(CRenderer::RENDER_UI, this);
 }
 
 HRESULT CUI::Render()
@@ -91,6 +84,20 @@ HRESULT CUI::Render()
 	return S_OK;
 }
 
+void CUI::Set_Pos(_float fX, _float fY)
+{
+	m_fX = fX;
+	m_fY = fY;
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_fX - (g_iWinCX >> 1), -m_fY + (g_iWinCY >> 1), 0.f, 1.f));
+}
+
+void CUI::Set_Scale(_float fCX, _float fCY)
+{
+	m_fSizeX = fCX;
+	m_fSizeY = fCY;
+	m_pTransformCom->Set_Scaled(XMVectorSet(m_fSizeX, m_fSizeY, 1.f, 0.f));
+}
+
 HRESULT CUI::SetUp_Components()
 {
 	/* For.Com_Renderer */
@@ -103,10 +110,6 @@ HRESULT CUI::SetUp_Components()
 
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Components(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), TEXT("Com_VIBuffer"), (CComponent**)&m_pVIBufferCom)))
-		return E_FAIL;
-
-	/* For.Com_Texture */
-	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Terrain"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
 	return S_OK;

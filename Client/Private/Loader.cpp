@@ -5,7 +5,10 @@
 #include "BackGround.h"
 #include "Terrain.h"
 #include "Camera_Free.h"
+
 #include "UI.h"
+#include "Player_Hit_UI.h"
+
 #include "Player.h"
 #include "WhirlWind_Normal.h"
 #include "Player_Q_Dirt.h"
@@ -235,6 +238,10 @@ _uint CLoader::Loading_ForGamePlay()
 		CUI::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC()))))
 		return -1;
 
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_Hit_UI"),
+		CPlayer_Hit_UI::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC()))))
+		return -1;
+
 	///* For.Prototype_GameObject_Sky */
 	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Sky"),
 	//	CSky::Create(m_pGraphic_Device))))
@@ -285,6 +292,8 @@ _uint CLoader::Loading_ForGamePlay()
 
 	Load_Player(LEVEL_GAMEPLAY);
 
+	Load_UI(LEVEL_GAMEPLAY);
+
 	Load_Monster(LEVEL_GAMEPLAY);
 
 	Load_Pantheon(LEVEL_GAMEPLAY);
@@ -331,6 +340,8 @@ _uint CLoader::Loading_ForBoss()
 	Load_Shader(LEVEL_BOSS);
 
 	Load_Player(LEVEL_BOSS);
+
+	Load_UI(LEVEL_BOSS);
 
 	Load_VoliBear(LEVEL_BOSS);
 
@@ -1329,6 +1340,18 @@ _uint CLoader::Load_Monster(LEVEL eLevel)
 
 	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Monster_Hit"),
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Monster/monster_hit_blast.dds")))))
+		return E_FAIL;
+
+	Safe_Release(pGameInstance);
+}
+
+_uint CLoader::Load_UI(LEVEL eLevel)
+{
+	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
+	Safe_AddRef(pGameInstance);
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Hit_UI"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/UI/lol_ingame_hit.dds")))))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
