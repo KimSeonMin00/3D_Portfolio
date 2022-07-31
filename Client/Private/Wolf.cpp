@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Wolf.h"
 #include "GameInstance.h"
+#include "Monster_HP.h"
 #include "Player.h"
 
 CWolf::CWolf(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
@@ -46,6 +47,26 @@ HRESULT CWolf::NativeConstruct(void * pArg)
 void CWolf::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+
+	if (m_bAfterClone == true)
+	{
+		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+		pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_UI"), TEXT("Prototype_GameObject_Monster_HP"), &(m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+
+		_uint iIndex = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_UI")) - 1;
+
+		m_pHP = pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_UI"), iIndex);
+
+		Safe_AddRef(m_pHP);
+
+		RELEASE_INSTANCE(CGameInstance);
+
+		m_bAfterClone = false;
+	}
+
+	if (m_pHP != nullptr)
+		((CMonster_HP*)m_pHP)->Set_Ratio(m_fHealthPoint / m_fMaxHealth);
 
 	if (m_bAirborne == true)
 	{
@@ -501,4 +522,7 @@ CGameObject * CWolf::Clone(void * pArg)
 void CWolf::Free()
 {
 	__super::Free();
+
+	if (m_pHP != nullptr)
+		Safe_Release(m_pHP);
 }

@@ -139,6 +139,9 @@
     <Filter Include="02.GameObjects\UI\Player_Hit_UI">
       <UniqueIdentifier>{f9457b8b-1660-4970-82f1-45494495be89}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Monster\Normal\Monster_HP">
+      <UniqueIdentifier>{11ee5c74-59cd-45b5-abc6-10b42e2a6e9f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -288,11 +291,14 @@
     <ClInclude Include="..\Public\WhirlWind_Hit_Effect.h">
       <Filter>02.GameObjects\Player\WhirlWind\WhirlWind_Hit_Effect</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Hit_Effect_Normal.h">
-      <Filter>02.GameObjects\Monster\Normal\Effect</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Player_Hit_UI.h">
       <Filter>02.GameObjects\UI\Player_Hit_UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_HP.h">
+      <Filter>02.GameObjects\Monster\Normal\Monster_HP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Hit_Effect_Normal.h">
+      <Filter>02.GameObjects\Monster\Normal\Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -433,6 +439,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player_Hit_UI.cpp">
       <Filter>02.GameObjects\UI\Player_Hit_UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_HP.cpp">
+      <Filter>02.GameObjects\Monster\Normal\Monster_HP</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
