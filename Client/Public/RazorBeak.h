@@ -27,6 +27,10 @@ public:
 	HRESULT SetUp_ConstantTable();
 
 private:
+	CGameObject* m_pHP = nullptr;
+	_bool				m_bAfterClone = true;
+
+private:
 	_float4x4		m_PivotMatrix;
 
 private:

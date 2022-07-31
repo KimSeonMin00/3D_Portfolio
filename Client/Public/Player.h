@@ -61,7 +61,7 @@ public:
 		m_fYdir = 3.f;
 	};
 
-	void Damaged(_float m_f);
+	void Damaged(_float fDamage);
 
 private:
 	void	Key_Input(_float fTimeDelta);
@@ -109,7 +109,10 @@ private:
 	_bool		m_bSeathing = false;
 
 private:
-	_float		m_fHealtfPoint = 100.f;
+	_float		m_fHealthPoint = 2000.f;
+	_float		m_fMaxHealth = 2000.f;
+
+	CGameObject* m_pHP = nullptr;
 
 private://For Move
 	_vector		m_vMovePos;
@@ -150,7 +153,7 @@ private:
 	_bool			m_bGrab = false;
 
 private:
-	list<CTransform*>			m_MonsterPosList;
+	list<_uint*>			m_MonsterIndexList;
 
 	_float			m_fDamage = 100.f;
 

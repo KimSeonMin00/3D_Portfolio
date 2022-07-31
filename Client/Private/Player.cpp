@@ -6,6 +6,7 @@
 #include "WhirlWind_Normal.h"
 #include "HierarchyNode.h"
 #include "Monster.h"
+#include "Player_HP.h"
 
 CPlayer::CPlayer(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
 	:CGameObject(pDevice, pDevice_Context)
@@ -51,6 +52,18 @@ HRESULT CPlayer::NativeConstruct(void * pArg)
 
 	m_pTransformCom->Set_Scaled(XMVectorSet(0.5f, 0.5f, 0.5f, 0.f));
 
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_UI"), TEXT("Prototype_GameObject_Player_HP"), &(m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+
+	_uint iIndex = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_UI")) - 1;
+
+	m_pHP = pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_UI"), iIndex);
+
+	Safe_AddRef(m_pHP);
+
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 
@@ -67,6 +80,13 @@ void CPlayer::Tick(_float fTimeDelta)
 
 	if (m_bFall == true)
 		Fall(fTimeDelta);
+
+	if (m_pHP != nullptr)
+	{
+		((CPlayer_HP*)m_pHP)->Set_Ratio(m_fHealthPoint / m_fMaxHealth);
+		((CPlayer_HP*)m_pHP)->Set_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 2.f, 0.f, 0.f));
+	}
+
 
 	m_pAABBCom->Update(m_pTransformCom->Get_WorldMatrix());
 	Update_SwordCollider();
@@ -216,7 +236,8 @@ HRESULT CPlayer::SetUp_ConstantTable()
 
 void CPlayer::Damaged(_float fDamage)
 {
-	m_fHealtfPoint -= fDamage;
+	if(m_fHealthPoint > 100.f)
+		m_fHealthPoint -= fDamage;
 
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -432,15 +453,17 @@ _bool CPlayer::Cast_R(_float fTimeDelta)
 					if (((CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), i))->Get_Airborne() == true)
 					{
 						((CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), i))->Set_Drop();
-						Safe_AddRef(pTransform);
-						m_MonsterPosList.push_back(pTransform);
+						
+						_uint* iIndex = new _uint;
+						*iIndex = i;
+						m_MonsterIndexList.push_back(iIndex);
 					}
 				}
 				Safe_Release(pTransform);
 			}
 		}
 
-		if (m_MonsterPosList.size() == 0)
+		if (m_MonsterIndexList.size() == 0)
 		{
 			RELEASE_INSTANCE(CGameInstance);
 			return false;
@@ -898,13 +921,17 @@ void CPlayer::R_Skill(_float fTimeDelta)
 
 		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-		for (auto& iter = m_MonsterPosList.begin(); iter != m_MonsterPosList.end();)
+		for (auto& iter = m_MonsterIndexList.begin(); iter != m_MonsterIndexList.end();)
 		{
-			_vector vPos = (*iter)->Get_State(CTransform::STATE_POSITION);
+			CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Monster"), TEXT("Com_Transform"), *(*iter));
+
+			_vector vPos = pTransform->Get_State(CTransform::STATE_POSITION);
+
+			((CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), *(*iter)))->Damaged(200.f);
 			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_R_Effect"), &vPos);
 			
-			Safe_Release(*iter);
-			iter = m_MonsterPosList.erase(iter);
+			Safe_Delete(*iter);
+			iter = m_MonsterIndexList.erase(iter);
 		}
 
 		RELEASE_INSTANCE(CGameInstance);
@@ -920,10 +947,14 @@ void CPlayer::R_Skill(_float fTimeDelta)
 
 			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-			for (auto& iter = m_MonsterPosList.begin(); iter != m_MonsterPosList.end();)
+			for (auto& iter = m_MonsterIndexList.begin(); iter != m_MonsterIndexList.end();)
 			{
-				_vector vPos = (*iter)->Get_State(CTransform::STATE_POSITION);
+				CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Monster"), TEXT("Com_Transform"), *(*iter));
+
+				_vector vPos = pTransform->Get_State(CTransform::STATE_POSITION);
+
 				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_R_Hit_Effect"), &vPos);
+
 				iter++;
 			}
 
@@ -1035,10 +1066,13 @@ void CPlayer::Free()
 {
 	__super::Free();
 
-	for (auto& pMonsterPos : m_MonsterPosList)
-		Safe_Release(pMonsterPos);
+	for (auto& pMonsterPos : m_MonsterIndexList)
+		Safe_Delete(pMonsterPos);
 
-	m_MonsterPosList.clear();
+	m_MonsterIndexList.clear();
+
+	if (m_pHP != nullptr)
+		Safe_Release(m_pHP);
 
 	Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pHitSphereCom);

@@ -2,6 +2,7 @@
 #include "..\Public\Red.h"
 #include "GameInstance.h"
 #include "Player.h"
+#include "Monster_HP.h"
 
 CRed::CRed(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
 	:CMonster(pDevice, pDevice_Context)
@@ -48,6 +49,29 @@ void CRed::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
+
+	if (m_bAfterClone == true)
+	{
+		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+		pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_UI"), TEXT("Prototype_GameObject_Monster_HP"), &(m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 1.5f, 0.f, 0.f)));
+
+		_uint iIndex = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_UI")) - 1;
+
+		m_pHP = pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_UI"), iIndex);
+
+		Safe_AddRef(m_pHP);
+
+		RELEASE_INSTANCE(CGameInstance);
+
+		m_bAfterClone = false;
+	}
+
+	if (m_pHP != nullptr)
+	{
+		((CMonster_HP*)m_pHP)->Set_Ratio(m_fHealthPoint / m_fMaxHealth);
+		((CMonster_HP*)m_pHP)->Set_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 1.5f, 0.f, 0.f));
+	}
 
 	if (m_bAirborne == true)
 	{
@@ -438,7 +462,7 @@ void CRed::Attack(_float fTimeDelta)
 
 				CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-				((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(1.f);
+				((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(100.f);
 
 				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Hit_Effect_Normal"), &m_vMovePos);
 
@@ -503,4 +527,7 @@ CGameObject * CRed::Clone(void * pArg)
 void CRed::Free()
 {
 	__super::Free();
+
+	if (m_pHP != nullptr)
+		Safe_Release(m_pHP);
 }

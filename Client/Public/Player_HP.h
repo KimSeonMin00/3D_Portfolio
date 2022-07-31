@@ -10,13 +10,13 @@ class CTexture;
 END
 
 BEGIN(Client)
-class CMonster_HP
+class CPlayer_HP
 	:public CGameObject
 {
 protected:
-	explicit CMonster_HP(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
-	explicit CMonster_HP(const CMonster_HP& rhs);
-	virtual ~CMonster_HP() = default;
+	explicit CPlayer_HP(ID3D11Device* pDevice, ID3D11DeviceContext* pDevice_Context);
+	explicit CPlayer_HP(const CPlayer_HP& rhs);
+	virtual ~CPlayer_HP() = default;
 
 public:
 	virtual HRESULT NativeConstruct_Prototype(const CTransform::TRANSFORMDESC& TransformDesc);
@@ -42,7 +42,7 @@ public:
 
 private:
 	_float								m_fRatio = 1.f;
-	_float								m_fScale = 1.f;
+	_float								m_fScale = 1.2f;
 
 private:
 	CShader*							m_pShaderCom = nullptr;
@@ -52,7 +52,7 @@ private:
 	CVIBuffer_Rect*				m_pVIBufferCom = nullptr;
 
 public:
-	static CMonster_HP* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const CTransform::TRANSFORMDESC& TransformDesc);
+	static CPlayer_HP* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const CTransform::TRANSFORMDESC& TransformDesc);
 	virtual CGameObject* Clone(void* pArg);
 	virtual void Free() override;
 };

@@ -1,18 +1,18 @@
 #include "stdafx.h"
-#include "..\Public\Monster_HP.h"
+#include "..\Public\Player_HP.h"
 #include "GameInstance.h"
 
-CMonster_HP::CMonster_HP(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
+CPlayer_HP::CPlayer_HP(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
 	:CGameObject(pDevice, pDevice_Context)
 {
 }
 
-CMonster_HP::CMonster_HP(const CMonster_HP & rhs)
-	: CGameObject(rhs)
+CPlayer_HP::CPlayer_HP(const CPlayer_HP & rhs)
+	:CGameObject(rhs)
 {
 }
 
-HRESULT CMonster_HP::NativeConstruct_Prototype(const CTransform::TRANSFORMDESC & TransformDesc)
+HRESULT CPlayer_HP::NativeConstruct_Prototype(const CTransform::TRANSFORMDESC & TransformDesc)
 {
 	if (FAILED(__super::NativeConstruct_Prototype(TransformDesc)))
 		return E_FAIL;
@@ -20,7 +20,7 @@ HRESULT CMonster_HP::NativeConstruct_Prototype(const CTransform::TRANSFORMDESC &
 	return S_OK;
 }
 
-HRESULT CMonster_HP::NativeConstruct(void * pArg)
+HRESULT CPlayer_HP::NativeConstruct(void * pArg)
 {
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
@@ -30,23 +30,21 @@ HRESULT CMonster_HP::NativeConstruct(void * pArg)
 	memcpy(&vPos, pArg, sizeof(_vector));
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
-	m_pTransformCom->Set_Scaled(XMVectorSet(m_fScale, m_fScale/6.f, 1.f, 0.f));
+	m_pTransformCom->Set_Scaled(XMVectorSet(m_fScale, m_fScale / 5.f, 1.f, 0.f));
 
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
+
 	return S_OK;
 }
 
-void CMonster_HP::Tick(_float fTimeDelta)
+void CPlayer_HP::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
-
-	if (m_fRatio <= 0.f)
-		m_bDead = true;
 }
 
-void CMonster_HP::Late_Tick(_float fTimeDelta)
+void CPlayer_HP::Late_Tick(_float fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 	if (m_pRendererCom == nullptr)
@@ -55,7 +53,7 @@ void CMonster_HP::Late_Tick(_float fTimeDelta)
 	m_pRendererCom->Add_RenderList(CRenderer::RENDER_UI, this);
 }
 
-HRESULT CMonster_HP::Render()
+HRESULT CPlayer_HP::Render()
 {
 	if (nullptr == m_pShaderCom ||
 		nullptr == m_pVIBufferCom)
@@ -106,7 +104,7 @@ HRESULT CMonster_HP::Render()
 	return S_OK;
 }
 
-HRESULT CMonster_HP::SetUp_Components()
+HRESULT CPlayer_HP::SetUp_Components()
 {
 	/* For.Com_Renderer */
 	if (FAILED(__super::Add_Components(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
@@ -119,45 +117,45 @@ HRESULT CMonster_HP::SetUp_Components()
 		return E_FAIL;
 
 	//Texture
-	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Monster_HP_Frame"), TEXT("Com_Texture_Frame"), (CComponent**)&m_pTexture_Frame)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Player_HP_Frame"), TEXT("Com_Texture_Frame"), (CComponent**)&m_pTexture_Frame)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Monster_HP"), TEXT("Com_Texture_HP"), (CComponent**)&m_pTexture_HP)))
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Player_HP"), TEXT("Com_Texture_HP"), (CComponent**)&m_pTexture_HP)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CMonster_HP::SetUp_ConstantTable()
+HRESULT CPlayer_HP::SetUp_ConstantTable()
 {
 	return S_OK;
 }
 
-CMonster_HP * CMonster_HP::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const CTransform::TRANSFORMDESC & TransformDesc)
+CPlayer_HP * CPlayer_HP::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const CTransform::TRANSFORMDESC & TransformDesc)
 {
-	CMonster_HP*		pInstance = new CMonster_HP(pDevice, pDeviceContext);
+	CPlayer_HP*		pInstance = new CPlayer_HP(pDevice, pDeviceContext);
 
 	if (FAILED(pInstance->NativeConstruct_Prototype(TransformDesc)))
 	{
-		MSGBOX(TEXT("Failed to Created : CMonster_HP"));
+		MSGBOX(TEXT("Failed to Created : CPlayer_HP"));
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-CGameObject * CMonster_HP::Clone(void * pArg)
+CGameObject * CPlayer_HP::Clone(void * pArg)
 {
-	CMonster_HP*		pInstance = new CMonster_HP(*this);
+	CPlayer_HP*		pInstance = new CPlayer_HP(*this);
 
 	if (FAILED(pInstance->NativeConstruct(pArg)))
 	{
-		MSGBOX(TEXT("Failed to Cloned : CMonster_HP"));
+		MSGBOX(TEXT("Failed to Cloned : CPlayer_HP"));
 		Safe_Release(pInstance);
 	}
 	return pInstance;
 }
 
-void CMonster_HP::Free()
+void CPlayer_HP::Free()
 {
 	__super::Free();
 

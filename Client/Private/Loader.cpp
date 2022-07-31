@@ -8,6 +8,7 @@
 
 #include "UI.h"
 #include "Player_Hit_UI.h"
+#include "Player_HP.h"
 
 #include "Player.h"
 #include "WhirlWind_Normal.h"
@@ -192,6 +193,10 @@ _uint CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Yasuo_Attack_Effect"),
 		CPlayer_Attack_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_HP"),
+		CPlayer_HP::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Boss"),
@@ -1236,6 +1241,13 @@ _uint CLoader::Load_Player(LEVEL eLevel)
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Player/yasuo_q_smoke_%d.dds"), 4))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Player_HP_Frame"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/UI/Player_HP_Frame.dds")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Player_HP"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/UI/Player_HP_Color.dds")))))
+		return E_FAIL;
 
 	_matrix		PivotMatrix;
 

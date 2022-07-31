@@ -66,7 +66,10 @@ void CWolf::Tick(_float fTimeDelta)
 	}
 
 	if (m_pHP != nullptr)
+	{
 		((CMonster_HP*)m_pHP)->Set_Ratio(m_fHealthPoint / m_fMaxHealth);
+		((CMonster_HP*)m_pHP)->Set_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	}
 
 	if (m_bAirborne == true)
 	{
@@ -457,7 +460,7 @@ void CWolf::Attack(_float fTimeDelta)
 
 				CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-				((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(1.f);
+				((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(50.f);
 
 				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Hit_Effect_Normal"), &m_vMovePos);
 

@@ -31,16 +31,19 @@ public:
 public:
 	void		Airborne(_float fTimeDelta);
 	void		Drop(_float	fTimeDelta);
-	void		Set_Airborne()
+	_bool		Set_Airborne()
 	{
 		if (m_fHealthPoint <= 0.f)
-			return;
+			return false;
 
 		if (m_bAirborne == false)
 		{
 			m_bAirborne = true;
 			m_fAirborneTime = 0.f;
+			return true;
 		}
+
+		return false;
 	};
 
 	void		Set_Drop()

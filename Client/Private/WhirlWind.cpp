@@ -77,9 +77,8 @@ void CWhirlWind::Late_Tick(_float fTimeDelta)
 
 						if (m_bAirborne == true)
 						{
-							pMonster->Set_Airborne();
-
-							pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_WirlWind_Hit_Effect"), &pTransform->Get_State(CTransform::STATE_POSITION));
+							if (pMonster->Set_Airborne() == true)
+								pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_WirlWind_Hit_Effect"), &pTransform->Get_State(CTransform::STATE_POSITION));
 						}
 
 						if (pMonster->Damaged(50.f) == true)
