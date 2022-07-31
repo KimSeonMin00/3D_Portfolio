@@ -214,6 +214,17 @@ HRESULT CPlayer::SetUp_ConstantTable()
 	RELEASE_INSTANCE(CGameInstance);
 }
 
+void CPlayer::Damaged(_float fDamage)
+{
+	m_fHealtfPoint -= fDamage;
+
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Player_Hit_UI"));
+
+	RELEASE_INSTANCE(CGameInstance);
+}
+
 void CPlayer::Key_Input(_float fTimeDelta)
 {
 	if (m_bIsChanneling == true)
@@ -296,8 +307,6 @@ void CPlayer::Key_Input(_float fTimeDelta)
 		}
 
 		m_pTransformCom->LookAt(XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f));
-
-		pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Player_Hit_UI"));
 
 		_matrix WorldMat = m_pTransformCom->Get_WorldMatrix();
 		if (m_iQ_Time == 2)

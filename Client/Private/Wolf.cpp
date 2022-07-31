@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Wolf.h"
 #include "GameInstance.h"
+#include "Player.h"
 
 CWolf::CWolf(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
 	:CMonster(pDevice, pDevice_Context)
@@ -434,6 +435,8 @@ void CWolf::Attack(_float fTimeDelta)
 				m_bHitPlayer = true;
 
 				CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+				((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(1.f);
 
 				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Hit_Effect_Normal"), &m_vMovePos);
 

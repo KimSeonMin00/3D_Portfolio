@@ -61,6 +61,8 @@ public:
 		m_fYdir = 3.f;
 	};
 
+	void Damaged(_float m_f);
+
 private:
 	void	Key_Input(_float fTimeDelta);
 	_bool	Cast_R(_float fTimeDelta);
@@ -105,6 +107,9 @@ private://For Attack Collider
 
 private:
 	_bool		m_bSeathing = false;
+
+private:
+	_float		m_fHealtfPoint = 100.f;
 
 private://For Move
 	_vector		m_vMovePos;
