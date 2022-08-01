@@ -84,7 +84,7 @@ void CPlayer::Tick(_float fTimeDelta)
 	if (m_pHP != nullptr)
 	{
 		((CPlayer_HP*)m_pHP)->Set_Ratio(m_fHealthPoint / m_fMaxHealth);
-		((CPlayer_HP*)m_pHP)->Set_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 2.f, 0.f, 0.f));
+		((CPlayer_HP*)m_pHP)->Set_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 1.5f, 0.f, 0.f));
 	}
 
 

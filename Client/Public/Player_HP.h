@@ -42,7 +42,7 @@ public:
 
 private:
 	_float								m_fRatio = 1.f;
-	_float								m_fScale = 1.2f;
+	_float								m_fScale = 0.8f;
 
 private:
 	CShader*							m_pShaderCom = nullptr;
