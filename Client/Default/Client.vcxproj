@@ -180,6 +180,7 @@
     <ClInclude Include="..\Public\Monster.h" />
     <ClInclude Include="..\Public\Monster_HP.h" />
     <ClInclude Include="..\Public\Pantheon.h" />
+    <ClInclude Include="..\Public\Pantheon_Q_Effect.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\Player_Attack_Effect.h" />
     <ClInclude Include="..\Public\Player_E_AfterImage.h" />
@@ -232,6 +233,7 @@
     <ClCompile Include="..\Private\Monster.cpp" />
     <ClCompile Include="..\Private\Monster_HP.cpp" />
     <ClCompile Include="..\Private\Pantheon.cpp" />
+    <ClCompile Include="..\Private\Pantheon_Q_Effect.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\Player_Attack_Effect.cpp" />
     <ClCompile Include="..\Private\Player_E_AfterImage.cpp" />

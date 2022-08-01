@@ -58,6 +58,8 @@ PS_OUT PS_MAIN_RECT(PS_IN In)
 
 	Out.vColor = g_vColor * vMtrlDiffuse;
 	Out.vColor.a = Out.vColor.a * g_Alpha;
+	if (Out.vColor.a < 0.1f)
+		discard;
 
 	return Out;
 }

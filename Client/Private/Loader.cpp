@@ -29,6 +29,7 @@
 #include "Effect_Voli_E.h"
 
 #include "Pantheon.h"
+#include "Pantheon_Q_Effect.h"
 
 #include "Hit_Effect_Normal.h"
 #include "Monster_HP.h"
@@ -210,11 +211,15 @@ _uint CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Voli_E"),
 		CEffect_Voli_E::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
-
+	//
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Pantheon"),
 		CPantheon::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Pantheon_Q_Effect"),
+		CPantheon_Q_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+	//
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Hit_Effect_Normal"),
 		CHit_Effect_Normal::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
@@ -1328,6 +1333,19 @@ _uint CLoader::Load_Pantheon(LEVEL eLevel)
 	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Model_Pantheon"),
 		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/", "Pantheon.fbx", CModel::TYPE_ANIM, PivotMatrix))))
 		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Pantheon_Spear"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Pantheon/pantheon_skin06_q_tap_spear_sharper.dds")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Pantheon_Spear_Blur"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Pantheon/pantheon_skin06_q_tap_spearhead_blur.dds")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Pantheon_Q_Trail"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Pantheon/pantheon_skin06_nebula_streak_mult.dds")))))
+		return E_FAIL;
+
 
 	Safe_Release(pGameInstance);
 }

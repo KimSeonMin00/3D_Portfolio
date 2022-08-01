@@ -32,9 +32,10 @@ HRESULT CPantheon::NativeConstruct(void * pArg)
 
 	m_pModelCom->SetUp_AnimationIndex(12);
 	m_eState = STATE_IDLE;
-	m_ePreState = STATE_INIT;
+	m_ePreState = STATE_IDLE;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.f, 0.f, 15.f, 1.f));
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.f, 0.f, 15.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(20.f, 0.f, 15.f, 1.f));
 	m_pTransformCom->LookAt(XMVectorSet(0.f, 0.f, 0.f, 1.f));
 	
 	m_pTransformCom->Set_Scaled(XMVectorSet(0.75f, 0.75f, 0.75f, 0.f));
@@ -57,15 +58,18 @@ void CPantheon::Tick(_float fTimeDelta)
 	else
 	{
 		//Key_Input(fTimeDelta);
-		if (m_fInitTime < 5.f)
+		if (m_fInitTime < 3.f)
 			m_fInitTime += fTimeDelta;
 
 		else
 		{
-			if (m_pModelCom->Get_IsChange() == false)
+			m_eState = STATE_Q;
+			m_fInitTime = 0.f;
+			/*if (m_pModelCom->Get_IsChange() == false)
 			{
 				Pattern_1(fTimeDelta);
-			}
+
+			}*/
 		}
 	}
 	Change_State(fTimeDelta);
@@ -551,7 +555,14 @@ void CPantheon::Q_Skill(_float fTimeDelta)
 		if (m_pModelCom->Get_Finished())
 		{
 			m_bIsChanneling = false;
-			m_eState = m_eDoingState;
+			m_eState = STATE_IDLE;
+
+			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_Q_Effect"), &m_pTransformCom->Get_WorldMatrix());
+
+			RELEASE_INSTANCE(CGameInstance);
+
 			return;
 		}
 
