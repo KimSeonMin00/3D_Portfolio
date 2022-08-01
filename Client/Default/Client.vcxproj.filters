@@ -151,6 +151,9 @@
     <Filter Include="02.GameObjects\Monster\Boss\Pantheon\Effect\Q">
       <UniqueIdentifier>{e5926868-fcff-4df0-875d-1eb62fc80b6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Monster\Boss\Pantheon\Effect\E">
+      <UniqueIdentifier>{0cfc49a2-d4dd-497f-b718-dca6fa1e6956}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -315,6 +318,9 @@
     <ClInclude Include="..\Public\Pantheon_Q_Effect.h">
       <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\Q</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Pantheon_Shield.h">
+      <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\E</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -463,6 +469,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Pantheon_Q_Effect.cpp">
       <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\Q</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Pantheon_Shield.cpp">
+      <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\E</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -58,12 +58,12 @@ void CPantheon::Tick(_float fTimeDelta)
 	else
 	{
 		//Key_Input(fTimeDelta);
-		if (m_fInitTime < 3.f)
+		if (m_fInitTime < 10.f)
 			m_fInitTime += fTimeDelta;
 
 		else
 		{
-			m_eState = STATE_Q;
+			m_eState = STATE_E;
 			m_fInitTime = 0.f;
 			/*if (m_pModelCom->Get_IsChange() == false)
 			{
@@ -613,6 +613,13 @@ void CPantheon::E_Skill(_float fTimeDelta)
 		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
 		if (m_pModelCom->Get_IsChange() == false)
 		{
+
+			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_E_Shield"), &m_pTransformCom->Get_WorldMatrix());
+
+			RELEASE_INSTANCE(CGameInstance);
+
 			m_bStateChange = false;
 			m_fE_CastingTime = 0.f;
 			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
@@ -629,7 +636,7 @@ void CPantheon::E_Skill(_float fTimeDelta)
 			if (m_iCurrentIndex == 26)
 			{
 				m_bIsChanneling = false;
-				m_eState = m_eDoingState;
+				m_eState = STATE_IDLE;
 				return;
 			}
 
