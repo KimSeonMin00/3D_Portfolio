@@ -617,6 +617,7 @@ void CPantheon::E_Skill(_float fTimeDelta)
 			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_E_Shield"), &m_pTransformCom->Get_WorldMatrix());
+			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_E_Slash"), &m_pTransformCom->Get_WorldMatrix());
 
 			RELEASE_INSTANCE(CGameInstance);
 
@@ -637,6 +638,11 @@ void CPantheon::E_Skill(_float fTimeDelta)
 			{
 				m_bIsChanneling = false;
 				m_eState = STATE_IDLE;
+				CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_E_Swipe"), &m_pTransformCom->Get_WorldMatrix());
+
+				RELEASE_INSTANCE(CGameInstance);
 				return;
 			}
 
@@ -647,6 +653,22 @@ void CPantheon::E_Skill(_float fTimeDelta)
 
 			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 			m_pModelCom->Set_Initialize();
+		}
+
+		if (m_iCurrentIndex == 74)
+		{
+			m_f_E_SlashTime += fTimeDelta;
+
+			if (m_f_E_SlashTime >= 0.1f)
+			{
+				CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_E_Slash"), &m_pTransformCom->Get_WorldMatrix());
+
+				RELEASE_INSTANCE(CGameInstance);
+
+				m_f_E_SlashTime = 0.f;
+			}
 		}
 
 		if (m_pModelCom->Get_IsChange() == false)

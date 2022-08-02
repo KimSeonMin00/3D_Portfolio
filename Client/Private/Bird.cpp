@@ -25,9 +25,6 @@ HRESULT CBird::NativeConstruct(void * pArg)
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
 
-	if (FAILED(SetUp_Components()))
-		return E_FAIL;
-
 	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Model_MapObject_Bird"), TEXT("Com_Model"), (CComponent**)&m_pModelCom)))
 		return E_FAIL;
 

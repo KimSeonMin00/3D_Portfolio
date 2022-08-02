@@ -31,6 +31,8 @@
 #include "Pantheon.h"
 #include "Pantheon_Q_Effect.h"
 #include "Pantheon_Shield.h"
+#include "Pantheon_E_Slash.h"
+#include "Pantheon_E_Swipe.h"
 
 #include "Hit_Effect_Normal.h"
 #include "Monster_HP.h"
@@ -39,6 +41,7 @@
 #include "RazorBeak.h"
 
 #include "MapObject.h"
+#include "MapObject_Anim.h"
 #include "Bird.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
@@ -224,6 +227,14 @@ _uint CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Pantheon_E_Shield"),
 		CPantheon_Shield::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Pantheon_E_Slash"),
+		CPantheon_E_Slash::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Pantheon_E_Swipe"),
+		CPantheon_E_Swipe::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 	//
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Hit_Effect_Normal"),
@@ -1380,6 +1391,10 @@ _uint CLoader::Load_Pantheon(LEVEL eLevel)
 		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Pantheon/", "Shield_Center.fbx", CModel::TYPE_NONANIM, PivotMatrix))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Model_Pantheon_E_Swipe"),
+		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Pantheon/", "pantheon_e_Swipe.fbx", CModel::TYPE_NONANIM, PivotMatrix))))
+		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Pantheon_Spear"),
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Pantheon/pantheon_skin06_q_tap_spear_sharper.dds")))))
 		return E_FAIL;
@@ -1392,6 +1407,17 @@ _uint CLoader::Load_Pantheon(LEVEL eLevel)
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Pantheon/pantheon_skin06_nebula_streak_mult.dds")))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Pantheon_E_Slash"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Pantheon/pantheon_skin06_swipe_tar.dds")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Pantheon_E_Indicator"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Pantheon/pantheon_skin06_swipe_aoe_indicator.dds")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Pantheon_E_Fill"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Pantheon/pantheon_skin06_trapezoid_fill.dds")))))
+		return E_FAIL;
 
 	Safe_Release(pGameInstance);
 }

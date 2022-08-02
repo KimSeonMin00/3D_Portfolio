@@ -67,6 +67,9 @@ private://For Attack
 	_uint			m_iAttackIndex = 0;
 
 private:
+	_float          m_f_E_SlashTime = 0.2f;
+
+private:
 	_float			m_fE_CastingTime = 0.f;
 
 public:

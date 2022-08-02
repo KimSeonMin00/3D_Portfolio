@@ -50,6 +50,11 @@ HRESULT CPantheon_Shield::NativeConstruct(void * pArg)
 void CPantheon_Shield::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+
+	m_fLiveTime += fTimeDelta;
+
+	if (m_fLiveTime >= 3.f)
+		m_bDead = true;
 }
 
 void CPantheon_Shield::Late_Tick(_float fTimeDelta)

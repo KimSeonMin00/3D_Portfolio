@@ -61,6 +61,8 @@ HRESULT CMapObject_Anim::Render()
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
+		m_pModelCom->SetUp_BoneMatrices_OnShader(m_pShaderCom, "g_Bones", i);
+
 		m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 
 

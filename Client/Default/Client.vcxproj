@@ -168,6 +168,8 @@
     <ClInclude Include="..\Public\Bird.h" />
     <ClInclude Include="..\Public\Camera_Free.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
+    <ClInclude Include="..\Public\Duck.h" />
+    <ClInclude Include="..\Public\Duckie.h" />
     <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\Effect_Voli_E.h" />
     <ClInclude Include="..\Public\Hit_Effect_Normal.h" />
@@ -178,9 +180,13 @@
     <ClInclude Include="..\Public\Level_Logo.h" />
     <ClInclude Include="..\Public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\Public\MapObject_Anim.h" />
     <ClInclude Include="..\Public\Monster.h" />
     <ClInclude Include="..\Public\Monster_HP.h" />
+    <ClInclude Include="..\Public\Owl.h" />
     <ClInclude Include="..\Public\Pantheon.h" />
+    <ClInclude Include="..\Public\Pantheon_E_Slash.h" />
+    <ClInclude Include="..\Public\Pantheon_E_Swipe.h" />
     <ClInclude Include="..\Public\Pantheon_Q_Effect.h" />
     <ClInclude Include="..\Public\Pantheon_Shield.h" />
     <ClInclude Include="..\Public\Player.h" />
@@ -223,6 +229,8 @@
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\Private\Bird.cpp" />
     <ClCompile Include="..\Private\Camera_Free.cpp" />
+    <ClCompile Include="..\Private\Duck.cpp" />
+    <ClCompile Include="..\Private\Duckie.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\Effect_Voli_E.cpp" />
     <ClCompile Include="..\Private\Hit_Effect_Normal.cpp" />
@@ -233,9 +241,13 @@
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
+    <ClCompile Include="..\Private\MapObject_Anim.cpp" />
     <ClCompile Include="..\Private\Monster.cpp" />
     <ClCompile Include="..\Private\Monster_HP.cpp" />
+    <ClCompile Include="..\Private\Owl.cpp" />
     <ClCompile Include="..\Private\Pantheon.cpp" />
+    <ClCompile Include="..\Private\Pantheon_E_Slash.cpp" />
+    <ClCompile Include="..\Private\Pantheon_E_Swipe.cpp" />
     <ClCompile Include="..\Private\Pantheon_Q_Effect.cpp" />
     <ClCompile Include="..\Private\Pantheon_Shield.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
