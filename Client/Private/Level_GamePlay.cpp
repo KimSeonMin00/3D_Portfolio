@@ -236,6 +236,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_Map(const _tchar * pLayerTag)
 
 	CloseHandle(hFile);
 
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Bird"))))
+		return E_FAIL;
+
 	Safe_Release(pGameInstance);
 
 	return S_OK;

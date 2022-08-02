@@ -39,6 +39,7 @@
 #include "RazorBeak.h"
 
 #include "MapObject.h"
+#include "Bird.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: m_pDevice(pDevice)
@@ -247,6 +248,10 @@ _uint CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_MapObject"),
 		CMapObject::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Bird"),
+		CBird::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
 	///* For.Prototype_GameObject_Camera_Free */
@@ -1130,6 +1135,32 @@ _uint CLoader::Load_MapObject(LEVEL eLevel)
 
 	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Model_MapObject_174"),
 		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Map/", "MapObject_174.fbx", CModel::TYPE_NONANIM, PivotMatrix))))
+		return E_FAIL;
+
+	PivotMatrix = XMMatrixScaling(0.0001f, 0.0001f, 0.0001f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Model_MapObject_Bird"),
+		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/MapObject/", "bird.fbx", CModel::TYPE_ANIM, PivotMatrix))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Model_MapObject_Mouse"),
+		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/MapObject/", "Mouse.fbx", CModel::TYPE_ANIM, PivotMatrix))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Model_MapObject_Owl"),
+		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/MapObject/", "owl.fbx", CModel::TYPE_ANIM, PivotMatrix))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Model_MapObject_Lizard"),
+		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/MapObject/", "lizard.fbx", CModel::TYPE_ANIM, PivotMatrix))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Model_MapObject_Duck"),
+		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/MapObject/", "duck.fbx", CModel::TYPE_ANIM, PivotMatrix))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Model_MapObject_Duckie"),
+		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/MapObject/", "duckie.fbx", CModel::TYPE_ANIM, PivotMatrix))))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
