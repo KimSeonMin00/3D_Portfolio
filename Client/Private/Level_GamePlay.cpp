@@ -44,7 +44,7 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
-	if (m_bBossSpawned == false)
+	/*if (m_bBossSpawned == false)
 	{
 		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -73,7 +73,7 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 		}
 
 		RELEASE_INSTANCE(CGameInstance);
-	}
+	}*/
 }
 
 HRESULT CLevel_GamePlay::Render()
@@ -237,6 +237,15 @@ HRESULT CLevel_GamePlay::Ready_Layer_Map(const _tchar * pLayerTag)
 	CloseHandle(hFile);
 
 	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Bird"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Owl"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Duck"))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, pLayerTag, TEXT("Prototype_GameObject_Duckie"))))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);
