@@ -55,7 +55,10 @@ void CPantheon_E_Swipe::Tick(_float fTimeDelta)
 	m_fLiveTime += fTimeDelta;
 
 	if (m_fTexMove < 0.5f)
+	{
+		m_fAlpha += 8.f * fTimeDelta;
 		m_fTexMove += 4.f * fTimeDelta;
+	}
 
 	else
 		m_fAlpha -= 2.f * fTimeDelta;

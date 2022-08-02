@@ -53,7 +53,7 @@ void CPantheon_Shield::Tick(_float fTimeDelta)
 
 	m_fLiveTime += fTimeDelta;
 
-	if (m_fLiveTime >= 3.f)
+	if (m_fLiveTime >= 4.f)
 		m_bDead = true;
 }
 

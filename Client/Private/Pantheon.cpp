@@ -58,20 +58,20 @@ void CPantheon::Tick(_float fTimeDelta)
 	else
 	{
 		//Key_Input(fTimeDelta);
-		if (m_fInitTime < 10.f)
+		if (m_fInitTime < 5.f)
 			m_fInitTime += fTimeDelta;
 
 		else
 		{
-			m_eState = STATE_E;
-			m_fInitTime = 0.f;
-			/*if (m_pModelCom->Get_IsChange() == false)
+		/*	m_eState = STATE_W;
+			m_fInitTime = 0.f;*/
+			if (m_pModelCom->Get_IsChange() == false)
 			{
 				Pattern_1(fTimeDelta);
-
-			}*/
+			}
 		}
 	}
+
 	Change_State(fTimeDelta);
 
 	if (m_bStop == false)
@@ -539,6 +539,7 @@ void CPantheon::Q_Skill(_float fTimeDelta)
 	if (m_bStateChange == true)
 	{
 		m_bIsChanneling = true;
+		m_bSkillFinished = false;
 		m_iCurrentIndex = 39;
 
 		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
@@ -554,14 +555,14 @@ void CPantheon::Q_Skill(_float fTimeDelta)
 	{
 		if (m_pModelCom->Get_Finished())
 		{
-			m_bIsChanneling = false;
 			m_eState = STATE_IDLE;
-
 			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_Q_Effect"), &m_pTransformCom->Get_WorldMatrix());
 
 			RELEASE_INSTANCE(CGameInstance);
+
+			m_bSkillFinished = true;
 
 			return;
 		}
@@ -576,6 +577,7 @@ void CPantheon::W_Skill(_float fTimeDelta)
 	if (m_bStateChange == true)
 	{
 		m_bIsChanneling = true;
+		m_bSkillFinished = false;
 		m_iCurrentIndex = 54;
 
 		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
@@ -593,8 +595,17 @@ void CPantheon::W_Skill(_float fTimeDelta)
 
 		if (m_pModelCom->Get_Finished())
 		{
-			m_bIsChanneling = false;
-			m_eState = m_eDoingState;
+			m_eState = STATE_IDLE;
+
+			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + 2.f * XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+
+			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_W_Effect"),&vPos);
+
+			RELEASE_INSTANCE(CGameInstance);
+
+			m_bSkillFinished = true;
 			return;
 		}
 
@@ -608,6 +619,7 @@ void CPantheon::E_Skill(_float fTimeDelta)
 	if (m_bStateChange == true)
 	{
 		m_bIsChanneling = true;
+		m_bSkillFinished = false;
 		m_iCurrentIndex = 59;
 
 		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
@@ -636,13 +648,13 @@ void CPantheon::E_Skill(_float fTimeDelta)
 		{
 			if (m_iCurrentIndex == 26)
 			{
-				m_bIsChanneling = false;
 				m_eState = STATE_IDLE;
 				CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_E_Swipe"), &m_pTransformCom->Get_WorldMatrix());
 
 				RELEASE_INSTANCE(CGameInstance);
+				m_bSkillFinished = true;
 				return;
 			}
 
@@ -726,7 +738,7 @@ void CPantheon::Pattern_1(_float fTimeDelta)
 	{
 		if (m_iPattern_AttackTime == 1)
 		{
-			if (m_pModelCom->Get_Finished())
+			if (m_bSkillFinished == true)
 			{
 				m_eState = STATE_ATTACK;
 				m_iPattern_AttackTime++;
@@ -744,8 +756,11 @@ void CPantheon::Pattern_1(_float fTimeDelta)
 		}
 		else if (m_iPattern_AttackTime == 3)
 		{	
+			if (m_bSkillFinished == true)
+			{
 				m_eState = STATE_ATTACK;
-				m_iPattern_AttackTime++;			
+				m_iPattern_AttackTime++;
+			}
 		}
 		else if (m_iPattern_AttackTime == 4)
 		{
@@ -758,7 +773,7 @@ void CPantheon::Pattern_1(_float fTimeDelta)
 		}
 		else
 		{
-			if (m_iCurrentIndex == 26 && m_pModelCom->Get_Finished())
+			if (m_iCurrentIndex == 26 && m_bSkillFinished == true)
 			{
 				m_bIsChanneling = false;
 				m_iPattern_AttackTime = 0;

@@ -43,6 +43,8 @@ HRESULT CPantheon_Q_Effect::NativeConstruct(void * pArg)
 	m_SourColor = XMVectorSet(1.f, 1.f, 200.f / 255.f, 1.f);
 	m_DestColor = XMVectorSet(1.f, 50.f / 255.f, 0.f, 1.f);
 
+
+
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 

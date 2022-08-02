@@ -30,7 +30,7 @@ private:
 	_float		m_fLiveTime = 0.f;
 	_float      m_fTexMove = 0.f;
 
-	_float      m_fAlpha = 1.f;
+	_float      m_fAlpha = 0.f;
 
 private:
 	CShader*						m_pShaderCom = nullptr;

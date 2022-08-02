@@ -157,6 +157,9 @@
     <Filter Include="02.GameObjects\Monster\Boss\Pantheon\Effect\E">
       <UniqueIdentifier>{0cfc49a2-d4dd-497f-b718-dca6fa1e6956}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Monster\Boss\Pantheon\Effect\W">
+      <UniqueIdentifier>{2a822f65-44a4-461e-a9ea-96c4eba71d6d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -345,6 +348,9 @@
     <ClInclude Include="..\Public\Pantheon_E_Swipe.h">
       <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\E</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Pantheon_W_Effect.h">
+      <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\W</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -517,6 +523,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Pantheon_E_Swipe.cpp">
       <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\E</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Pantheon_W_Effect.cpp">
+      <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\W</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

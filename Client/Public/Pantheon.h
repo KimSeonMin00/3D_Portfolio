@@ -49,6 +49,7 @@ private:
 	_uint	m_iPattern_AttackTime = 0;
 	_float	m_fInitTime = 0.f;
 	_bool	m_bStop = false;
+	_bool	m_bSkillFinished = false;
 
 private:
 	STATE			m_ePreState = STATE_END;
