@@ -38,6 +38,11 @@ HRESULT CPantheon_Q_Spear::NativeConstruct(void * pArg)
 		m_pTransformCom->Set_State(CTransform::STATE_LOOK, WorldMat.r[2]);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, WorldMat.r[3] + XMVectorSet(0.f, 1.f, 0.f, 0.f));
 		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(90.f));
+
+		m_RectMatrix.r[0] = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_UP));
+		m_RectMatrix.r[1] = -XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
+		m_RectMatrix.r[2] = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+		m_RectMatrix.r[3] = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	}
 
 	if (FAILED(SetUp_Components()))
@@ -52,9 +57,11 @@ void CPantheon_Q_Spear::Tick(_float fTimeDelta)
 
 	m_fLiveTime += fTimeDelta;
 
-	m_pTransformCom->Go_Direction(m_pTransformCom->Get_State(CTransform::STATE_UP), 2.f * fTimeDelta);
+	m_pTransformCom->Go_Direction(m_pTransformCom->Get_State(CTransform::STATE_UP), 10.f * fTimeDelta);
+	m_RectMatrix.r[3] = m_pTransformCom->Get_State(CTransform::STATE_POSITION) - 2.f * m_pTransformCom->Get_State(CTransform::STATE_UP);
+	m_fTexMove += 2.f * fTimeDelta;
 
-	if (m_fLiveTime >= 2.f)
+	if (m_fLiveTime >= 1.f)
 		m_bDead = true;
 }
 
@@ -77,10 +84,6 @@ HRESULT CPantheon_Q_Spear::Render()
 	if (FAILED(SetUp_ConstantTable()))
 		return E_FAIL;
 
-	_float2 MoveTex = _float2(-0.f, 0.f);
-
-	m_pShaderCom->Set_RawValue("g_vMoveTex", &MoveTex, sizeof(_float2));
-
 	_float fAlpha = 1.f;
 
 	m_pShaderCom->Set_RawValue("g_Alpha", &fAlpha, sizeof(_float));
@@ -93,6 +96,48 @@ HRESULT CPantheon_Q_Spear::Render()
 
 	m_pModel_Spear->Render(0);
 
+	Render_Trail();
+
+	return S_OK;
+}
+
+HRESULT CPantheon_Q_Spear::Render_Trail()
+{
+	if (nullptr == m_pShader_Rect ||
+		nullptr == m_pRectCom)
+
+		return E_FAIL;
+
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_matrix WorldMat;
+
+	WorldMat = XMMatrixIdentity()*
+		XMMatrixScaling(4.f, 1.f, 1.f)*
+		m_RectMatrix;
+
+	m_pShader_Rect->Set_RawValue("g_WorldMatrix", &XMMatrixTranspose(WorldMat), sizeof(_float4x4));
+	m_pShader_Rect->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_VIEW), sizeof(_float4x4));
+	m_pShader_Rect->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_PROJ), sizeof(_float4x4));
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	_float2 MoveTex = _float2(m_fTexMove, 0.f);
+
+	m_pShader_Rect->Set_RawValue("g_vMoveTex", &MoveTex, sizeof(_float2));
+
+	_float fAlpha = 1.f;
+
+	m_pShader_Rect->Set_RawValue("g_Alpha", &fAlpha, sizeof(_float));
+
+	m_pShader_Rect->Set_RawValue("g_vColor", &XMVectorSet(1.f, 50.f / 255.f, 0.f, 1.f), sizeof(_vector));
+
+	m_pTextureTrail->Bind_OnShader(m_pShader_Rect, "g_DiffuseTexture");
+
+	m_pShader_Rect->Begin(5);
+
+	m_pRectCom->Render();
+
 	return S_OK;
 }
 
@@ -102,12 +147,21 @@ HRESULT CPantheon_Q_Spear::SetUp_Components()
 	if (FAILED(__super::Add_Components(LEVEL_STATIC, TEXT("Prototype_Component_Renderer"), TEXT("Com_Renderer"), (CComponent**)&m_pRendererCom)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Components(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxTex"), TEXT("Com_Shader_Rect"), (CComponent**)&m_pShader_Rect)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Components(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"), TEXT("Com_VIBuffer_Rect"), (CComponent**)&m_pRectCom)))
+		return E_FAIL;
+
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Shader_VtxNonAnim"), TEXT("Com_Shader"), (CComponent**)&m_pShaderCom)))
 		return E_FAIL;
 
 	/* For.Com_Model*/
 	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Model_Pantheon_Q_Spear"), TEXT("Com_Model_Spear"), (CComponent**)&m_pModel_Spear)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Pantheon_Q_Trail"), TEXT("Com_Texture_Trail"), (CComponent**)&m_pTextureTrail)))
 		return E_FAIL;
 
 	return S_OK;

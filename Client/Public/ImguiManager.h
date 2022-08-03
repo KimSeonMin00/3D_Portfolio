@@ -20,7 +20,7 @@ class CImguiManager final
 	:public CBase
 {
 public:
-	enum ToolList {TOOL_UI, TOOL_OBJECT, TOOL_NAVIGATION, TOOL_MONSTER, TOOL_END};
+	enum ToolList {TOOL_UI, TOOL_OBJECT, TOOL_ANIM_OBJECT, TOOL_NAVIGATION, TOOL_MONSTER, TOOL_END};
 
 	typedef struct tagTriangle
 	{
@@ -42,6 +42,7 @@ private:
 	void	UI_Tool();
 
 	void	Object_Tool();
+	void	Anim_Object_Tool();
 
 	void	Navigation_Tool(_float TimeDelta);
 	_bool	Check_TrianglePoint(_float3& fPos);
@@ -65,6 +66,10 @@ private:
 	_uint	m_iNumObject = 0;
 	_int	m_iObjectIndex = 0;
 	_uint	m_iNumObjectIndex = 175;
+
+	_uint	m_iNumAnimObject = 0;
+	_int	m_iAnimObjectIndex = 0;
+	_uint	m_iNumAnimObjectIndex = 4;
 
 	//For Navigation Tool
 	_float3					m_vPoint[3];

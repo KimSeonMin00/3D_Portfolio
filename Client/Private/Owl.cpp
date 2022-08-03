@@ -31,6 +31,7 @@ HRESULT COwl::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(11.f, 2.5f, 11.f, 1.f));
 	m_pTransformCom->Set_Scaled(XMVectorSet(0.5f, 0.5f, 0.5f, 0.f));
 
+	m_iObjectIndex = 1;
 	m_pModelCom->SetUp_AnimationIndex(1);
 
 	return S_OK;

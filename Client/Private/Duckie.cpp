@@ -31,6 +31,7 @@ HRESULT CDuckie::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(20.5f, 0.f, 3.5f, 1.f));
 	m_pTransformCom->Set_Scaled(XMVectorSet(0.5f, 0.5f, 0.5f, 0.f));
 
+	m_iObjectIndex = 3;
 	m_pModelCom->SetUp_AnimationIndex(1);
 
 	return S_OK;

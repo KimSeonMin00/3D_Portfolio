@@ -31,6 +31,7 @@ HRESULT CBird::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(26.f, 1.f, 9.f, 1.f));
 	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
 
+	m_iObjectIndex = 0;
 	m_pModelCom->SetUp_AnimationIndex(3);
 
 	return S_OK;

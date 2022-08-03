@@ -6,6 +6,8 @@ BEGIN(Engine)
 class CShader;
 class CRenderer;
 class CModel;
+class CVIBuffer_Rect;
+class CTexture;
 END
 
 BEGIN(Client)
@@ -25,12 +27,21 @@ public:
 	virtual HRESULT Render();
 
 private:
+	HRESULT	Render_Trail();
+
+private:
 	_float		m_fLiveTime = 0.f;
+
+	_matrix		m_RectMatrix;
+	_float      m_fTexMove = 0.f;
 
 private:
 	CShader*						m_pShaderCom = nullptr;
+	CShader*						m_pShader_Rect = nullptr;
 	CRenderer*						m_pRendererCom = nullptr;
 	CModel*							m_pModel_Spear = nullptr;
+	CVIBuffer_Rect*					m_pRectCom = nullptr;
+	CTexture*						m_pTextureTrail = nullptr;
 
 public:
 	HRESULT SetUp_Components();

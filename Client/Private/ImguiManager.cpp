@@ -8,6 +8,7 @@
 #include "Terrain.h"
 #include "Player.h"
 #include "MapObject.h"
+#include "MapObject_Anim.h"
 #include "Monster.h"
 
 const char* CImguiManager::CurrentItem = nullptr;
@@ -64,6 +65,12 @@ void CImguiManager::Tick(_double TimeDelta)
 			m_eToolList = TOOL_OBJECT;
 		}
 
+		if (ImGui::Button("AnimObject"))
+		{
+			m_iCurrentItemIndex = 0;
+			m_eToolList = TOOL_ANIM_OBJECT;
+		}
+
 		if (ImGui::Button("Navigation"))
 		{
 			m_iCurrentItemIndex = 0;
@@ -89,6 +96,13 @@ void CImguiManager::Tick(_double TimeDelta)
 			Object_Tool();
 			ImGui::End();
 			break;
+
+		case TOOL_ANIM_OBJECT:
+			ImGui::Begin("AnimObject_Tool");
+			Anim_Object_Tool();
+			ImGui::End();
+			break;
+
 
 		case TOOL_NAVIGATION:
 			ImGui::Begin("Navigation_Tool");
@@ -797,6 +811,382 @@ void CImguiManager::Object_Tool()
 											Safe_Release(m_pTransform);
 
 											m_iNumObject++;
+										}
+									}
+									pItem->Release();
+								}
+							}
+						}
+					}
+				}
+				pFileOpen->Release();
+			}
+			CoUninitialize();
+		}
+	}
+}
+
+void CImguiManager::Anim_Object_Tool()
+{
+	ImGui::Text("Anim_MapObject_Number");
+	ImGui::PushItemWidth(100);
+	ImGui::InputInt("Anim_MapObject_Index", &m_iAnimObjectIndex, 1, 10);
+	if (m_iAnimObjectIndex >= m_iNumAnimObjectIndex)
+		m_iAnimObjectIndex = m_iNumAnimObjectIndex - 1;
+
+	if (ImGui::Button("Create"))
+	{
+		if (m_iAnimObjectIndex == 0)
+			m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_MapAnim"), TEXT("Prototype_GameObject_Bird"));
+
+		else if (m_iAnimObjectIndex == 1)
+			m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_MapAnim"), TEXT("Prototype_GameObject_Owl"));
+
+		else if (m_iAnimObjectIndex == 2)
+			m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_MapAnim"), TEXT("Prototype_GameObject_Duck"));
+
+		else if (m_iAnimObjectIndex == 3)
+			m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_MapAnim"), TEXT("Prototype_GameObject_Duckie"));
+
+		m_iNumAnimObject++;
+		m_iCurrentItemIndex = m_iNumAnimObject - 1;
+	}
+
+	if (ImGui::Button("Delete"))
+	{
+		if (m_iNumAnimObject > 0)
+		{
+			CGameObject* pGameObject = m_pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_MapAnim"), m_iCurrentItemIndex);
+
+			if (pGameObject != nullptr)
+			{
+				Safe_AddRef(pGameObject);
+				pGameObject->Set_Dead();
+				Safe_Release(pGameObject);
+				m_iNumMonster--;
+
+				if (m_iCurrentItemIndex == 0)
+					m_iCurrentItemIndex = 0;
+
+				else
+					m_iCurrentItemIndex--;
+			}
+		}
+	}
+
+	if (m_iNumAnimObject > 0)
+	{
+		char Item[256] = "";
+		sprintf_s(Item, "MapAnim_%d", m_iCurrentItemIndex);
+
+		CurrentItem = Item;
+
+
+		if (ImGui::BeginCombo("MapAnim", CurrentItem))
+		{
+			for (int n = 0; n < m_iNumAnimObject; n++)
+			{
+				char Item[256] = "";
+				sprintf_s(Item, "MapAnim_%d", n);
+
+				bool is_selected = (CurrentItem == Item); // You can store your selection however you want, outside or inside your objects
+
+				if (ImGui::Selectable(Item, is_selected))
+				{
+					CurrentItem = Item;
+					m_iCurrentItemIndex = n;
+				}
+
+				if (is_selected)
+				{
+					ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)
+				}
+			}
+			ImGui::EndCombo();
+		}
+
+		((CMapObject_Anim*)m_pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_MapAnim"), m_iCurrentItemIndex))->Set_Select();
+
+		_float3 fRotation = { 0.f ,0.f ,0.f };
+		_float3 fPosition = { 0.f, 0.f, 0.f };
+
+		m_pTransform = (CTransform*)m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_MapAnim"), TEXT("Com_Transform"), m_iCurrentItemIndex);
+
+		if (nullptr == m_pTransform)
+			return;
+
+		Safe_AddRef(m_pTransform);
+
+		ImGui::Text("Rotation");
+
+		_vector vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+		_vector vUp = m_pTransform->Get_State(CTransform::STATE_UP);
+		_vector vLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
+
+		static int e = 0;
+		ImGui::RadioButton("Right_Axis", &e, 0); ImGui::SameLine();
+		ImGui::RadioButton("Up_Axis", &e, 1); ImGui::SameLine();
+		ImGui::RadioButton("Look_Axis", &e, 2);
+
+		_float mousemove = 0.f;
+
+		if (ImGui::SliderFloat("Rotate", &mousemove, -1.f, 1.f, "%.2f", 1.f))
+		{
+			if (e == 0)
+				m_pTransform->Turn(vRight, XMConvertToRadians(1) * mousemove);
+
+			else if (e == 1)
+				m_pTransform->Turn(vUp, XMConvertToRadians(1) * mousemove);
+
+			else if (e == 2)
+				m_pTransform->Turn(vLook, XMConvertToRadians(1) * mousemove);
+		}
+
+		if (ImGui::Button("Rotate +1"))
+		{
+			if (e == 0)
+				m_pTransform->Turn(vRight, XMConvertToRadians(1));
+
+			else if (e == 1)
+				m_pTransform->Turn(vUp, XMConvertToRadians(1));
+
+			else if (e == 2)
+				m_pTransform->Turn(vLook, XMConvertToRadians(1));
+		}
+
+		if (ImGui::Button("Rotate -1"))
+		{
+			if (e == 0)
+				m_pTransform->Turn(vRight, XMConvertToRadians(-1));
+
+			else if (e == 1)
+				m_pTransform->Turn(vUp, XMConvertToRadians(-1));
+
+			else if (e == 2)
+				m_pTransform->Turn(vLook, XMConvertToRadians(-1));
+		}
+
+		XMStoreFloat3(&fPosition, m_pTransform->Get_State(CTransform::STATE_POSITION));
+
+		ImGui::Text("Position");
+		ImGui::PushItemWidth(50);
+		ImGui::InputFloat("Position.x", &fPosition.x); ImGui::SameLine();
+		ImGui::InputFloat("Position.y", &fPosition.y); ImGui::SameLine();
+		ImGui::InputFloat("Position.z", &fPosition.z);
+
+		if (m_pGameInstance->Get_DIMButtonState(CInput_Device::DIMB_RBUTTON))
+		{
+			CTerrain* pTerrain = (CTerrain*)m_pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), 0);
+
+			if (nullptr != pTerrain)
+			{
+				Safe_AddRef(pTerrain);
+				fPosition = pTerrain->Get_PickingPosition();
+				Safe_Release(pTerrain);
+			}
+		}
+
+		m_pTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(fPosition.x, fPosition.y, fPosition.z, 1.f));
+
+		if (ImGui::Button("Initialize"))
+		{
+			_float3 fScale = m_pTransform->Get_Scaled();
+
+			m_pTransform->Set_State(CTransform::STATE_RIGHT, XMVectorSet(1.f, 0.f, 0.f, 0.f) * fScale.x);
+			m_pTransform->Set_State(CTransform::STATE_UP, XMVectorSet(0.f, 1.f, 0.f, 0.f) * fScale.y);
+			m_pTransform->Set_State(CTransform::STATE_LOOK, XMVectorSet(0.f, 0.f, 1.f, 0.f) * fScale.z);
+		}
+
+		Safe_Release(m_pTransform);
+	}
+
+	if (ImGui::Button("Save"))
+	{
+		HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
+			COINIT_DISABLE_OLE1DDE);
+		if (SUCCEEDED(hr))
+		{
+			IFileSaveDialog *pFileSave;
+
+			// Create the FileOpenDialog object.
+			hr = CoCreateInstance(CLSID_FileSaveDialog, NULL, CLSCTX_ALL,
+				IID_IFileSaveDialog, reinterpret_cast<void**>(&pFileSave));
+
+			if (SUCCEEDED(hr))
+			{
+
+				DWORD dwFlags;
+
+				hr = pFileSave->GetOptions(&dwFlags);
+
+				if (SUCCEEDED(hr))
+				{
+					COMDLG_FILTERSPEC rgSpec[] =
+					{
+						{ L"DataFiles(*.dat)", L"*.dat" }
+					};
+
+					hr = pFileSave->SetFileTypes(ARRAYSIZE(rgSpec), rgSpec);
+
+					if (SUCCEEDED(hr))
+					{
+						hr = pFileSave->SetDefaultExtension(L"dat");
+
+						if (SUCCEEDED(hr))
+						{
+							// Show the Open dialog box.
+							hr = pFileSave->Show(NULL);
+
+							// Get the file name from the dialog box.
+							if (SUCCEEDED(hr))
+							{
+								IShellItem *pItem;
+								hr = pFileSave->GetResult(&pItem);
+								if (SUCCEEDED(hr))
+								{
+									PWSTR pszFilePath;
+									hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+									// Display the file name to the user.
+									if (SUCCEEDED(hr))
+									{
+										HANDLE		hFile = CreateFile(pszFilePath, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+
+										if (INVALID_HANDLE_VALUE == hFile)
+											return;
+
+										DWORD	dwByte = 0;
+
+										for (_uint i = 0; i < m_iNumAnimObject; i++)
+										{
+											CMapObject_Anim* pMapAnim = (CMapObject_Anim*)m_pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_MapAnim"), i);
+											if (pMapAnim != nullptr)
+											{
+												Safe_AddRef(pMapAnim);
+												m_pTransform = (CTransform*)m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_MapAnim"), TEXT("Com_Transform"), i);
+												if (nullptr != m_pTransform)
+												{
+													_uint	iMapAnimIndex;
+													_float4x4 WorldMat;
+
+													iMapAnimIndex= pMapAnim->Get_Index();
+
+													Safe_AddRef(m_pTransform);
+													XMStoreFloat4x4(&WorldMat, m_pTransform->Get_WorldMatrix());
+													Safe_Release(m_pTransform);
+
+													WriteFile(hFile, &iMapAnimIndex, sizeof(_uint), &dwByte, nullptr);
+													WriteFile(hFile, &WorldMat, sizeof(_float4x4), &dwByte, nullptr);
+												}
+												Safe_Release(pMapAnim);
+											}
+
+										}
+
+										CloseHandle(hFile);
+									}
+									pItem->Release();
+								}
+							}
+						}
+					}
+				}
+				pFileSave->Release();
+			}
+			CoUninitialize();
+		}
+	}
+
+	if (ImGui::Button("Load"))
+	{
+		HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
+			COINIT_DISABLE_OLE1DDE);
+		if (SUCCEEDED(hr))
+		{
+			IFileSaveDialog *pFileOpen;
+
+			// Create the FileOpenDialog object.
+			hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
+				IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+
+			if (SUCCEEDED(hr))
+			{
+
+				DWORD dwFlags;
+
+				hr = pFileOpen->GetOptions(&dwFlags);
+
+				if (SUCCEEDED(hr))
+				{
+					COMDLG_FILTERSPEC rgSpec[] =
+					{
+						{ L"DataFiles(*.dat)", L"*.dat" }
+					};
+
+					hr = pFileOpen->SetFileTypes(ARRAYSIZE(rgSpec), rgSpec);
+
+					if (SUCCEEDED(hr))
+					{
+						hr = pFileOpen->SetDefaultExtension(L"dat");
+
+						if (SUCCEEDED(hr))
+						{
+							// Show the Open dialog box.
+							hr = pFileOpen->Show(NULL);
+
+							// Get the file name from the dialog box.
+							if (SUCCEEDED(hr))
+							{
+								IShellItem *pItem;
+								hr = pFileOpen->GetResult(&pItem);
+								if (SUCCEEDED(hr))
+								{
+									PWSTR pszFilePath;
+									hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+									// Display the file name to the user.
+									if (SUCCEEDED(hr))
+									{
+										HANDLE		hFile = CreateFile(pszFilePath, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+
+										m_iNumAnimObject = 0;
+
+										if (INVALID_HANDLE_VALUE == hFile)
+											return;
+
+										DWORD	dwByte = 0;
+
+										while (true)
+										{
+											_uint	iMapAnimIndex;
+											_float4x4 WorldMat;
+
+											ReadFile(hFile, &iMapAnimIndex, sizeof(_uint), &dwByte, nullptr);
+											ReadFile(hFile, &WorldMat, sizeof(_float4x4), &dwByte, nullptr);
+
+											if (0 == dwByte)
+											{
+												break;
+											}
+
+											if (iMapAnimIndex == 0)
+												m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_MapAnim"), TEXT("Prototype_GameObject_Bird"));
+
+											else if (iMapAnimIndex == 1)
+												m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_MapAnim"), TEXT("Prototype_GameObject_Owl"));
+
+											else if (iMapAnimIndex == 2)
+												m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_MapAnim"), TEXT("Prototype_GameObject_Duck"));
+
+											else if (iMapAnimIndex == 3)
+												m_pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_MapAnim"), TEXT("Prototype_GameObject_Duckie"));
+
+											m_pTransform->Set_State(CTransform::STATE_RIGHT, XMLoadFloat4x4(&WorldMat).r[0]);
+											m_pTransform->Set_State(CTransform::STATE_UP, XMLoadFloat4x4(&WorldMat).r[1]);
+											m_pTransform->Set_State(CTransform::STATE_LOOK, XMLoadFloat4x4(&WorldMat).r[2]);
+											m_pTransform->Set_State(CTransform::STATE_POSITION, XMLoadFloat4x4(&WorldMat).r[3]);
+
+											Safe_Release(m_pTransform);
+
+											m_iNumAnimObject++;
 										}
 									}
 									pItem->Release();

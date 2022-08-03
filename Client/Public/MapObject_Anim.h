@@ -30,8 +30,16 @@ public:
 		m_bSelected = true;
 	}
 
-private:
+	_uint		Get_Index()
+	{
+		return m_iObjectIndex;
+	}
+
+protected:
 	_bool	m_bSelected = false;
+
+protected:
+	_uint		m_iObjectIndex = 0;
 
 protected:
 	CShader*						m_pShaderCom = nullptr;

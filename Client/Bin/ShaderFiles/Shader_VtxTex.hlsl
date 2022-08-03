@@ -9,6 +9,7 @@ float			g_Alpha = 1.f;
 float			g_Ratio = 1.f;
 
 vector			g_vColor = vector(1.f, 1.f, 1.f, 1.f);
+float2			g_vMoveTex = float2(0.f, 0.f);
 
 struct VS_IN
 {
@@ -103,6 +104,21 @@ PS_OUT PS_MAIN_RATIO(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_MAIN_TRAIL(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float		fAlpha = In.vTexUV.x;
+	float2		vTexUVMove = In.vTexUV + g_vMoveTex;
+
+	vector		vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, vTexUVMove);
+
+	Out.vColor = g_vColor * vMtrlDiffuse;
+	Out.vColor.a = Out.vColor.a * fAlpha * fAlpha;
+
+	return Out;
+}
+
 technique11 DefaultTechinque
 {
 	pass Rect
@@ -158,5 +174,16 @@ technique11 DefaultTechinque
 		VertexShader = compile vs_5_0 VS_MAIN_RECT();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_RATIO();
+	}
+
+	pass Rect_Trail
+	{
+		SetBlendState(BS_One, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_None_ZTest_And_Write, 0);
+		SetRasterizerState(RS_Default);
+
+		VertexShader = compile vs_5_0 VS_MAIN_RECT();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_TRAIL();
 	}
 }
