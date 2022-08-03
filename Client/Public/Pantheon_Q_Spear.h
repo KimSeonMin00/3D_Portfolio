@@ -28,6 +28,7 @@ public:
 
 private:
 	HRESULT	Render_Trail();
+	HRESULT Render_Spear();
 
 private:
 	_float		m_fLiveTime = 0.f;
@@ -42,6 +43,9 @@ private:
 	CModel*							m_pModel_Spear = nullptr;
 	CVIBuffer_Rect*					m_pRectCom = nullptr;
 	CTexture*						m_pTextureTrail = nullptr;
+	CTexture*						m_pTextureTrailCenter = nullptr;
+	CTexture*						m_pTextureSpear = nullptr;
+	CTexture*						m_pTextureBlur = nullptr;
 
 public:
 	HRESULT SetUp_Components();

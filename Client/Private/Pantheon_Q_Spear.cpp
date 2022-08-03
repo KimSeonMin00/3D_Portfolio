@@ -58,7 +58,7 @@ void CPantheon_Q_Spear::Tick(_float fTimeDelta)
 	m_fLiveTime += fTimeDelta;
 
 	m_pTransformCom->Go_Direction(m_pTransformCom->Get_State(CTransform::STATE_UP), 10.f * fTimeDelta);
-	m_RectMatrix.r[3] = m_pTransformCom->Get_State(CTransform::STATE_POSITION) - 2.f * m_pTransformCom->Get_State(CTransform::STATE_UP);
+	m_RectMatrix.r[3] = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	m_fTexMove += 2.f * fTimeDelta;
 
 	if (m_fLiveTime >= 1.f)
@@ -96,6 +96,8 @@ HRESULT CPantheon_Q_Spear::Render()
 
 	m_pModel_Spear->Render(0);
 
+	Render_Spear();
+
 	Render_Trail();
 
 	return S_OK;
@@ -111,10 +113,12 @@ HRESULT CPantheon_Q_Spear::Render_Trail()
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 	_matrix WorldMat;
-
+	_matrix RectMat = m_RectMatrix;
+	RectMat.r[3] += -3.f * m_pTransformCom->Get_State(CTransform::STATE_UP);
+	
 	WorldMat = XMMatrixIdentity()*
-		XMMatrixScaling(4.f, 1.f, 1.f)*
-		m_RectMatrix;
+		XMMatrixScaling(4.f, 0.8f, 1.f)*
+		RectMat;
 
 	m_pShader_Rect->Set_RawValue("g_WorldMatrix", &XMMatrixTranspose(WorldMat), sizeof(_float4x4));
 	m_pShader_Rect->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_VIEW), sizeof(_float4x4));
@@ -135,6 +139,73 @@ HRESULT CPantheon_Q_Spear::Render_Trail()
 	m_pTextureTrail->Bind_OnShader(m_pShader_Rect, "g_DiffuseTexture");
 
 	m_pShader_Rect->Begin(5);
+
+	m_pRectCom->Render();
+
+	WorldMat = XMMatrixIdentity()*
+		XMMatrixScaling(4.f, 1.2f, 1.f)*
+		RectMat;
+	m_pShader_Rect->Set_RawValue("g_WorldMatrix", &XMMatrixTranspose(WorldMat), sizeof(_float4x4));
+
+	m_pTextureTrailCenter->Bind_OnShader(m_pShader_Rect, "g_DiffuseTexture");
+
+	m_pShader_Rect->Begin(5);
+
+	m_pRectCom->Render();
+
+	return S_OK;
+}
+
+HRESULT CPantheon_Q_Spear::Render_Spear()
+{
+	if (nullptr == m_pShader_Rect ||
+		nullptr == m_pRectCom)
+
+		return E_FAIL;
+
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_matrix WorldMat;
+
+	WorldMat = XMMatrixIdentity()*
+		XMMatrixScaling(2.f, 1.f, 1.f) *
+		m_RectMatrix;
+
+	m_pShader_Rect->Set_RawValue("g_WorldMatrix", &XMMatrixTranspose(WorldMat), sizeof(_float4x4));
+	m_pShader_Rect->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_VIEW), sizeof(_float4x4));
+	m_pShader_Rect->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_PROJ), sizeof(_float4x4));
+
+	_float2 MoveTex = _float2(m_fTexMove, 0.f);
+
+	m_pShader_Rect->Set_RawValue("g_vMoveTex", &MoveTex, sizeof(_float2));
+
+	_float fAlpha = 1.f;
+
+	m_pShader_Rect->Set_RawValue("g_Alpha", &fAlpha, sizeof(_float));
+
+	m_pShader_Rect->Set_RawValue("g_vColor", &XMVectorSet(1.f, 1.f, 100.f/255.f, 1.f), sizeof(_vector));
+
+	m_pTextureSpear->Bind_OnShader(m_pShader_Rect, "g_DiffuseTexture");
+
+	m_pShader_Rect->Begin(2);
+
+	m_pRectCom->Render();
+
+	WorldMat = XMMatrixIdentity()*
+		XMMatrixScaling(4.f, 2.f, 1.f) *
+		m_RectMatrix;
+
+	m_pShader_Rect->Set_RawValue("g_WorldMatrix", &XMMatrixTranspose(WorldMat), sizeof(_float4x4));
+	m_pShader_Rect->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_VIEW), sizeof(_float4x4));
+	m_pShader_Rect->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_PROJ), sizeof(_float4x4));
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	m_pShader_Rect->Set_RawValue("g_vColor", &XMVectorSet(1.f, 50.f / 255.f, 0.f, 1.f), sizeof(_vector));
+
+	m_pTextureBlur->Bind_OnShader(m_pShader_Rect, "g_DiffuseTexture");
+
+	m_pShader_Rect->Begin(2);
 
 	m_pRectCom->Render();
 
@@ -162,6 +233,15 @@ HRESULT CPantheon_Q_Spear::SetUp_Components()
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Pantheon_Q_Trail"), TEXT("Com_Texture_Trail"), (CComponent**)&m_pTextureTrail)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Pantheon_Q_Trail_Center"), TEXT("Com_Texture_Trail_Center"), (CComponent**)&	m_pTextureTrailCenter)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Pantheon_Spear"), TEXT("Com_Texture_Spear"), (CComponent**)&m_pTextureSpear)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Pantheon_Spear_Blur"), TEXT("Com_Texture_Blur"), (CComponent**)&m_pTextureBlur)))
 		return E_FAIL;
 
 	return S_OK;

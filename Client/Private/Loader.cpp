@@ -1436,6 +1436,10 @@ _uint CLoader::Load_Pantheon(LEVEL eLevel)
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Pantheon/pantheon_skin06_air_trail.dds")))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Pantheon_Q_Trail_Center"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Pantheon/pantheon_skin06_air_trail_center.dds")))))
+		return E_FAIL;
+
 	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Pantheon_E_Slash"),
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Pantheon/pantheon_skin06_swipe_tar.dds")))))
 		return E_FAIL;
