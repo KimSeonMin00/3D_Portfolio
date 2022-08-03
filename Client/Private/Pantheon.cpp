@@ -34,8 +34,8 @@ HRESULT CPantheon::NativeConstruct(void * pArg)
 	m_eState = STATE_IDLE;
 	m_ePreState = STATE_IDLE;
 
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.f, 0.f, 15.f, 1.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(20.f, 0.f, 15.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.f, 0.f, 15.f, 1.f));
+	/*m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(20.f, 0.f, 15.f, 1.f));*/
 	m_pTransformCom->LookAt(XMVectorSet(0.f, 0.f, 0.f, 1.f));
 	
 	m_pTransformCom->Set_Scaled(XMVectorSet(0.75f, 0.75f, 0.75f, 0.f));

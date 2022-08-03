@@ -29,8 +29,8 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 	if (FAILED(Ready_Layer_Map(TEXT("Layer_Map"))))
 		return E_FAIL;
 
-	/*if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
-		return E_FAIL;*/
+	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
+		return E_FAIL;
 
 
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
@@ -44,7 +44,7 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
-	/*if (m_bBossSpawned == false)
+	if (m_bBossSpawned == false)
 	{
 		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -73,7 +73,7 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 		}
 
 		RELEASE_INSTANCE(CGameInstance);
-	}*/
+	}
 }
 
 HRESULT CLevel_GamePlay::Render()
