@@ -30,6 +30,7 @@
 
 #include "Pantheon.h"
 #include "Pantheon_Q_Effect.h"
+#include "Pantheon_Q_Spear.h"
 #include "Pantheon_Shield.h"
 #include "Pantheon_E_Slash.h"
 #include "Pantheon_E_Swipe.h"
@@ -227,6 +228,10 @@ _uint CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Pantheon_Q_Effect"),
 		CPantheon_Q_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Pantheon_Q_Spear"),
+		CPantheon_Q_Spear::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Pantheon_E_Shield"),
@@ -1413,6 +1418,10 @@ _uint CLoader::Load_Pantheon(LEVEL eLevel)
 
 	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Model_Pantheon_E_Swipe"),
 		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Pantheon/", "pantheon_e_Swipe.fbx", CModel::TYPE_NONANIM, PivotMatrix))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Model_Pantheon_Q_Spear"),
+		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Pantheon/", "Pantheon_Spear.fbx", CModel::TYPE_NONANIM, PivotMatrix))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Pantheon_Spear"),

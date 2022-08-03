@@ -559,6 +559,7 @@ void CPantheon::Q_Skill(_float fTimeDelta)
 			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_Q_Effect"), &m_pTransformCom->Get_WorldMatrix());
+			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Skill"), TEXT("Prototype_GameObject_Pantheon_Q_Spear"), &m_pTransformCom->Get_WorldMatrix());
 
 			RELEASE_INSTANCE(CGameInstance);
 
@@ -591,7 +592,7 @@ void CPantheon::W_Skill(_float fTimeDelta)
 
 	else
 	{
-		m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * 1.5f *fTimeDelta));
+		m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * 10.f *fTimeDelta));
 
 		if (m_pModelCom->Get_Finished())
 		{

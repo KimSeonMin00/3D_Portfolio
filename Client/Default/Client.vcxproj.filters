@@ -160,6 +160,9 @@
     <Filter Include="02.GameObjects\Monster\Boss\Pantheon\Effect\W">
       <UniqueIdentifier>{2a822f65-44a4-461e-a9ea-96c4eba71d6d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Monster\Boss\Pantheon\Effect\Q\Spear">
+      <UniqueIdentifier>{9a689b71-96c2-418f-9e29-e880d39fbf92}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -351,6 +354,9 @@
     <ClInclude Include="..\Public\Pantheon_W_Effect.h">
       <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\W</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Pantheon_Q_Spear.h">
+      <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\Q\Spear</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -526,6 +532,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Pantheon_W_Effect.cpp">
       <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\W</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Pantheon_Q_Spear.cpp">
+      <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\Q\Spear</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
