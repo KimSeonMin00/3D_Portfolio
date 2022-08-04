@@ -57,7 +57,11 @@ private:
 	void	Normal_Pattern(_float fTimeDelta);
 
 	_uint	m_iPattern_AttackTime = 0;
+	_uint  m_iCurrentPattern = 0;
+	_uint  m_iPrePattern = 0;
+
 	_float	m_fInitTime = 0.f;
+	_bool	m_bPatternFinished = true;
 	_bool	m_bStop = false;
 	_bool	m_bSkillFinished = false;
 

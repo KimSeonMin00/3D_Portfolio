@@ -65,11 +65,46 @@ void CPantheon::Tick(_float fTimeDelta)
 		if (m_fInitTime < 5.f)
 		{
 			m_fInitTime += fTimeDelta;		
+			Normal_Pattern(fTimeDelta);
 		}
 
 		else
 		{
-			Normal_Pattern(fTimeDelta);
+			if (m_bPatternFinished == true)
+			{
+				while (true)
+				{
+					m_iCurrentPattern = rand() % 4;
+					if (m_iCurrentPattern != m_iPrePattern)
+					{
+						m_iPrePattern = m_iCurrentPattern;
+						m_bPatternFinished = false;
+						break;
+					}
+				}
+			}
+
+			switch (m_iCurrentPattern)
+			{
+			case 0:
+				Pattern_1(fTimeDelta);
+				break;
+
+			case 1:
+				Pattern_2(fTimeDelta);
+				break;
+
+			case 2:
+				Pattern_3(fTimeDelta);
+				break;
+
+			case 3:
+				Pattern_4(fTimeDelta);
+				break;
+
+			default:
+				break;
+			}
 		}
 	}
 
@@ -938,6 +973,7 @@ void CPantheon::Pattern_1(_float fTimeDelta)
 				m_bIsChanneling = false;
 				m_iPattern_AttackTime = 0;
 				m_fInitTime = 0.f;
+				m_bPatternFinished = true;
 				m_eState = STATE_IDLE;
 			}
 		}
@@ -977,6 +1013,7 @@ void CPantheon::Pattern_2(_float fTimeDelta)
 				m_bIsChanneling = false;
 				m_iPattern_AttackTime = 0;
 				m_fInitTime = 0.f;
+				m_bPatternFinished = true;
 				m_eState = STATE_IDLE;
 			}
 		}
@@ -1011,6 +1048,7 @@ void CPantheon::Pattern_3(_float fTimeDelta)
 				m_bIsChanneling = false;
 				m_iPattern_AttackTime = 0;
 				m_fInitTime = 0.f;
+				m_bPatternFinished = true;
 				m_eState = STATE_IDLE;
 			}
 		}
@@ -1036,6 +1074,7 @@ void CPantheon::Pattern_4(_float fTimeDelta)
 				m_bIsChanneling = false;
 				m_iPattern_AttackTime = 0;
 				m_fInitTime = 0.f;
+				m_bPatternFinished = true;
 				m_eState = STATE_IDLE;
 			}
 		}

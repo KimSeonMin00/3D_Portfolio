@@ -39,27 +39,67 @@ HRESULT CBird::NativeConstruct(void * pArg)
 
 void CBird::Tick(_float fTimeDelta)
 {
-	__super::Tick(fTimeDelta);
 
-	if (m_bearPlayer == false)
+	if (m_pModelCom->Get_IsChange() == false && m_bStop == false)
+		m_pModelCom->Check_Looped(fTimeDelta);
+
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	CTransform* pPlayerTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_Transform"));
+
+	_vector vPlayerPos = pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	m_bPreFly = m_bFly;
+
+	if (XMVectorGetX(XMVector3Length(vPlayerPos - vPos)) <= 3.f)
 	{
-		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+		m_bFly = true;
+	}
 
-		CTransform* pPlayerTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_Transform"));
+	else
+	{
+		m_bFly = false;
+	}
 
-		_vector vPlayerPos =  pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	if (m_bFly != m_bPreFly)
+		m_bIndexChange = true;
 
-		if (XMVectorGetX(XMVector3Length(vPlayerPos - vPos)) <= 3.f)
+	if (m_bIndexChange == true)
+	{
+		if (m_bFly == true)
 		{
 			m_iCurrentIndex = 2;
 			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 			m_pModelCom->Set_Initialize();
-			m_bearPlayer = true;
 		}
 
-		RELEASE_INSTANCE(CGameInstance);
+		else
+		{
+			m_iCurrentIndex = 1;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
+		}
+
+		m_bIndexChange = false;
 	}
+
+	if (m_pModelCom->Get_Finished() == true)
+	{
+		if (m_iCurrentIndex == 2)
+			return;
+		else if (m_iCurrentIndex == 1)
+		{
+			m_iCurrentIndex = 3;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
+		}
+	}
+
+	if (m_pModelCom->Get_IsChange() == false && m_bStop == false)
+		m_pModelCom->Play_Animation(fTimeDelta);
 }
 
 void CBird::Late_Tick(_float fTimeDelta)

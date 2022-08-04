@@ -25,7 +25,10 @@ public:
 	virtual HRESULT Render();
 
 private:
-	_bool		m_bearPlayer = false;
+	_bool		m_bIndexChange= false;
+	_bool     m_bStop = false;
+	_bool     m_bFly = false;
+	_bool     m_bPreFly = false;
 	_uint       m_iCurrentIndex = 3;
 
 public:
