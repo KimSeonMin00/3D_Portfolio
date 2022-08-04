@@ -35,7 +35,6 @@
 #include "Pantheon_E_Slash.h"
 #include "Pantheon_E_Swipe.h"
 #include "Pantheon_W_Effect.h"
-#include "Pantheon_R_Effect.h"
 
 #include "Hit_Effect_Normal.h"
 #include "Monster_HP.h"
@@ -249,10 +248,6 @@ _uint CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Pantheon_W_Effect"),
 		CPantheon_W_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
-		return -1;
-
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Pantheon_R_Effect"),
-		CPantheon_R_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 	//
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Hit_Effect_Normal"),
@@ -1427,14 +1422,6 @@ _uint CLoader::Load_Pantheon(LEVEL eLevel)
 
 	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Model_Pantheon_Q_Spear"),
 		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Pantheon/", "Pantheon_Spear.fbx", CModel::TYPE_NONANIM, PivotMatrix))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Model_Pantheon_R_Wave_Comet"),
-		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Pantheon/", "pantheon_r_wave_comet.fbx", CModel::TYPE_NONANIM, PivotMatrix))))
-		return E_FAIL;
-
-	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Model_Pantheon_R_Wave"),
-		CModel::Create(m_pDevice, m_pDeviceContext, "../Bin/Resources/Meshes/Pantheon/", "pantheon_r_wave.fbx", CModel::TYPE_NONANIM, PivotMatrix))))
 		return E_FAIL;
 
 	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Pantheon_Spear"),

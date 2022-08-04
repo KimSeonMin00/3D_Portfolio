@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\Pantheon.h"
 #include "GameInstance.h"
+#include "Pantheon_Shield.h"
+#include "Player.h"
 
 CPantheon::CPantheon(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
 	:CMonster(pDevice, pDevice_Context)
@@ -40,6 +42,8 @@ HRESULT CPantheon::NativeConstruct(void * pArg)
 	
 	m_pTransformCom->Set_Scaled(XMVectorSet(0.75f, 0.75f, 0.75f, 0.f));
 
+	m_fMoveSpeed = 4.f;
+
 	return S_OK;
 }
 
@@ -59,16 +63,13 @@ void CPantheon::Tick(_float fTimeDelta)
 	{
 		//Key_Input(fTimeDelta);
 		if (m_fInitTime < 5.f)
-			m_fInitTime += fTimeDelta;
+		{
+			m_fInitTime += fTimeDelta;		
+		}
 
 		else
 		{
-		/*	m_eState = STATE_W;
-			m_fInitTime = 0.f;*/
-			if (m_pModelCom->Get_IsChange() == false)
-			{
-				Pattern_1(fTimeDelta);
-			}
+			Normal_Pattern(fTimeDelta);
 		}
 	}
 
@@ -252,6 +253,11 @@ void CPantheon::Check_Loop(_float fTimeDelta)
 			m_pModelCom->Check_Looped(1.5f * fTimeDelta);
 		break;
 
+	case STATE_Q_CHARGE:
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Check_Looped(1.f * fTimeDelta);
+		break;
+
 	case STATE_W:
 		if (m_pModelCom->Get_IsChange() == false)
 			m_pModelCom->Check_Looped(1.5f * fTimeDelta);
@@ -263,6 +269,11 @@ void CPantheon::Check_Loop(_float fTimeDelta)
 		break;
 
 	case STATE_R:
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Check_Looped(fTimeDelta);
+		break;
+
+	case STATE_KNOCKBACK:
 		if (m_pModelCom->Get_IsChange() == false)
 			m_pModelCom->Check_Looped(fTimeDelta);
 		break;
@@ -301,6 +312,10 @@ void CPantheon::Update_State(_float fTimeDelta)
 		Q_Skill(fTimeDelta);
 		break;
 
+	case STATE_Q_CHARGE:
+		Q_Skill_Charge(fTimeDelta);
+		break;
+
 	case STATE_W:
 		W_Skill(fTimeDelta);
 		break;
@@ -311,6 +326,10 @@ void CPantheon::Update_State(_float fTimeDelta)
 
 	case STATE_R:
 		R_Skill(fTimeDelta);
+		break;
+
+	case STATE_KNOCKBACK:
+		Knock_Back(fTimeDelta);
 		break;
 
 	case STATE_DEATH:
@@ -378,6 +397,10 @@ void CPantheon::Idle(_float fTimeDelta)
 			m_iCurrentIndex = 42;
 			break;
 
+		case STATE_Q_CHARGE:
+			m_iCurrentIndex = 47;
+			break;
+
 		case STATE_W:
 			m_iCurrentIndex = 58;
 			break;
@@ -428,6 +451,7 @@ void CPantheon::Idle(_float fTimeDelta)
 void CPantheon::Move(_float fTimeDelta)
 {
 	__super::Chase_Player(fTimeDelta);
+	m_pTransformCom->LookAt(m_vMovePos);
 	m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * fTimeDelta));
 
 	if (m_bStateChange == true)
@@ -454,6 +478,8 @@ void CPantheon::Attack(_float fTimeDelta)
 {
 	if (m_bStateChange == true)
 	{
+		m_bAttackIndex_Change = false;
+
 		if (m_eDoingState == STATE_W)
 		{
 			m_iCurrentIndex = 57;
@@ -572,13 +598,13 @@ void CPantheon::Q_Skill(_float fTimeDelta)
 	}
 }
 
-void CPantheon::W_Skill(_float fTimeDelta)
+void CPantheon::Q_Skill_Charge(_float fTimeDelta)
 {
 	if (m_bStateChange == true)
 	{
 		m_bIsChanneling = true;
 		m_bSkillFinished = false;
-		m_iCurrentIndex = 54;
+		m_iCurrentIndex = 49;
 
 		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
 		if (m_pModelCom->Get_IsChange() == false)
@@ -591,7 +617,74 @@ void CPantheon::W_Skill(_float fTimeDelta)
 
 	else
 	{
-		m_pTransformCom->Go_Straight(_double(m_fMoveSpeed * 10.f *fTimeDelta));
+		if (m_pModelCom->Get_Finished())
+		{
+			if (m_iCurrentIndex == 49)
+			{
+				m_iCurrentIndex = 44;
+				m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+				m_pModelCom->Set_Initialize();
+			}
+
+			else if (m_iCurrentIndex == 44)
+			{
+				m_eState = STATE_IDLE;
+				CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Skill"), TEXT("Prototype_GameObject_Pantheon_Q_Spear"), &m_pTransformCom->Get_WorldMatrix());
+
+				m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(30.f) / XMConvertToRadians(60.f));
+
+				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Skill"), TEXT("Prototype_GameObject_Pantheon_Q_Spear"), &m_pTransformCom->Get_WorldMatrix());
+
+				m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(-60.f) / XMConvertToRadians(60.f));
+
+				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Skill"), TEXT("Prototype_GameObject_Pantheon_Q_Spear"), &m_pTransformCom->Get_WorldMatrix());
+
+				m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(30.f) / XMConvertToRadians(60.f));
+
+				RELEASE_INSTANCE(CGameInstance);
+				m_fInitTime = 0.f;
+				m_bSkillFinished = true;
+				return;
+			}		
+		}
+
+		if (m_iCurrentIndex == 49)
+		{
+			__super::Chase_Player(fTimeDelta);
+			m_pTransformCom->LookAt(m_vMovePos);
+		}
+
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Play_Animation(fTimeDelta);
+	}
+}
+
+void CPantheon::W_Skill(_float fTimeDelta)
+{
+	if (m_bStateChange == true)
+	{
+		m_bIsChanneling = true;
+		m_bSkillFinished = false;
+		m_iCurrentIndex = 54;
+
+		__super::Chase_Player(fTimeDelta);
+		m_pTransformCom->LookAt(m_vMovePos);
+		m_fWDash = m_fMoveDistTotal;
+
+		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
+		if (m_pModelCom->Get_IsChange() == false)
+		{
+			m_bStateChange = false;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
+		}
+	}
+
+	else
+	{
+		m_pTransformCom->Go_Straight(_double(m_fWDash * 2.f * fTimeDelta));
 
 		if (m_pModelCom->Get_Finished())
 		{
@@ -620,6 +713,8 @@ void CPantheon::E_Skill(_float fTimeDelta)
 	{
 		m_bIsChanneling = true;
 		m_bSkillFinished = false;
+		__super::Chase_Player(fTimeDelta);
+		m_pTransformCom->LookAt(m_vMovePos);
 		m_iCurrentIndex = 59;
 
 		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
@@ -629,6 +724,13 @@ void CPantheon::E_Skill(_float fTimeDelta)
 			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_E_Shield"), &m_pTransformCom->Get_WorldMatrix());
+
+			_uint iIndex = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_Effect")) - 1;
+
+			m_pShield = pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Effect"), iIndex);
+
+			Safe_AddRef(m_pShield);
+
 			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_E_Slash"), &m_pTransformCom->Get_WorldMatrix());
 
 			RELEASE_INSTANCE(CGameInstance);
@@ -654,20 +756,24 @@ void CPantheon::E_Skill(_float fTimeDelta)
 				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_E_Swipe"), &m_pTransformCom->Get_WorldMatrix());
 
 				RELEASE_INSTANCE(CGameInstance);
+
 				m_bSkillFinished = true;
 				return;
 			}
 
 			if (m_fE_CastingTime <= 3.f)
-				m_iCurrentIndex = 74;
+				m_iCurrentIndex = 69;
 			else
+			{
+				Safe_Release(m_pShield);
 				m_iCurrentIndex = 26;
+			}
 
 			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 			m_pModelCom->Set_Initialize();
 		}
 
-		if (m_iCurrentIndex == 74)
+		if (m_iCurrentIndex == 69)
 		{
 			m_f_E_SlashTime += fTimeDelta;
 
@@ -681,6 +787,10 @@ void CPantheon::E_Skill(_float fTimeDelta)
 
 				m_f_E_SlashTime = 0.f;
 			}
+
+			__super::Chase_Player(fTimeDelta);
+			m_pTransformCom->Go_Direction(m_vMoveDir, 4.f * fTimeDelta);
+			((CPantheon_Shield*)m_pShield)->Set_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		}
 
 		if (m_pModelCom->Get_IsChange() == false)
@@ -690,6 +800,56 @@ void CPantheon::E_Skill(_float fTimeDelta)
 
 void CPantheon::R_Skill(_float fTimeDelta)
 {
+}
+
+void CPantheon::Knock_Back(_float fTimeDelta)
+{
+	if (m_bStateChange == true)
+	{
+		m_bIsChanneling = true;
+		m_bSkillFinished = false;
+		m_iCurrentIndex = 8;
+
+		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
+		if (m_pModelCom->Get_IsChange() == false)
+		{
+			m_bStateChange = false;
+			m_fKnockBackTime = 0.f;
+			m_bKnockBack = false;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
+		}
+	}
+
+	else
+	{
+		if (m_pModelCom->Get_Finished())
+		{
+			m_eState = STATE_IDLE;
+			m_bSkillFinished = true;
+
+			return;
+		}
+
+		if (m_bKnockBack == false)
+		{
+			m_fKnockBackTime += fTimeDelta;
+			if (m_fKnockBackTime >= 0.3f)
+			{
+				CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+				((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Knock_Back(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+				RELEASE_INSTANCE(CGameInstance);
+
+				m_bKnockBack = true;
+			}
+
+		}
+
+		if (m_pModelCom->Get_IsChange() == false)
+			m_pModelCom->Play_Animation(fTimeDelta);
+	}
 }
 
 void CPantheon::Death(_float fTimeDelta)
@@ -782,6 +942,121 @@ void CPantheon::Pattern_1(_float fTimeDelta)
 			}
 		}
 	}
+}
+
+void CPantheon::Pattern_2(_float fTimeDelta)
+{
+	if (m_bIsChanneling == false)
+	{
+		m_eState = STATE_MOVE;
+		__super::Chase_Player(fTimeDelta);
+		m_pTransformCom->LookAt(m_vMovePos);
+		m_iPattern_AttackTime = 0;
+		if (m_fMoveDistTotal <= 3.f)
+		{
+			m_eState = STATE_Q;
+			m_iPattern_AttackTime++;
+			m_bIsChanneling = true;
+		}
+	}
+	else
+	{
+		if (m_iPattern_AttackTime == 1)
+		{
+			if (m_bSkillFinished == true)
+			{
+				m_eState = STATE_KNOCKBACK;
+				m_iPattern_AttackTime++;
+			}
+		}
+
+		else if (m_iPattern_AttackTime == 2)
+		{
+			if (m_bSkillFinished == true)
+			{
+				m_bIsChanneling = false;
+				m_iPattern_AttackTime = 0;
+				m_fInitTime = 0.f;
+				m_eState = STATE_IDLE;
+			}
+		}
+	}
+}
+
+void CPantheon::Pattern_3(_float fTimeDelta)
+{
+	if (m_bIsChanneling == false)
+	{
+		m_eState = STATE_E;
+		m_iPattern_AttackTime = 0;
+		m_iPattern_AttackTime++;
+		m_bIsChanneling = true;
+
+	}
+	else
+	{
+		if (m_iPattern_AttackTime == 1)
+		{
+			if (m_bSkillFinished == true)
+			{			
+				m_eState = STATE_W;
+				m_iPattern_AttackTime++;
+			}
+		}
+
+		else if (m_iPattern_AttackTime == 2)
+		{
+			if (m_bSkillFinished == true)
+			{
+				m_bIsChanneling = false;
+				m_iPattern_AttackTime = 0;
+				m_fInitTime = 0.f;
+				m_eState = STATE_IDLE;
+			}
+		}
+	}
+}
+
+void CPantheon::Pattern_4(_float fTimeDelta)
+{
+	if (m_bIsChanneling == false)
+	{
+		m_eState = STATE_Q_CHARGE;
+		m_iPattern_AttackTime = 0;
+		m_iPattern_AttackTime++;
+		m_bIsChanneling = true;
+
+	}
+	else
+	{
+		if (m_iPattern_AttackTime == 1)
+		{
+			if (m_bSkillFinished == true)
+			{
+				m_bIsChanneling = false;
+				m_iPattern_AttackTime = 0;
+				m_fInitTime = 0.f;
+				m_eState = STATE_IDLE;
+			}
+		}
+	}
+}
+
+void CPantheon::Normal_Pattern(_float fTimeDelta)
+{
+	__super::Chase_Player(fTimeDelta);
+
+	if (m_fMoveDistTotal <= 3.f)
+		m_eState = STATE_ATTACK;
+	else
+	{	
+		if (m_eState == STATE_ATTACK && m_bAttackIndex_Change == false)
+			m_eState = STATE_ATTACK;
+
+		else
+			m_eState = STATE_MOVE;
+	}
+
 }
 
 CPantheon * CPantheon::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const CTransform::TRANSFORMDESC & TransformDesc)

@@ -63,6 +63,17 @@ public:
 
 	void Damaged(_float fDamage);
 
+	void Knock_Back(_vector pPos)
+	{
+		m_bKnockBack = true;
+
+		pPos = XMVectorSetY(pPos, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
+		m_pTransformCom->LookAt(pPos);
+		m_fKnockBackTime = 0.f;
+
+		m_eState = STATE_IDLE;
+	}
+
 private:
 	void	Key_Input(_float fTimeDelta);
 	_bool	Cast_R(_float fTimeDelta);
@@ -151,6 +162,8 @@ private:
 
 	_bool			m_bFall = false;
 	_bool			m_bGrab = false;
+	_bool			m_bKnockBack = false;
+	_float          m_fKnockBackTime = 0.f;
 
 private:
 	list<_uint*>			m_MonsterIndexList;

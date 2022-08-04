@@ -24,6 +24,13 @@ public:
 	virtual void Late_Tick(_float fTimeDelta);
 	virtual HRESULT Render();
 
+public:
+	void	Set_Pos(_vector vPos)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos + XMVectorSet(0.f, 1.f, 0.f, 0.f));
+		m_pTransformCom->Go_Left(2.f);
+	}
+
 private:
 	_float		m_fLiveTime = 0.f;
 

@@ -369,9 +369,6 @@
     <ClInclude Include="..\Public\Duckie.h">
       <Filter>02.GameObjects\MapObject\Duvkie</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Pantheon_R_Effect.h">
-      <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\R</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -385,9 +382,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Loader.cpp">
       <Filter>01.Levels\Loading\Loader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Level_GamePlay.cpp">
-      <Filter>01.Levels\GamePlay</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_Loading.cpp">
       <Filter>01.Levels\Loading</Filter>
@@ -551,8 +545,8 @@
     <ClCompile Include="..\Private\Duckie.cpp">
       <Filter>02.GameObjects\MapObject\Duvkie</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Pantheon_R_Effect.cpp">
-      <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\R</Filter>
+    <ClCompile Include="..\Private\Level_GamePlay.cpp">
+      <Filter>01.Levels\GamePlay</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

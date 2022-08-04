@@ -123,6 +123,8 @@ void CMonster::Chase_Player(_float fTimeDelta)
 
 	m_vMovePos = vPlayerPos;
 
+	m_vMoveDir = XMVector3Normalize(vPlayerPos - vPos);
+
 	m_fMoveDistTotal = XMVectorGetX(XMVector3Length(vPlayerPos - vPos));
 
 	m_fMoveDist = 0.f;

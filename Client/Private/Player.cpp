@@ -71,8 +71,18 @@ void CPlayer::Tick(_float fTimeDelta)
 {
 	if (m_bGrab == false)
 	{
-		Key_Input(fTimeDelta);
+		if (m_bKnockBack == false)
+		{
+			Key_Input(fTimeDelta);
+		}
+		else
+		{
+			m_fKnockBackTime += fTimeDelta;
+			m_pTransformCom->Go_Backward(20.f * fTimeDelta);
 
+			if (m_fKnockBackTime >= 0.2f)
+				m_bKnockBack = false;
+		}
 		Change_State(fTimeDelta);
 
 		Update_State(fTimeDelta);
