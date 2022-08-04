@@ -32,7 +32,7 @@ HRESULT CBird::NativeConstruct(void * pArg)
 	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
 
 	m_iObjectIndex = 0;
-	m_pModelCom->SetUp_AnimationIndex(3);
+	m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 
 	return S_OK;
 }
@@ -40,6 +40,26 @@ HRESULT CBird::NativeConstruct(void * pArg)
 void CBird::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+
+	if (m_bearPlayer == false)
+	{
+		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+		CTransform* pPlayerTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_Transform"));
+
+		_vector vPlayerPos =  pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+		if (XMVectorGetX(XMVector3Length(vPlayerPos - vPos)) <= 3.f)
+		{
+			m_iCurrentIndex = 2;
+			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
+			m_pModelCom->Set_Initialize();
+			m_bearPlayer = true;
+		}
+
+		RELEASE_INSTANCE(CGameInstance);
+	}
 }
 
 void CBird::Late_Tick(_float fTimeDelta)

@@ -55,14 +55,34 @@ void CPantheon_Q_Spear::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
-	m_fLiveTime += fTimeDelta;
+	
 
-	m_pTransformCom->Go_Direction(m_pTransformCom->Get_State(CTransform::STATE_UP), 10.f * fTimeDelta);
-	m_RectMatrix.r[3] = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	m_fTexMove += 2.f * fTimeDelta;
+	if (m_bStop == false)
+	{
+		m_pTransformCom->Go_Direction(m_pTransformCom->Get_State(CTransform::STATE_UP), 30.f * fTimeDelta);
+		m_RectMatrix.r[3] = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		m_fTexMove += 2.f * fTimeDelta;
+		m_fMoveDist += 30.f * fTimeDelta;
+		if (m_fMoveDist >= 10.f)
+		{
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f));
+			m_bStop = true;
+		}
+	}
+	else
+	{
+		m_fLiveTime += fTimeDelta;
+		if (m_fLiveTime >= 1.f)
+		{
+			m_bDead = true;
+		}
 
-	if (m_fLiveTime >= 1.f)
-		m_bDead = true;
+		else if(m_fLiveTime >= 0.5f)
+		{
+			m_pTransformCom->Go_Direction(XMVectorSet(0.f, -1.f, 0.f, 0.f), 2.f * fTimeDelta);
+		}
+	}
+	
 }
 
 void CPantheon_Q_Spear::Late_Tick(_float fTimeDelta)
@@ -96,9 +116,12 @@ HRESULT CPantheon_Q_Spear::Render()
 
 	m_pModel_Spear->Render(0);
 
-	Render_Spear();
+	if (m_bStop == false)
+	{
+		Render_Spear();
 
-	Render_Trail();
+		Render_Trail();
+	}
 
 	return S_OK;
 }

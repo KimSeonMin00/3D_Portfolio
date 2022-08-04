@@ -32,6 +32,8 @@ private:
 
 private:
 	_float		m_fLiveTime = 0.f;
+	_float      m_fMoveDist = 0.f;
+	_bool		m_bStop = false;
 
 	_matrix		m_RectMatrix;
 	_float      m_fTexMove = 0.f;

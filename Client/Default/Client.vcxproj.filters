@@ -163,6 +163,15 @@
     <Filter Include="02.GameObjects\Monster\Boss\Pantheon\Effect\Q\Spear">
       <UniqueIdentifier>{9a689b71-96c2-418f-9e29-e880d39fbf92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\MapObject\Owl">
+      <UniqueIdentifier>{f43cceb0-c5d6-4e64-8983-c428ec19f3ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\MapObject\Duck">
+      <UniqueIdentifier>{16985351-8221-4b11-8d56-14d023a08771}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\MapObject\Duvkie">
+      <UniqueIdentifier>{aaa0c913-3204-42e6-8442-8b548784dfbd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -336,16 +345,7 @@
     <ClInclude Include="..\Public\Pantheon_E_Slash.h">
       <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\E</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Duck.h">
-      <Filter>02.GameObjects\MapObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Duckie.h">
-      <Filter>02.GameObjects\MapObject</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\MapObject_Anim.h">
-      <Filter>02.GameObjects\MapObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Owl.h">
       <Filter>02.GameObjects\MapObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Pantheon_E_Swipe.h">
@@ -356,6 +356,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\Pantheon_Q_Spear.h">
       <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\Q\Spear</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Owl.h">
+      <Filter>02.GameObjects\MapObject\Owl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Duck.h">
+      <Filter>02.GameObjects\MapObject\Duck</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Duckie.h">
+      <Filter>02.GameObjects\MapObject\Duvkie</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -518,15 +527,6 @@
     <ClCompile Include="..\Private\MapObject_Anim.cpp">
       <Filter>02.GameObjects\MapObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Owl.cpp">
-      <Filter>02.GameObjects\MapObject</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Duck.cpp">
-      <Filter>02.GameObjects\MapObject</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Duckie.cpp">
-      <Filter>02.GameObjects\MapObject</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Pantheon_E_Swipe.cpp">
       <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\E</Filter>
     </ClCompile>
@@ -535,6 +535,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Pantheon_Q_Spear.cpp">
       <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\Q\Spear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Owl.cpp">
+      <Filter>02.GameObjects\MapObject\Owl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Duck.cpp">
+      <Filter>02.GameObjects\MapObject\Duck</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Duckie.cpp">
+      <Filter>02.GameObjects\MapObject\Duvkie</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

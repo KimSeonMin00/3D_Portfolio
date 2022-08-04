@@ -24,6 +24,10 @@ public:
 	virtual void Late_Tick(_float fTimeDelta);
 	virtual HRESULT Render();
 
+private:
+	_bool		m_bearPlayer = false;
+	_uint       m_iCurrentIndex = 3;
+
 public:
 	static CBird* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const CTransform::TRANSFORMDESC& TransformDesc);
 	virtual CGameObject* Clone(void* pArg);
