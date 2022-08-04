@@ -139,13 +139,14 @@ PS_OUT PS_MAIN_MOVE(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
+	float		fAlpha = In.vTexUV.x;
 	float2 vTexUVMove = In.vTexUV + g_vMoveTex;
 
 	vector		vMtrlAlpha = g_AlphaTexture.Sample(DefaultSampler, vTexUVMove);
 
 	Out.vColor = g_vColor * vMtrlAlpha;
 
-	Out.vColor.a = vMtrlAlpha.a * g_Alpha;
+	Out.vColor.a = vMtrlAlpha.a * g_Alpha * fAlpha * fAlpha;
 
 	return Out;
 }
@@ -193,7 +194,7 @@ technique11 DefaultTechinque
 
 		VertexShader = compile vs_5_0 VS_MAIN_RECT();
 		GeometryShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN_EFFECT();
+		PixelShader = compile ps_5_0 PS_MAIN_MOVE();
 	}
 
 }

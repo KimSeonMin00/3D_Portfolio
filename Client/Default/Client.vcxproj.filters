@@ -172,6 +172,9 @@
     <Filter Include="02.GameObjects\MapObject\Duvkie">
       <UniqueIdentifier>{aaa0c913-3204-42e6-8442-8b548784dfbd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Monster\Boss\Pantheon\Effect\R">
+      <UniqueIdentifier>{65ed3c7f-6b24-4597-9d83-09e955465d02}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -366,6 +369,9 @@
     <ClInclude Include="..\Public\Duckie.h">
       <Filter>02.GameObjects\MapObject\Duvkie</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Pantheon_R_Effect.h">
+      <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\R</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -544,6 +550,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Duckie.cpp">
       <Filter>02.GameObjects\MapObject\Duvkie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Pantheon_R_Effect.cpp">
+      <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\R</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
