@@ -26,6 +26,9 @@ public:
 	HRESULT SetUp_ConstantTable();
 
 private:
+	CCollider*		m_pQ_Hitbox = nullptr;
+
+private:
 	_float4x4		m_PivotMatrix;
 
 private:

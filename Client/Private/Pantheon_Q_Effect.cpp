@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Pantheon_Q_Effect.h"
 #include "GameInstance.h"
+#include "Player.h"
 
 CPantheon_Q_Effect::CPantheon_Q_Effect(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
 	:CGameObject(pDevice, pDevice_Context)

@@ -271,7 +271,7 @@ _bool CCollider::Collision_Sphere(CCollider * pTargetCollider)
 #ifdef _DEBUG
 HRESULT CCollider::Render()
 {
-	/*m_pDeviceContext->GSSetShader(nullptr, nullptr, 0);
+	m_pDeviceContext->GSSetShader(nullptr, nullptr, 0);
 
 	CPipeline*		pPipeline = GET_INSTANCE(CPipeline);
 
@@ -301,7 +301,7 @@ HRESULT CCollider::Render()
 
 	m_pBatch->End();
 
-	RELEASE_INSTANCE(CPipeline);*/
+	RELEASE_INSTANCE(CPipeline);
 
 	return S_OK;
 }

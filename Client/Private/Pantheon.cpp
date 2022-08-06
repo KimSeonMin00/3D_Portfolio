@@ -115,6 +115,11 @@ void CPantheon::Tick(_float fTimeDelta)
 
 	m_pAABBCom->Update(m_pTransformCom->Get_WorldMatrix());
 	m_pSphereCom->Update(m_pTransformCom->Get_WorldMatrix());
+
+	_matrix WorldMat = m_pTransformCom->Get_WorldMatrix();
+	WorldMat.r[3] += XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)) * 3.f;
+
+	m_pQ_Hitbox->Update(WorldMat);
 }
 
 void CPantheon::Late_Tick(_float fTimeDelta)
@@ -149,6 +154,8 @@ HRESULT CPantheon::Render()
 		m_pModelCom->Render(i);
 	}
 
+	m_pQ_Hitbox->Render();
+
 	return S_OK;
 }
 
@@ -182,6 +189,14 @@ HRESULT CPantheon::SetUp_Components()
 
 
 	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_HitSphere"), (CComponent**)&m_pSphereCom, &ColliderDesc)))
+		return E_FAIL;
+
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+
+	ColliderDesc.vScale = _float3(1.f, 1.f, 6.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Collider_OBB"), TEXT("Com_HitBox_Q"), (CComponent**)&m_pQ_Hitbox, &ColliderDesc)))
 		return E_FAIL;
 }
 
@@ -514,6 +529,8 @@ void CPantheon::Attack(_float fTimeDelta)
 	if (m_bStateChange == true)
 	{
 		m_bAttackIndex_Change = false;
+		m_bHitPlayer = false;
+		m_fHitTime = 0.f;
 
 		if (m_eDoingState == STATE_W)
 		{
@@ -577,6 +594,8 @@ void CPantheon::Attack(_float fTimeDelta)
 
 					m_bAttackIndex_Change = true;
 					m_iCurrentIndex = m_iAttackIndex;
+					m_bHitPlayer = false;
+					m_fHitTime = 0.f;
 					return;
 				}
 
@@ -587,6 +606,23 @@ void CPantheon::Attack(_float fTimeDelta)
 					m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 					m_pModelCom->Set_Initialize();
 				}
+			}
+		}
+
+		if (m_bHitPlayer == false)
+		{
+			m_fHitTime += fTimeDelta;
+			if (m_fHitTime >= 0.5f)
+			{
+				m_bHitPlayer = true;
+
+				CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+				((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
+
+				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Hit_Effect_Normal"), &m_vMovePos);
+
+				RELEASE_INSTANCE(CGameInstance);
 			}
 		}
 
@@ -615,11 +651,20 @@ void CPantheon::Q_Skill(_float fTimeDelta)
 	else
 	{
 		if (m_pModelCom->Get_Finished())
-		{
+		{	
 			m_eState = STATE_IDLE;
 			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_Q_Effect"), &m_pTransformCom->Get_WorldMatrix());
+
+			if (((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pQ_Hitbox))
+			{
+				((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
+
+				__super::Chase_Player(fTimeDelta);
+
+				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Hit_Effect_Normal"), &m_vMovePos);
+			}
 
 			RELEASE_INSTANCE(CGameInstance);
 
@@ -1125,4 +1170,6 @@ CGameObject * CPantheon::Clone(void * pArg)
 void CPantheon::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pQ_Hitbox);
 }
