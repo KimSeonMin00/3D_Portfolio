@@ -863,6 +863,23 @@ void CPantheon::E_Skill(_float fTimeDelta)
 
 				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_E_Slash"), &m_pTransformCom->Get_WorldMatrix());
 
+				if(m_fMoveDistTotal <= 6.f)
+				{
+					_vector vLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+					_vector vPlayer = XMVector3Normalize(m_vMoveDir);
+
+					if (XMVectorGetX(XMVector3Dot(vLook, vPlayer)) >= cos(XMConvertToRadians(30.f)))
+					{
+						((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
+
+						CTransform* pPlayer_Transform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_Transform"));
+
+						_vector vPlayerPos = pPlayer_Transform->Get_State(CTransform::STATE_POSITION);
+
+						pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Hit_Effect_Normal"), &vPlayerPos);
+					}
+				}
+
 				RELEASE_INSTANCE(CGameInstance);
 
 				m_f_E_SlashTime = 0.f;

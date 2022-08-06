@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Pantheon_W_Effect.h"
 #include "GameInstance.h"
+#include "Player.h"
 
 CPantheon_W_Effect::CPantheon_W_Effect(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
 	:CGameObject(pDevice, pDevice_Context)
@@ -71,6 +72,23 @@ void CPantheon_W_Effect::Tick(_float fTimeDelta)
 		pFire->m_fScale -= 4.f * fTimeDelta;
 		pFire->m_vPos += pFire->m_vDir * fTimeDelta * 2.f;
 	}
+
+	m_pSphere->Update(m_pTransformCom->Get_WorldMatrix());
+
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pSphere))
+	{
+		((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
+
+		CTransform* pPlayer_Transform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_Transform"));
+
+		_vector vPlayerPos = pPlayer_Transform->Get_State(CTransform::STATE_POSITION);
+
+		pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Hit_Effect_Normal"), &vPlayerPos);
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CPantheon_W_Effect::Late_Tick(_float fTimeDelta)
@@ -92,6 +110,8 @@ HRESULT CPantheon_W_Effect::Render()
 	Render_Slam();
 
 	Render_Fire();
+
+	m_pSphere->Render();
 
 	return S_OK;
 }
@@ -241,6 +261,17 @@ HRESULT CPantheon_W_Effect::SetUp_Components()
 
 	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Pantheon_Fire"), TEXT("Com_Texture_Fire"), (CComponent**)&m_pTexture_Fire)))
 		return E_FAIL;
+
+	CCollider::COLLIDERDESC		ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+
+	ColliderDesc.vScale = _float3(3.f, 3.f, 3.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vAngle = _float3(0.f, 0.0f, 0.0f);
+
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_Hit_Sphere"), (CComponent**)&m_pSphere, &ColliderDesc)))
+		return E_FAIL;
+
 
 	return S_OK;
 }
