@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Pantheon_Q_Spear.h"
 #include "GameInstance.h"
+#include "Player.h"
 
 CPantheon_Q_Spear::CPantheon_Q_Spear(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
 	:CGameObject(pDevice, pDevice_Context)
@@ -82,7 +83,24 @@ void CPantheon_Q_Spear::Tick(_float fTimeDelta)
 			m_pTransformCom->Go_Direction(XMVectorSet(0.f, -1.f, 0.f, 0.f), 2.f * fTimeDelta);
 		}
 	}
+
+	m_pSphereCom->Update(m_pTransformCom->Get_WorldMatrix());
 	
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pSphereCom))
+	{
+		((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
+
+		CTransform* pPlayer_Transform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_Transform"));
+
+		_vector vPlayerPos = pPlayer_Transform->Get_State(CTransform::STATE_POSITION);
+
+		pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Hit_Effect_Normal"), &vPlayerPos);
+	}
+
+	RELEASE_INSTANCE(CGameInstance);
+
 }
 
 void CPantheon_Q_Spear::Late_Tick(_float fTimeDelta)
@@ -122,6 +140,8 @@ HRESULT CPantheon_Q_Spear::Render()
 
 		Render_Trail();
 	}
+
+	m_pSphereCom->Render();
 
 	return S_OK;
 }
@@ -265,6 +285,16 @@ HRESULT CPantheon_Q_Spear::SetUp_Components()
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Pantheon_Spear_Blur"), TEXT("Com_Texture_Blur"), (CComponent**)&m_pTextureBlur)))
+		return E_FAIL;
+
+	CCollider::COLLIDERDESC		ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+
+	ColliderDesc.vScale = _float3(1.f, 1.f, 1.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vAngle = _float3(0.f, 0.0f, 0.0f);
+
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_Hit_Sphere"), (CComponent**)&m_pSphereCom, &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;

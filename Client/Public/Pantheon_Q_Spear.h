@@ -8,6 +8,7 @@ class CRenderer;
 class CModel;
 class CVIBuffer_Rect;
 class CTexture;
+class CCollider;
 END
 
 BEGIN(Client)
@@ -48,6 +49,7 @@ private:
 	CTexture*						m_pTextureTrailCenter = nullptr;
 	CTexture*						m_pTextureSpear = nullptr;
 	CTexture*						m_pTextureBlur = nullptr;
+	CCollider*						m_pSphereCom = nullptr;
 
 public:
 	HRESULT SetUp_Components();
