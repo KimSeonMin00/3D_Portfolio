@@ -620,7 +620,7 @@ void CPantheon::Attack(_float fTimeDelta)
 
 				((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
 
-				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Hit_Effect_Normal"), &m_vMovePos);
+				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_Hit_Effect"), &m_vMovePos);
 
 				RELEASE_INSTANCE(CGameInstance);
 			}

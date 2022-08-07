@@ -187,6 +187,7 @@
     <ClInclude Include="..\Public\Pantheon.h" />
     <ClInclude Include="..\Public\Pantheon_E_Slash.h" />
     <ClInclude Include="..\Public\Pantheon_E_Swipe.h" />
+    <ClInclude Include="..\Public\Pantheon_Hit_Effect.h" />
     <ClInclude Include="..\Public\Pantheon_Q_Effect.h" />
     <ClInclude Include="..\Public\Pantheon_Q_Spear.h" />
     <ClInclude Include="..\Public\Pantheon_Shield.h" />
@@ -250,6 +251,7 @@
     <ClCompile Include="..\Private\Pantheon.cpp" />
     <ClCompile Include="..\Private\Pantheon_E_Slash.cpp" />
     <ClCompile Include="..\Private\Pantheon_E_Swipe.cpp" />
+    <ClCompile Include="..\Private\Pantheon_Hit_Effect.cpp" />
     <ClCompile Include="..\Private\Pantheon_Q_Effect.cpp" />
     <ClCompile Include="..\Private\Pantheon_Q_Spear.cpp" />
     <ClCompile Include="..\Private\Pantheon_Shield.cpp" />

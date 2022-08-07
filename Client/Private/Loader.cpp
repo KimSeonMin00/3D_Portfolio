@@ -35,6 +35,7 @@
 #include "Pantheon_E_Slash.h"
 #include "Pantheon_E_Swipe.h"
 #include "Pantheon_W_Effect.h"
+#include "Pantheon_Hit_Effect.h"
 
 #include "Hit_Effect_Normal.h"
 #include "Monster_HP.h"
@@ -248,6 +249,10 @@ _uint CLoader::Loading_ForGamePlay()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Pantheon_W_Effect"),
 		CPantheon_W_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Pantheon_Hit_Effect"),
+		CPantheon_Hit_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 	//
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Hit_Effect_Normal"),
@@ -1462,6 +1467,14 @@ _uint CLoader::Load_Pantheon(LEVEL eLevel)
 
 	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Pantheon_Fire"),
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Pantheon/pantheon_skin06_fire_mult_%d.dds"), 16))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Pantheon_Hit_Flash"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Pantheon/pantheon_skin_06_tar_flash.dds")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Pantheon_Hit_Slash"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Pantheon/pantheon_skin06_hit_flash_spikes_yellow.dds")))))
 		return E_FAIL;
 
 	Safe_Release(pGameInstance);

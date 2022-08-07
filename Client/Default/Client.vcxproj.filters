@@ -175,6 +175,9 @@
     <Filter Include="02.GameObjects\Monster\Boss\Pantheon\Effect\R">
       <UniqueIdentifier>{65ed3c7f-6b24-4597-9d83-09e955465d02}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Monster\Boss\Pantheon\Effect\Attack">
+      <UniqueIdentifier>{bebffd29-7021-485d-8db1-067fb0c50f9f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -369,6 +372,9 @@
     <ClInclude Include="..\Public\Duckie.h">
       <Filter>02.GameObjects\MapObject\Duvkie</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Pantheon_Hit_Effect.h">
+      <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\Attack</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -547,6 +553,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_GamePlay.cpp">
       <Filter>01.Levels\GamePlay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Pantheon_Hit_Effect.cpp">
+      <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\Attack</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
