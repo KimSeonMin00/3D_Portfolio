@@ -375,6 +375,9 @@
     <ClInclude Include="..\Public\Pantheon_Hit_Effect.h">
       <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\Attack</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Pantheon_Q_Hit_Effect.h">
+      <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\Q</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -556,6 +559,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Pantheon_Hit_Effect.cpp">
       <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Pantheon_Q_Hit_Effect.cpp">
+      <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\Q</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

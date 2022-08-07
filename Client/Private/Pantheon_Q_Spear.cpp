@@ -96,7 +96,7 @@ void CPantheon_Q_Spear::Tick(_float fTimeDelta)
 
 		_vector vPlayerPos = pPlayer_Transform->Get_State(CTransform::STATE_POSITION);
 
-		pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Hit_Effect_Normal"), &vPlayerPos);
+		pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_Q_Hit_Effect"), &vPlayerPos);
 	}
 
 	RELEASE_INSTANCE(CGameInstance);

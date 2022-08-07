@@ -663,7 +663,7 @@ void CPantheon::Q_Skill(_float fTimeDelta)
 
 				__super::Chase_Player(fTimeDelta);
 
-				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Hit_Effect_Normal"), &m_vMovePos);
+				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_Q_Hit_Effect"), &m_vMovePos);
 			}
 
 			RELEASE_INSTANCE(CGameInstance);
