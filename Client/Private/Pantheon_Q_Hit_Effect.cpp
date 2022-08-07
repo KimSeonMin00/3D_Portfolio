@@ -41,15 +41,15 @@ void CPantheon_Q_Hit_Effect::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
-	m_fFlareScale += 10.f * fTimeDelta;
-	m_fFlareAlpha -= 5.f * fTimeDelta;
+	m_fFlareScale += 20.f * fTimeDelta;
+	m_fFlareAlpha -= 4.f * fTimeDelta;
 
 	//Cross
-	m_fCrossScale += 10.f * fTimeDelta;
+	m_fCrossScale += 20.f * fTimeDelta;
 
 	//Spark
-	m_fSparkScale += 10.f * fTimeDelta;
-	m_fSparkAlpha -= 10.f * fTimeDelta;
+	m_fSparkScale += 20.f * fTimeDelta;
+	m_fSparkAlpha -= 8.f * fTimeDelta;
 
 	if (m_fFlareAlpha <= 0.f)
 		m_bDead = true;

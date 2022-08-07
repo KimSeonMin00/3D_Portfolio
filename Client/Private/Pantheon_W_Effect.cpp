@@ -75,20 +75,19 @@ void CPantheon_W_Effect::Tick(_float fTimeDelta)
 
 	m_pSphere->Update(m_pTransformCom->Get_WorldMatrix());
 
-	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-
-	if (((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pSphere))
+	if (m_bPlayer_Hit == false)
 	{
-		((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
+		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-		CTransform* pPlayer_Transform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_Transform"));
+		if (((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pSphere))
+		{
+			((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
 
-		_vector vPlayerPos = pPlayer_Transform->Get_State(CTransform::STATE_POSITION);
+			m_bPlayer_Hit = true;
+		}
 
-		pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Hit_Effect_Normal"), &vPlayerPos);
+		RELEASE_INSTANCE(CGameInstance);
 	}
-
-	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CPantheon_W_Effect::Late_Tick(_float fTimeDelta)

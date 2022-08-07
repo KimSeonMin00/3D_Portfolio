@@ -43,6 +43,8 @@ private:
 	HRESULT Render_Fire();
 
 private:
+	_bool	m_bPlayer_Hit = false;
+
 	_float  m_fLiveTime = 0.f;
 	_float  m_fSlamX = 2.f;
 

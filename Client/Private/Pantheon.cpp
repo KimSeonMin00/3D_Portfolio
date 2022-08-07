@@ -574,9 +574,25 @@ void CPantheon::Attack(_float fTimeDelta)
 				{
 					m_bW_3Attack = false;
 					m_iAttackIndex = 0;
+					m_bHitPlayer = false;
+					m_fHitTime = 0.f;
 					m_iCurrentIndex = m_iAttackIndex;
 					m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 					m_pModelCom->Set_Initialize();
+				}
+
+				m_fHitTime += fTimeDelta;
+				if (m_fHitTime >= 0.5f)
+				{
+					CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+					((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
+
+					pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_Hit_Effect"), &m_vMovePos);
+
+					RELEASE_INSTANCE(CGameInstance);
+
+					m_fHitTime = 0.;
 				}
 			}
 		}
@@ -596,6 +612,7 @@ void CPantheon::Attack(_float fTimeDelta)
 					m_iCurrentIndex = m_iAttackIndex;
 					m_bHitPlayer = false;
 					m_fHitTime = 0.f;
+					m_pTransformCom->LookAt(m_vMovePos);
 					return;
 				}
 
@@ -835,6 +852,23 @@ void CPantheon::E_Skill(_float fTimeDelta)
 
 				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_E_Swipe"), &m_pTransformCom->Get_WorldMatrix());
 
+				if (m_fMoveDistTotal <= 6.f)
+				{
+					_vector vLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+					_vector vPlayer = XMVector3Normalize(m_vMoveDir);
+
+					if (XMVectorGetX(XMVector3Dot(vLook, vPlayer)) >= cos(XMConvertToRadians(30.f)))
+					{
+						((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
+
+						CTransform* pPlayer_Transform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_Transform"));
+
+						_vector vPlayerPos = pPlayer_Transform->Get_State(CTransform::STATE_POSITION);
+
+						pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_Q_Hit_Effect"), &vPlayerPos);
+					}
+				}
+
 				RELEASE_INSTANCE(CGameInstance);
 
 				m_bSkillFinished = true;
@@ -886,7 +920,10 @@ void CPantheon::E_Skill(_float fTimeDelta)
 			}
 
 			__super::Chase_Player(fTimeDelta);
-			m_pTransformCom->Go_Direction(m_vMoveDir, 4.f * fTimeDelta);
+			if (m_fMoveDistTotal >= 3.f)
+			{
+				m_pTransformCom->Go_Direction(m_vMoveDir, 4.f * fTimeDelta);
+			}
 			((CPantheon_Shield*)m_pShield)->Set_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		}
 
@@ -936,6 +973,10 @@ void CPantheon::Knock_Back(_float fTimeDelta)
 				CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 				((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Knock_Back(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+				((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
+
+				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_Hit_Effect"), &m_vMovePos);
 
 				RELEASE_INSTANCE(CGameInstance);
 
