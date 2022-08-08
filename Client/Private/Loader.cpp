@@ -27,6 +27,7 @@
 #include "Volibear.h"
 #include "Voli_Ghost.h"
 #include "Effect_Voli_E.h"
+#include "Voli_Passive_Effect.h"
 
 #include "Pantheon.h"
 #include "Pantheon_Q_Effect.h"
@@ -99,49 +100,7 @@ HRESULT CLoader::NativeConstruct(LEVEL eNextLevelID)
 	return S_OK;
 }
 
-_uint CLoader::Loading_ForLogo()
-{
-	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
-	Safe_AddRef(pGameInstance);
-
-#pragma region GAMEOBJECT
-	lstrcpy(m_szLoadingText, TEXT("객체 원형을 생성중입니다."));
-
-	///* For.Prototype_GameObject_BackGround */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround"),
-		CBackGround::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(5.f, XMConvertToRadians(90.0f))))))
-		return -1;
-
-	///* For.Prototype_GameObject_UI */
-	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI"),
-	//	CUI::Create(m_pGraphic_Device))))
-	//	return -1;
-
-#pragma endregion
-
-
-#pragma region COMPONENT
-	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩중입니다."));
-
-	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_Logo"),
-		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Default%d.dds"), 2))))
-		return E_FAIL;
-
-	lstrcpy(m_szLoadingText, TEXT("모델을 생성중입니다."));
-
-#pragma endregion
-
-
-	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
-
-	m_isFinished = true;
-
-	Safe_Release(pGameInstance);
-
-	return _uint();
-}
-
-_uint CLoader::Loading_ForGamePlay()
+_uint CLoader::Create_Prototype()
 {
 	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
@@ -200,7 +159,7 @@ _uint CLoader::Loading_ForGamePlay()
 		CPlayer_R_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
-	if(FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Yasuo_R_Hit_Effect"),
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Yasuo_R_Hit_Effect"),
 		CPlayer_R_Hit_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
@@ -223,6 +182,11 @@ _uint CLoader::Loading_ForGamePlay()
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Voli_E"),
 		CEffect_Voli_E::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Voli_Passive"),
+		CVoli_Passive_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
 	//
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Pantheon"),
 		CPantheon::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
@@ -318,9 +282,58 @@ _uint CLoader::Loading_ForGamePlay()
 	//	CSky::Create(m_pGraphic_Device))))
 	//	return -1;
 
+#pragma endregion
+	Safe_Release(pGameInstance);
 
+	return S_OK;
+}
+
+_uint CLoader::Loading_ForLogo()
+{
+	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
+	Safe_AddRef(pGameInstance);
+
+#pragma region GAMEOBJECT
+	lstrcpy(m_szLoadingText, TEXT("객체 원형을 생성중입니다."));
+
+	///* For.Prototype_GameObject_BackGround */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround"),
+		CBackGround::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(5.f, XMConvertToRadians(90.0f))))))
+		return -1;
+
+	///* For.Prototype_GameObject_UI */
+	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI"),
+	//	CUI::Create(m_pGraphic_Device))))
+	//	return -1;
 
 #pragma endregion
+
+
+#pragma region COMPONENT
+	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩중입니다."));
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_LOGO, TEXT("Prototype_Component_Texture_Logo"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Default%d.dds"), 2))))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("모델을 생성중입니다."));
+
+#pragma endregion
+
+
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	Safe_Release(pGameInstance);
+
+	return _uint();
+}
+
+_uint CLoader::Loading_ForGamePlay()
+{
+	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
+	Safe_AddRef(pGameInstance);
 
 #pragma region COMPONENT
 	lstrcpy(m_szLoadingText, TEXT("지형을 생성 중입니다. "));
@@ -384,6 +397,8 @@ _uint CLoader::Loading_ForGamePlay()
 
 _uint CLoader::Loading_ForBoss()
 {
+	Create_Prototype();
+
 	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
 
@@ -1386,6 +1401,10 @@ _uint CLoader::Load_VoliBear(LEVEL eLevel)
 
 	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Voli_E"),
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Volibear/Effect/volibear_base_e_0%d.dds"), 2))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_BOSS, TEXT("Prototype_Component_Texture_Voli_Passive_Spark"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Volibear/Effect/volibear_base_sparkmote_%d.dds"), 4))))
 		return E_FAIL;
 
 	_matrix		PivotMatrix;

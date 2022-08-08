@@ -29,6 +29,9 @@ public:
 private:
 	void			Update_HandCollider();
 private:
+	CTransform*						m_pRightSparkTransform = nullptr;
+	CTransform*						m_pLeftSparkTransform = nullptr;
+
 	CCollider*						m_pSPHEREAttackRange = nullptr;
 	CCollider*						m_pOBBRightHand = nullptr;
 	CCollider*						m_pOBBLeftHand = nullptr;

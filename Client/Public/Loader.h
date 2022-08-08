@@ -32,6 +32,7 @@ public:
 
 public:
 	HRESULT NativeConstruct(LEVEL eNextLevelID);
+	_uint Create_Prototype();
 	_uint Loading_ForLogo();
 	_uint Loading_ForGamePlay();
 	_uint Loading_ForBoss();

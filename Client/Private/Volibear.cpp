@@ -56,6 +56,31 @@ HRESULT CVolibear::NativeConstruct(void * pArg)
 
 	m_pTransformCom->Set_Scaled(XMVectorSet(0.75f, 0.75f, 0.75f, 0.f));
 
+
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_vector vRHPos = m_pRHNode->Get_CombinedTransformationMatrix().r[3];
+
+	pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Voli_Passive"), &vRHPos);
+
+	_uint iLayerSize = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_Effect"));
+
+	m_pRightSparkTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Effect"), TEXT("Com_Transform"), iLayerSize - 1);
+
+	Safe_AddRef(m_pRightSparkTransform);
+
+	_vector vLHPos = m_pLHNode->Get_CombinedTransformationMatrix().r[3];
+
+	pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Voli_Passive"), &vLHPos);
+
+	iLayerSize = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_Effect"));
+
+	m_pLeftSparkTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Effect"), TEXT("Com_Transform"), iLayerSize - 1);
+
+	Safe_AddRef(m_pLeftSparkTransform);
+
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 
@@ -89,6 +114,18 @@ void CVolibear::Tick(_float fTimeDelta)
 	Update_HandCollider();
 	m_pSPHEREAttackRange->Update(m_pTransformCom->Get_WorldMatrix());
 
+	_matrix  SocketMatrix;
+
+	SocketMatrix =  m_pRHNode->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&m_PivotMatrix) * m_pTransformCom->Get_WorldMatrix();
+
+	_vector vRHPos = SocketMatrix.r[3];
+
+	SocketMatrix = m_pLHNode->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&m_PivotMatrix) * m_pTransformCom->Get_WorldMatrix();
+
+	_vector vLHPos = SocketMatrix.r[3];
+
+	m_pRightSparkTransform->Set_State(CTransform::STATE_POSITION, vRHPos);
+	m_pLeftSparkTransform->Set_State(CTransform::STATE_POSITION, vLHPos);
 }
 
 void CVolibear::Late_Tick(_float fTimeDelta)
@@ -1561,6 +1598,8 @@ void CVolibear::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pRightSparkTransform);
+	Safe_Release(m_pLeftSparkTransform);
 	Safe_Release(m_pSPHEREAttackRange);
 	Safe_Release(m_pOBBRightHand);
 	Safe_Release(m_pOBBLeftHand);

@@ -186,4 +186,15 @@ technique11 DefaultTechinque
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_TRAIL();
 	}
+
+	pass Rect_NonWrite
+	{
+		SetBlendState(BS_One, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_None_Write, 0);
+		SetRasterizerState(RS_Default);
+
+		VertexShader = compile vs_5_0 VS_MAIN_RECT();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_RECT();
+	}
 }

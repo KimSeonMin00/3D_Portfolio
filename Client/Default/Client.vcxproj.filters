@@ -178,6 +178,12 @@
     <Filter Include="02.GameObjects\Monster\Boss\Pantheon\Effect\E">
       <UniqueIdentifier>{0cfc49a2-d4dd-497f-b718-dca6fa1e6956}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Monster\Boss\Volibear\Effect\E">
+      <UniqueIdentifier>{f5e4f8f2-fa3d-44cd-85a4-02fc5d3990af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster\Boss\Volibear\Effect\Passive">
+      <UniqueIdentifier>{301094e8-3d3b-4c80-a223-ac7a96741e13}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -279,9 +285,6 @@
     <ClInclude Include="..\Public\Volibear.h">
       <Filter>02.GameObjects\Monster\Boss\Volibear</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Effect_Voli_E.h">
-      <Filter>02.GameObjects\Monster\Boss\Volibear\Effect</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Pantheon.h">
       <Filter>02.GameObjects\Monster\Boss\Pantheon</Filter>
     </ClInclude>
@@ -378,6 +381,12 @@
     <ClInclude Include="..\Public\Pantheon_Q_Hit_Effect.h">
       <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\Q</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect_Voli_E.h">
+      <Filter>02.GameObjects\Monster\Boss\Volibear\Effect\E</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Voli_Passive_Effect.h">
+      <Filter>02.GameObjects\Monster\Boss\Volibear\Effect\Passive</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -460,9 +469,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Volibear.cpp">
       <Filter>02.GameObjects\Monster\Boss\Volibear</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Effect_Voli_E.cpp">
-      <Filter>02.GameObjects\Monster\Boss\Volibear\Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Pantheon.cpp">
       <Filter>02.GameObjects\Monster\Boss\Pantheon</Filter>
@@ -562,6 +568,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Pantheon_Q_Hit_Effect.cpp">
       <Filter>02.GameObjects\Monster\Boss\Pantheon\Effect\Q</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Voli_E.cpp">
+      <Filter>02.GameObjects\Monster\Boss\Volibear\Effect\E</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Voli_Passive_Effect.cpp">
+      <Filter>02.GameObjects\Monster\Boss\Volibear\Effect\Passive</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
