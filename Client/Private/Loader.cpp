@@ -28,6 +28,7 @@
 #include "Voli_Ghost.h"
 #include "Effect_Voli_E.h"
 #include "Voli_Passive_Effect.h"
+#include "Voli_Q_Footprint.h"
 
 #include "Pantheon.h"
 #include "Pantheon_Q_Effect.h"
@@ -185,6 +186,10 @@ _uint CLoader::Create_Prototype()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Voli_Passive"),
 		CVoli_Passive_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Voli_Q_Footprint"),
+	CVoli_Q_Footprint::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
 	//
@@ -1405,6 +1410,10 @@ _uint CLoader::Load_VoliBear(LEVEL eLevel)
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_BOSS, TEXT("Prototype_Component_Texture_Voli_Passive_Spark"),
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Volibear/Effect/volibear_base_sparkmote_%d.dds"), 4))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_BOSS, TEXT("Prototype_Component_Texture_Voli_Passive_Tar"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Volibear/Effect/volibear_base_passive_tar_flipbook_%d.dds"), 9))))
 		return E_FAIL;
 
 	_matrix		PivotMatrix;

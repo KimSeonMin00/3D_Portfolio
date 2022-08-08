@@ -102,6 +102,7 @@ private://For Q
 	_bool			m_bQAttack = false;
 
 	_float			m_fQTime = 0.f;
+	_float          m_fFootprintTime = 0.5f;
 
 private://For R
 	_bool			m_bRState = false;

@@ -211,6 +211,7 @@
     <ClInclude Include="..\Public\Volibear.h" />
     <ClInclude Include="..\Public\Voli_Ghost.h" />
     <ClInclude Include="..\Public\Voli_Passive_Effect.h" />
+    <ClInclude Include="..\Public\Voli_Q_Footprint.h" />
     <ClInclude Include="..\Public\WhirlWind.h" />
     <ClInclude Include="..\Public\WhirlWind_EQ.h" />
     <ClInclude Include="..\Public\WhirlWind_Hit_Effect.h" />
@@ -277,6 +278,7 @@
     <ClCompile Include="..\Private\Volibear.cpp" />
     <ClCompile Include="..\Private\Voli_Ghost.cpp" />
     <ClCompile Include="..\Private\Voli_Passive_Effect.cpp" />
+    <ClCompile Include="..\Private\Voli_Q_Footprint.cpp" />
     <ClCompile Include="..\Private\WhirlWind.cpp" />
     <ClCompile Include="..\Private\WhirlWind_EQ.cpp" />
     <ClCompile Include="..\Private\WhirlWind_Hit_Effect.cpp" />

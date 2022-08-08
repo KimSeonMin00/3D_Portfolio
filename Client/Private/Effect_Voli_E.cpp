@@ -27,7 +27,7 @@ HRESULT CEffect_Voli_E::NativeConstruct(void * pArg)
 
 	_vector vPos;
 	memcpy(&vPos, pArg, sizeof(_vector));
-	vPos = XMVectorSetY(vPos, 0.1f);
+	vPos = XMVectorSetY(vPos, 0.2f);
 
 	_matrix Rotate = XMMatrixIdentity() * XMMatrixScaling(5.f, 5.f, 1.f) * XMMatrixRotationAxis(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(90.f));
 

@@ -756,6 +756,21 @@ void CVolibear::Move(_float fTimeDelta)
 					}
 				}
 
+				if (m_iCurrentIndex = 65)
+				{
+					m_fFootprintTime += fTimeDelta;
+					if (m_fFootprintTime >= 0.3f)
+					{
+						CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+						pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Voli_Q_Footprint"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+						RELEASE_INSTANCE(CGameInstance);
+
+						m_fFootprintTime = 0.f;
+					}
+				}
+
 				m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 			}
 
