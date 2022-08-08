@@ -184,8 +184,14 @@
     <Filter Include="02.GameObjects\Monster\Boss\Volibear\Effect\Passive">
       <UniqueIdentifier>{301094e8-3d3b-4c80-a223-ac7a96741e13}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Monster\Boss\Volibear\Effect\Q">
+    <Filter Include="02.GameObjects\Monster\Boss\Volibear\Q">
       <UniqueIdentifier>{e2fe85d0-6747-40b6-a510-05d867c3d04a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster\Boss\Volibear\Q\Footprint">
+      <UniqueIdentifier>{356651aa-5e1c-4830-9b95-20044515c9ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Monster\Boss\Volibear\Q\Down">
+      <UniqueIdentifier>{998e2e7a-2cdc-44bb-931c-dfa989a12c2f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -390,7 +396,12 @@
     <ClInclude Include="..\Public\Voli_Passive_Effect.h">
       <Filter>02.GameObjects\Monster\Boss\Volibear\Effect\Passive</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Voli_Q_Footprint.h" />
+    <ClInclude Include="..\Public\Voli_Q_Footprint.h">
+      <Filter>02.GameObjects\Monster\Boss\Volibear\Q\Footprint</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Voli_Q_Down.h">
+      <Filter>02.GameObjects\Monster\Boss\Volibear\Q\Down</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -579,7 +590,12 @@
     <ClCompile Include="..\Private\Voli_Passive_Effect.cpp">
       <Filter>02.GameObjects\Monster\Boss\Volibear\Effect\Passive</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Voli_Q_Footprint.cpp" />
+    <ClCompile Include="..\Private\Voli_Q_Footprint.cpp">
+      <Filter>02.GameObjects\Monster\Boss\Volibear\Q\Footprint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Voli_Q_Down.cpp">
+      <Filter>02.GameObjects\Monster\Boss\Volibear\Q\Down</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

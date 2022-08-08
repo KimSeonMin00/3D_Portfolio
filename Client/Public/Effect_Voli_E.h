@@ -17,8 +17,18 @@ public:
 	virtual void Late_Tick(_float fTimeDelta);
 	virtual HRESULT Render();
 
+private:
+	HRESULT			Render_Spark();
+
+private:
+	_float						m_fFlashScale = 5.f;
+	_float						m_fFlashAlpha = 1.f;
+
 public:
 	HRESULT SetUp_Texture_Components();
+
+private:
+	CTexture*					m_pTextureFlash = nullptr;
 
 private:
 	_float m_fCastingTime = 0.f;

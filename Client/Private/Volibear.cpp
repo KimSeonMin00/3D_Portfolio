@@ -876,6 +876,7 @@ void CVolibear::Q_Skill(_float fTimeDelta)
 	if (m_bStateChange == true)
 	{
 		m_iCurrentIndex = 26;
+		m_bSkillFinished = false;
 		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
 		if (m_pModelCom->Get_IsChange() == false)
 		{
@@ -888,6 +889,21 @@ void CVolibear::Q_Skill(_float fTimeDelta)
 	}
 	else
 	{
+		if (m_pModelCom->Get_Finished() == true)
+		{
+			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + 2.f * m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Voli_Q_Down"), &vPos);
+
+			RELEASE_INSTANCE(CGameInstance);
+
+			m_bSkillFinished = true;
+
+			return;
+		}
+
 		m_pModelCom->Play_Animation(fTimeDelta);
 	}
 }
@@ -1208,28 +1224,36 @@ void CVolibear::Pattern_1(_float fTimeDelta)
 			m_fMoveSpeed = 4.0f;
 			m_fPatternTime = 0.f;
 			m_bIsChanneling = true;
+			m_iPattern_AttackTime = 0;
 		}
 	}
 
 	else
 	{
-		m_fPatternTime += fTimeDelta;
-		if (m_fPatternTime >= 1.f)
+		if (m_iPattern_AttackTime == 0)
 		{
-			m_eState = STATE_Q;
+			m_fPatternTime += fTimeDelta;
+			if (m_fPatternTime >= 1.f)
+			{
+				m_eState = STATE_Q;
+				m_iPattern_AttackTime++;
+			}
 		}
 
-		if (m_eState == STATE_Q && m_pModelCom->Get_Finished())
+		else if (m_iPattern_AttackTime == 1)
 		{
-			m_bIsChanneling = false;
-			m_bQState = false;
-			m_bQState_Pre = false;
-			m_fDelayTime = 0.f;
-			m_bPattern1 = false;
-			m_fPatternTime = 0.f;
-			m_iPattern_AttackTime = 0;
-			m_bPatternFinished = true;
-			m_eState = STATE_IDLE;
+			if (m_bSkillFinished == true)
+			{
+				m_bIsChanneling = false;
+				m_bQState = false;
+				m_bQState_Pre = false;
+				m_fDelayTime = 0.f;
+				m_bPattern1 = false;
+				m_fPatternTime = 0.f;
+				m_iPattern_AttackTime = 0;
+				m_bPatternFinished = true;
+				m_eState = STATE_IDLE;
+			}
 		}
 	}
 }
@@ -1263,8 +1287,11 @@ void CVolibear::Pattern_2(_float fTimeDelta)
 			}
 			else if (m_iPattern_AttackTime == 3)
 			{
-				m_eState = STATE_IDLE;
-				m_iPattern_AttackTime++;
+				if (m_bSkillFinished == true)
+				{
+					m_eState = STATE_IDLE;
+					m_iPattern_AttackTime++;
+				}
 			}
 			else if (m_iPattern_AttackTime == 4)
 			{
@@ -1364,14 +1391,17 @@ void CVolibear::Pattern_4(_float fTimeDelta)
 			}
 			else if (m_iPattern_AttackTime == 4)
 			{
-				m_bIsChanneling = false;
-				m_bQState = false;
-				m_bQState_Pre = false;
-				m_fDelayTime = 0.f;
-				m_bPattern1 = false;
-				m_iPattern_AttackTime = 0;
-				m_bPatternFinished = true;
-				m_eState = STATE_IDLE;
+				if (m_bSkillFinished == true)
+				{
+					m_bIsChanneling = false;
+					m_bQState = false;
+					m_bQState_Pre = false;
+					m_fDelayTime = 0.f;
+					m_bPattern1 = false;
+					m_iPattern_AttackTime = 0;
+					m_bPatternFinished = true;
+					m_eState = STATE_IDLE;
+				}
 			}
 		}
 	}

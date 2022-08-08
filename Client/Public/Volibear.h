@@ -91,6 +91,8 @@ private:
 	_bool			m_bStateChange = false;
 	_bool			m_bIsState_In = false;
 
+	_bool			m_bSkillFinished = false;
+
 	_uint			m_iCurrentIndex = 0;
 
 private://For Attack
