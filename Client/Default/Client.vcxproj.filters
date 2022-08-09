@@ -184,13 +184,13 @@
     <Filter Include="02.GameObjects\Monster\Boss\Volibear\Effect\Passive">
       <UniqueIdentifier>{301094e8-3d3b-4c80-a223-ac7a96741e13}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Monster\Boss\Volibear\Q">
+    <Filter Include="02.GameObjects\Monster\Boss\Volibear\Effect\Q">
       <UniqueIdentifier>{e2fe85d0-6747-40b6-a510-05d867c3d04a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Monster\Boss\Volibear\Q\Footprint">
+    <Filter Include="02.GameObjects\Monster\Boss\Volibear\Effect\Q\Footprint">
       <UniqueIdentifier>{356651aa-5e1c-4830-9b95-20044515c9ca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\Monster\Boss\Volibear\Q\Down">
+    <Filter Include="02.GameObjects\Monster\Boss\Volibear\Effect\Q\Down">
       <UniqueIdentifier>{998e2e7a-2cdc-44bb-931c-dfa989a12c2f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -397,10 +397,10 @@
       <Filter>02.GameObjects\Monster\Boss\Volibear\Effect\Passive</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Voli_Q_Footprint.h">
-      <Filter>02.GameObjects\Monster\Boss\Volibear\Q\Footprint</Filter>
+      <Filter>02.GameObjects\Monster\Boss\Volibear\Effect\Q\Footprint</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Voli_Q_Down.h">
-      <Filter>02.GameObjects\Monster\Boss\Volibear\Q\Down</Filter>
+      <Filter>02.GameObjects\Monster\Boss\Volibear\Effect\Q\Down</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -591,10 +591,10 @@
       <Filter>02.GameObjects\Monster\Boss\Volibear\Effect\Passive</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Voli_Q_Footprint.cpp">
-      <Filter>02.GameObjects\Monster\Boss\Volibear\Q\Footprint</Filter>
+      <Filter>02.GameObjects\Monster\Boss\Volibear\Effect\Q\Footprint</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Voli_Q_Down.cpp">
-      <Filter>02.GameObjects\Monster\Boss\Volibear\Q\Down</Filter>
+      <Filter>02.GameObjects\Monster\Boss\Volibear\Effect\Q\Down</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

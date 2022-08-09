@@ -19,6 +19,7 @@ public:
 
 private:
 	HRESULT			Render_Spark();
+	HRESULT			Render_Lightening();
 
 private:
 	_float						m_fFlashScale = 5.f;
@@ -29,6 +30,7 @@ public:
 
 private:
 	CTexture*					m_pTextureFlash = nullptr;
+	CTexture*					m_pTextureLightening = nullptr;
 
 private:
 	_float m_fCastingTime = 0.f;

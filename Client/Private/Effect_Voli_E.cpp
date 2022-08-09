@@ -59,6 +59,7 @@ void CEffect_Voli_E::Tick(_float fTimeDelta)
 		if (m_fFlashScale > 0.f)
 		{
 			m_fFlashScale -= 20.f * fTimeDelta;
+			m_fFlashAlpha -= 5.f * fTimeDelta;
 		}
 	}
 
@@ -112,10 +113,17 @@ HRESULT CEffect_Voli_E::Render()
 	if (FAILED(__super::Render()))
 		return E_FAIL;
 
+	if (m_fCastingTime >= 1.f)
+	{
+		Render_Lightening();
+	}
+
 	if (m_fCastingTime >= 1.3f)
 	{
-		if(m_fFlashScale >= 0.f)
+		if (m_fFlashScale >= 0.f)
+		{
 			Render_Spark();
+		}
 	}
 
 	return S_OK;
@@ -154,6 +162,39 @@ HRESULT CEffect_Voli_E::Render_Spark()
 
 	m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(1.f, 1.f, 1.f, 1.f), sizeof(_vector));
 
+	_float fAlpha = 1.f;
+	m_pShaderCom->Set_RawValue("g_Alpha", &fAlpha, sizeof(_float));
+
+	m_pShaderCom->Begin(2);
+
+	m_pVIBufferCom->Render();
+
+	return S_OK;
+}
+
+HRESULT CEffect_Voli_E::Render_Lightening()
+{
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_matrix WorldMat;
+	_matrix ViewMat;
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 4.f, 0.f, 0.f);
+
+	WorldMat = XMMatrixIdentity() *
+		XMMatrixScaling(2.f, 8.f, 2.f);
+
+	WorldMat.r[3] = vPos;
+
+	m_pShaderCom->Set_RawValue("g_WorldMatrix", &XMMatrixTranspose(WorldMat), sizeof(_float4x4));
+	m_pShaderCom->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_VIEW), sizeof(_float4x4));
+	m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_PROJ), sizeof(_float4x4));
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	m_pTextureLightening->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture");
+
+	m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(0.5f, 1.f, 1.f, 1.f), sizeof(_vector));
+
 	m_pShaderCom->Set_RawValue("g_Alpha", &m_fFlashAlpha, sizeof(_float));
 
 	m_pShaderCom->Begin(2);
@@ -170,6 +211,9 @@ HRESULT CEffect_Voli_E::SetUp_Texture_Components()
 
 
 	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Voli_Flash"), TEXT("Com_Texture_Flash"), (CComponent**)&m_pTextureFlash)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Voli_Lightening"), TEXT("Com_Texture_Lightening"), (CComponent**)&m_pTextureLightening)))
 		return E_FAIL;
 }
 
@@ -200,4 +244,7 @@ CGameObject * CEffect_Voli_E::Clone(void * pArg)
 void CEffect_Voli_E::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pTextureFlash);
+	Safe_Release(m_pTextureLightening);
 }
