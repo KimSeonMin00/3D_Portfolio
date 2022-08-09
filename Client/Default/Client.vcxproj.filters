@@ -193,6 +193,9 @@
     <Filter Include="02.GameObjects\Monster\Boss\Volibear\Effect\Q\Down">
       <UniqueIdentifier>{998e2e7a-2cdc-44bb-931c-dfa989a12c2f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Monster\Boss\Volibear\Effect\R">
+      <UniqueIdentifier>{09d327ee-2881-4c98-91b1-b0b6c8859ee6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -402,6 +405,9 @@
     <ClInclude Include="..\Public\Voli_Q_Down.h">
       <Filter>02.GameObjects\Monster\Boss\Volibear\Effect\Q\Down</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Voli_R_Effect.h">
+      <Filter>02.GameObjects\Monster\Boss\Volibear\Effect\R</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -595,6 +601,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Voli_Q_Down.cpp">
       <Filter>02.GameObjects\Monster\Boss\Volibear\Effect\Q\Down</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Voli_R_Effect.cpp">
+      <Filter>02.GameObjects\Monster\Boss\Volibear\Effect\R</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

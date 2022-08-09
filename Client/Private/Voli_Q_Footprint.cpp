@@ -260,7 +260,7 @@ CGameObject * CVoli_Q_Footprint::Clone(void * pArg)
 		MSGBOX(TEXT("Failed to Cloned : CVoli_Q_Footprint"));
 		Safe_Release(pInstance);
 	}
-	return pInstance; return nullptr;
+	return pInstance;
 }
 
 void CVoli_Q_Footprint::Free()

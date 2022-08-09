@@ -30,6 +30,7 @@
 #include "Voli_Passive_Effect.h"
 #include "Voli_Q_Footprint.h"
 #include "Voli_Q_Down.h"
+#include "Voli_R_Effect.h"
 
 #include "Pantheon.h"
 #include "Pantheon_Q_Effect.h"
@@ -195,6 +196,10 @@ _uint CLoader::Create_Prototype()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Voli_Q_Down"),
 		CVoli_Q_Down::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Voli_R"),
+		CVoli_R_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
 	//
@@ -1431,6 +1436,14 @@ _uint CLoader::Load_VoliBear(LEVEL eLevel)
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_BOSS, TEXT("Prototype_Component_Texture_Voli_Lightening"),
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Volibear/Effect/volibear_base_e_skybolt_01.dds")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_BOSS, TEXT("Prototype_Component_Texture_Voli_R_Warning"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Volibear/Effect/volibear_base_r_aoe_warning.dds")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_BOSS, TEXT("Prototype_Component_Texture_Voli_R_Crator"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Volibear/Effect/volibear_base_r_landingcrater_add.dds")))))
 		return E_FAIL;
 
 	_matrix		PivotMatrix;

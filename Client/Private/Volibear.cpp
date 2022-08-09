@@ -1019,6 +1019,13 @@ void CVolibear::R_Skill(_float fTimeDelta)
 		if (m_pModelCom->Get_IsChange() == false)
 		{
 			m_bStateChange = false;
+
+			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Voli_R"), &m_vMovePos);
+
+			RELEASE_INSTANCE(CGameInstance);
+
 			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 			m_pModelCom->Set_Initialize();
 		}
