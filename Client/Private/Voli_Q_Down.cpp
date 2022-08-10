@@ -52,6 +52,7 @@ void CVoli_Q_Down::Tick(_float fTimeDelta)
 			m_bDead = true;
 	}
 
+	m_pSphereCom->Update(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CVoli_Q_Down::Late_Tick(_float fTimeDelta)
@@ -163,6 +164,16 @@ HRESULT CVoli_Q_Down::SetUp_Components()
 	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Voli_Q_Crack"), TEXT("Com_Texture_Crack"), (CComponent**)&m_pTextureCrack)))
 		return E_FAIL;
 
+	CCollider::COLLIDERDESC		ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+
+	ColliderDesc.vScale = _float3(3.f, 3.f, 3.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vAngle = _float3(0.f, 0.0f, 0.0f);
+
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_Hit_Sphere"), (CComponent**)&m_pSphereCom, &ColliderDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -196,5 +207,6 @@ void CVoli_Q_Down::Free()
 	Safe_Release(m_pRect_Buffer);
 	Safe_Release(m_pTextureDownGust);
 	Safe_Release(m_pTextureCrack);
+	Safe_Release(m_pSphereCom);
 	Safe_Release(m_pShaderCom);
 }

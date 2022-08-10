@@ -2,6 +2,9 @@
 
 #include "Effect.h"
 
+BEGIN(Engine)
+class CCollider;
+END
 class CEffect_Voli_E final:
 	public CEffect
 {
@@ -31,6 +34,7 @@ public:
 private:
 	CTexture*					m_pTextureFlash = nullptr;
 	CTexture*					m_pTextureLightening = nullptr;
+	CCollider*					m_pSphereCom = nullptr;
 
 private:
 	_float m_fCastingTime = 0.f;

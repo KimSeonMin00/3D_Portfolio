@@ -75,6 +75,8 @@ void CEffect_Voli_E::Tick(_float fTimeDelta)
 	{
 		m_bDead = true;
 	}
+
+	m_pSphereCom->Update(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CEffect_Voli_E::Late_Tick(_float fTimeDelta)
@@ -215,6 +217,18 @@ HRESULT CEffect_Voli_E::SetUp_Texture_Components()
 
 	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Voli_Lightening"), TEXT("Com_Texture_Lightening"), (CComponent**)&m_pTextureLightening)))
 		return E_FAIL;
+
+	CCollider::COLLIDERDESC		ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+
+	ColliderDesc.vScale = _float3(1.f, 1.f, 1.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vAngle = _float3(0.f, 0.0f, 0.0f);
+
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_Hit_Sphere"), (CComponent**)&m_pSphereCom, &ColliderDesc)))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 CEffect_Voli_E * CEffect_Voli_E::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext, const CTransform::TRANSFORMDESC & TransformDesc)

@@ -58,6 +58,8 @@ void CVoli_R_Effect::Tick(_float fTimeDelta)
 
 	if (m_fLiveTime >= 2.f)
 		m_bDead = true;
+
+	m_pSphereCom->Update(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CVoli_R_Effect::Late_Tick(_float fTimeDelta)
@@ -154,6 +156,16 @@ HRESULT CVoli_R_Effect::SetUp_Components()
 	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Texture_Voli_R_Crator"), TEXT("Com_Texture_Crator"), (CComponent**)&m_pTextureCrator)))
 		return E_FAIL;
 
+	CCollider::COLLIDERDESC		ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+
+	ColliderDesc.vScale = _float3(1.f, 1.f, 1.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vAngle = _float3(0.f, 0.0f, 0.0f);
+
+	if (FAILED(__super::Add_Components(m_iLevel, TEXT("Prototype_Component_Collider_SPHERE"), TEXT("Com_Hit_Sphere"), (CComponent**)&m_pSphereCom, &ColliderDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -189,5 +201,6 @@ void CVoli_R_Effect::Free()
 	Safe_Release(m_pRect_Buffer);
 	Safe_Release(m_pTextureWarning);
 	Safe_Release(m_pTextureCrator);
+	Safe_Release(m_pSphereCom);
 	Safe_Release(m_pShaderCom);
 }

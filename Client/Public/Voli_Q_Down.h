@@ -7,6 +7,7 @@ class CRenderer;
 class CVIBuffer_Rect;
 class CShader;
 class CTexture;
+class CCollider;
 END
 
 BEGIN(Client)
@@ -43,6 +44,7 @@ private:
 	CVIBuffer_Rect*				m_pRect_Buffer = nullptr;
 	CTexture*					m_pTextureDownGust = nullptr;
 	CTexture*					m_pTextureCrack = nullptr;
+	CCollider*					m_pSphereCom = nullptr;
 
 public:
 	HRESULT SetUp_Components();
