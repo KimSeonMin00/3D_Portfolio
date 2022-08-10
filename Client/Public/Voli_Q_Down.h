@@ -38,6 +38,8 @@ private:
 
 	_float						m_fCrackAlpha = 1.f;
 
+	_bool						m_bPlayer_Hit = false;
+
 private:
 	CShader*					m_pShaderCom = nullptr;
 	CRenderer*					m_pRendererCom = nullptr;

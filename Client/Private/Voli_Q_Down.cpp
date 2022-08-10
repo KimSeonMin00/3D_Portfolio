@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Voli_Q_Down.h"
 #include "GameInstance.h"
+#include "Player.h"
 
 CVoli_Q_Down::CVoli_Q_Down(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
 	:CGameObject(pDevice, pDevice_Context)
@@ -53,6 +54,20 @@ void CVoli_Q_Down::Tick(_float fTimeDelta)
 	}
 
 	m_pSphereCom->Update(m_pTransformCom->Get_WorldMatrix());
+
+	if (m_bPlayer_Hit == false)
+	{
+		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+		if (((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pSphereCom))
+		{
+			((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
+
+			m_bPlayer_Hit = true;
+		}
+
+		RELEASE_INSTANCE(CGameInstance);
+	}
 }
 
 void CVoli_Q_Down::Late_Tick(_float fTimeDelta)

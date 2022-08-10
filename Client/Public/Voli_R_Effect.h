@@ -36,6 +36,7 @@ private:
 
 private:
 	_float					    m_fLiveTime = 0.f;
+	_bool						m_bPlayer_Hit = false;
 
 private:
 	CShader*					m_pShaderCom = nullptr;

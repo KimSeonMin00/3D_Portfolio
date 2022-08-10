@@ -28,6 +28,8 @@ private:
 	_float						m_fFlashScale = 5.f;
 	_float						m_fFlashAlpha = 1.f;
 
+	_bool						m_bPlayer_Hit = false;
+
 public:
 	HRESULT SetUp_Texture_Components();
 

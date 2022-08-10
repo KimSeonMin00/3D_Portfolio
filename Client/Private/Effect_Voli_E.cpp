@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Effect_Voli_E.h"
 #include "GameInstance.h"
+#include "Player.h"
 
 CEffect_Voli_E::CEffect_Voli_E(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
 	:CEffect(pDevice, pDevice_Context)
@@ -77,6 +78,26 @@ void CEffect_Voli_E::Tick(_float fTimeDelta)
 	}
 
 	m_pSphereCom->Update(m_pTransformCom->Get_WorldMatrix());
+
+	if (m_bPlayer_Hit == false)
+	{
+		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+		if (((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pSphereCom))
+		{
+			((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
+
+			CTransform* pPlayer_Transform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_Transform"));
+
+			_vector vPlayerPos = pPlayer_Transform->Get_State(CTransform::STATE_POSITION);
+
+			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Voli_Hit"), &vPlayerPos);
+
+			m_bPlayer_Hit = true;
+		}
+
+		RELEASE_INSTANCE(CGameInstance);
+	}
 }
 
 void CEffect_Voli_E::Late_Tick(_float fTimeDelta)
