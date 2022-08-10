@@ -147,6 +147,8 @@ void CVolibear::Late_Tick(_float fTimeDelta)
 				if (m_bHitPlayer == false)
 				{
 					__super::Chase_Player(fTimeDelta);
+
+					((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
 					pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Voli_Hit"), &m_vMovePos);
 					m_bHitPlayer = true;
 				}
