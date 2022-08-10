@@ -210,6 +210,7 @@
     <ClInclude Include="..\Public\UI.h" />
     <ClInclude Include="..\Public\Volibear.h" />
     <ClInclude Include="..\Public\Voli_Ghost.h" />
+    <ClInclude Include="..\Public\Voli_Hit_Effect.h" />
     <ClInclude Include="..\Public\Voli_Passive_Effect.h" />
     <ClInclude Include="..\Public\Voli_Q_Down.h" />
     <ClInclude Include="..\Public\Voli_Q_Footprint.h" />
@@ -279,6 +280,7 @@
     <ClCompile Include="..\Private\UI.cpp" />
     <ClCompile Include="..\Private\Volibear.cpp" />
     <ClCompile Include="..\Private\Voli_Ghost.cpp" />
+    <ClCompile Include="..\Private\Voli_Hit_Effect.cpp" />
     <ClCompile Include="..\Private\Voli_Passive_Effect.cpp" />
     <ClCompile Include="..\Private\Voli_Q_Down.cpp" />
     <ClCompile Include="..\Private\Voli_Q_Footprint.cpp" />

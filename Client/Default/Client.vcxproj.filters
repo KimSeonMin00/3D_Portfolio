@@ -196,6 +196,9 @@
     <Filter Include="02.GameObjects\Monster\Boss\Volibear\Effect\R">
       <UniqueIdentifier>{09d327ee-2881-4c98-91b1-b0b6c8859ee6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\Monster\Boss\Volibear\Effect\Attack">
+      <UniqueIdentifier>{28afa9ca-f9d6-4788-818f-2bde3a1fe6a0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -408,6 +411,9 @@
     <ClInclude Include="..\Public\Voli_R_Effect.h">
       <Filter>02.GameObjects\Monster\Boss\Volibear\Effect\R</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Voli_Hit_Effect.h">
+      <Filter>02.GameObjects\Monster\Boss\Volibear\Effect\Attack</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -604,6 +610,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Voli_R_Effect.cpp">
       <Filter>02.GameObjects\Monster\Boss\Volibear\Effect\R</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Voli_Hit_Effect.cpp">
+      <Filter>02.GameObjects\Monster\Boss\Volibear\Effect\Attack</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -31,6 +31,7 @@
 #include "Voli_Q_Footprint.h"
 #include "Voli_Q_Down.h"
 #include "Voli_R_Effect.h"
+#include "Voli_Hit_Effect.h"
 
 #include "Pantheon.h"
 #include "Pantheon_Q_Effect.h"
@@ -200,6 +201,11 @@ _uint CLoader::Create_Prototype()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Voli_R"),
 		CVoli_R_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Effect_Voli_Hit"),
+		CVoli_Hit_Effect::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
 	//

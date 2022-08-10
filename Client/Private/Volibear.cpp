@@ -139,10 +139,18 @@ void CVolibear::Late_Tick(_float fTimeDelta)
 	
 	if (((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_HitSphere")))->Collision_Sphere(m_pSPHEREAttackRange))
 	{
-		if (m_eState == STATE_ATTACK || m_eState == STATE_W || m_eState == STATE_Q)
+		if (m_eState == STATE_ATTACK || m_eState == STATE_W)
 		{
-			if (false == ((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBRightHand))
-				((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBLeftHand);
+			if (((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBRightHand)||
+				((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pOBBLeftHand))
+			{
+				if (m_bHitPlayer == false)
+				{
+					__super::Chase_Player(fTimeDelta);
+					pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Voli_Hit"), &m_vMovePos);
+					m_bHitPlayer = true;
+				}
+			}
 		}
 
 		if (m_eState == STATE_W_BITE)
@@ -847,6 +855,7 @@ void CVolibear::Attack(_float fTimeDelta)
 		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
 		if (m_pModelCom->Get_IsChange() == false)
 		{
+			m_bHitPlayer = false;
 			m_bStateChange = false;
 			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 			m_pModelCom->Set_Initialize();
@@ -858,6 +867,7 @@ void CVolibear::Attack(_float fTimeDelta)
 		if (m_pModelCom->Get_Finished())
 		{
 			m_bQAttack = false;
+			m_bHitPlayer = false;
 			if (m_iAttackIndex == 4)
 				m_iAttackIndex = 3;
 			else
@@ -917,6 +927,7 @@ void CVolibear::W_Skill(_float fTimeDelta)
 		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
 		if (m_pModelCom->Get_IsChange() == false)
 		{
+			m_bHitPlayer = false;
 			m_bStateChange = false;
 			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 			m_pModelCom->Set_Initialize();
@@ -927,6 +938,7 @@ void CVolibear::W_Skill(_float fTimeDelta)
 	{
 		if (m_pModelCom->Get_Finished())
 		{				
+			m_bHitPlayer = false;
 			m_bIsChanneling = false;
 			m_eState = m_eDoingState;
 			return;
@@ -945,6 +957,7 @@ void CVolibear::W_Bite_Skill(_float fTimeDelta)
 		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
 		if (m_pModelCom->Get_IsChange() == false)
 		{
+			m_bHitPlayer = false;
 			m_bStateChange = false;
 			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 			m_pModelCom->Set_Initialize();
@@ -955,6 +968,7 @@ void CVolibear::W_Bite_Skill(_float fTimeDelta)
 	{
 		if (m_pModelCom->Get_Finished())
 		{
+			m_bHitPlayer = false;
 			m_bIsChanneling = false;
 			m_eState = m_eDoingState;
 			return;
