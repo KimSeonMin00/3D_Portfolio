@@ -70,6 +70,12 @@ void CVoli_R_Effect::Tick(_float fTimeDelta)
 		{
 			((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
 
+			CTransform* pPlayer_Transform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_Transform"));
+
+			_vector vPlayerPos = pPlayer_Transform->Get_State(CTransform::STATE_POSITION);
+
+			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Voli_Hit"), &vPlayerPos);
+
 			m_bPlayer_Hit = true;
 		}
 
