@@ -54,6 +54,12 @@ void CVoli_R_Effect::Tick(_float fTimeDelta)
 
 	else if (m_fLiveTime > 1.f)
 	{
+		if (m_bCast == false)
+		{
+			m_bPlayer_Hit = false;
+			m_bCast = true;
+		}
+
 		m_fAlpha -= 1.f * fTimeDelta;
 	}
 

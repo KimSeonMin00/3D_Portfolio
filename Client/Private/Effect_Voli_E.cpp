@@ -57,6 +57,12 @@ void CEffect_Voli_E::Tick(_float fTimeDelta)
 
 	else if (m_fCastingTime >= 1.3f)
 	{
+		if (m_bCast == false)
+		{
+			m_bPlayer_Hit = false;
+			m_bCast = true;
+		}
+
 		if (m_fFlashScale > 0.f)
 		{
 			m_fFlashScale -= 20.f * fTimeDelta;
