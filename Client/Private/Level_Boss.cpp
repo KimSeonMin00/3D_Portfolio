@@ -76,7 +76,7 @@ HRESULT CLevel_Boss::Ready_LightDesc()
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
 	_matrix LightViewMat = XMMatrixIdentity();
-	_vector LVMvLook = XMVectorSet(0.f, -1.f, 0.f, 0.f);
+	_vector LVMvLook = XMVectorSet(1.f, -1.f, 1.f, 0.f);
 	_vector	LVMvRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), LVMvLook);
 	_vector	LVMvUp = XMVector3Cross(LVMvLook, LVMvRight);
 	_vector	LVMvPos = XMVectorSet(0.f, 10.f, 0.f, 1.f);

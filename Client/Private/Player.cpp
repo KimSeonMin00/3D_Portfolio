@@ -161,6 +161,11 @@ HRESULT CPlayer::Render()
 
 		if (i != 0)//피리 메쉬 제외
 			m_pModelCom->Render(i);
+
+		m_pShaderCom->Begin(3);
+
+		if (i != 0)//피리 메쉬 제외
+			m_pModelCom->Render(i);
 	}
 
 	m_pAABBCom->Render();
