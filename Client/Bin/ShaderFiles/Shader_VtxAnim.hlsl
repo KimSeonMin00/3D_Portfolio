@@ -46,7 +46,7 @@ VS_OUT VS_MAIN(VS_IN In)
 	matrix		matLWV, matLWVP;
 
 	matLWV = mul(g_WorldMatrix, g_LightViewMatrix);
-	matLWVP = mul(matWV, g_LightProjMatrix);
+	matLWVP = mul(matLWV, g_LightProjMatrix);
 
 	float		fWeightW = 1.f - (In.vBlendWeight.x + In.vBlendWeight.y + In.vBlendWeight.z);
 

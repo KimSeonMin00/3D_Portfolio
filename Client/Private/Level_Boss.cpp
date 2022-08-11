@@ -79,7 +79,7 @@ HRESULT CLevel_Boss::Ready_LightDesc()
 	_vector LVMvLook = XMVectorSet(0.f, -1.f, 0.f, 0.f);
 	_vector	LVMvRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), LVMvLook);
 	_vector	LVMvUp = XMVector3Cross(LVMvLook, LVMvRight);
-	_vector	LVMvPos = XMVectorSet(12.f, 5.f, 5.f, 1.f);
+	_vector	LVMvPos = XMVectorSet(0.f, 10.f, 0.f, 1.f);
 
 	LightViewMat.r[0] = XMVector3Normalize(LVMvRight);
 	LightViewMat.r[1] = XMVector3Normalize(LVMvUp);
@@ -91,6 +91,8 @@ HRESULT CLevel_Boss::Ready_LightDesc()
 		(_float)g_iWinCX / g_iWinCY, 
 			0.2f, 
 			300.f);
+
+	LightViewMat = XMMatrixInverse(nullptr, LightViewMat);
 
 	pGameInstance->Set_TransformMatrix(CPipeline::D3DTS_LIGHTVIEW, LightViewMat);
 
