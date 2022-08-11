@@ -151,7 +151,7 @@ HRESULT CWhirlWind_EQ::Render()
 
 			m_pShaderCom->Set_RawValue("g_Alpha", &m_vecEqData[i]->fAlpha, sizeof(_float));
 
-			m_pShaderCom->Begin(3);
+			m_pShaderCom->Begin(4);
 
 			m_pModelCom->Render(0);
 		}

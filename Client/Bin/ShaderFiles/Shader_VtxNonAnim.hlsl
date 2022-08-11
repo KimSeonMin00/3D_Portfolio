@@ -175,7 +175,7 @@ technique11 DefaultTechinque
 		PixelShader = compile ps_5_0 PS_MAIN_RECT_SELECT();
 	}
 
-	pass Effect
+	pass Effect_One
 	{
 		SetBlendState(BS_One, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
 		SetDepthStencilState(DSS_None_ZTest_And_Write, 0);
@@ -195,6 +195,17 @@ technique11 DefaultTechinque
 		VertexShader = compile vs_5_0 VS_MAIN_RECT();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_MOVE();
+	}
+
+	pass Effect
+	{
+		SetBlendState(BS_AlphaBlend, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_None_ZTest_And_Write, 0);
+		SetRasterizerState(RS_NonCulling);
+
+		VertexShader = compile vs_5_0 VS_MAIN_RECT();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_EFFECT();
 	}
 
 }
