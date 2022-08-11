@@ -75,6 +75,27 @@ HRESULT CLevel_Boss::Ready_LightDesc()
 	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
+	_matrix LightViewMat = XMMatrixIdentity();
+	_vector LVMvLook = XMVectorSet(0.f, -1.f, 0.f, 0.f);
+	_vector	LVMvRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), LVMvLook);
+	_vector	LVMvUp = XMVector3Cross(LVMvLook, LVMvRight);
+	_vector	LVMvPos = XMVectorSet(12.f, 5.f, 5.f, 1.f);
+
+	LightViewMat.r[0] = XMVector3Normalize(LVMvRight);
+	LightViewMat.r[1] = XMVector3Normalize(LVMvUp);
+	LightViewMat.r[2] = XMVector3Normalize(LVMvLook);
+	LightViewMat.r[3] = LVMvPos;
+
+	_matrix LightProjMat = 
+		XMMatrixPerspectiveFovLH(XMConvertToRadians(60.0f), 
+		(_float)g_iWinCX / g_iWinCY, 
+			0.2f, 
+			300.f);
+
+	pGameInstance->Set_TransformMatrix(CPipeline::D3DTS_LIGHTVIEW, LightViewMat);
+
+	pGameInstance->Set_TransformMatrix(CPipeline::D3DTS_LIGHTPROJ, LightProjMat);
+
 	if (FAILED(pGameInstance->Add_Light(m_pDevice, m_pDeviceContext, LightDesc)))
 		return E_FAIL;
 

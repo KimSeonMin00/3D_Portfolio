@@ -240,6 +240,8 @@ HRESULT CPlayer::SetUp_ConstantTable()
 
 	m_pShaderCom->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_VIEW), sizeof(_float4x4));
 	m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_PROJ), sizeof(_float4x4));
+	m_pShaderCom->Set_RawValue("g_LightViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_LIGHTVIEW), sizeof(_float4x4));
+	m_pShaderCom->Set_RawValue("g_LightProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_LIGHTPROJ), sizeof(_float4x4));
 	
 	RELEASE_INSTANCE(CGameInstance);
 }

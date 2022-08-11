@@ -274,6 +274,14 @@ _matrix CGameInstance::Get_TransformMatrix(CPipeline::TRANSFORMSTATETYPE eStateT
 	return m_pPipeline->Get_TransformMatrix(eStateType);
 }
 
+void CGameInstance::Set_TransformMatrix(CPipeline::TRANSFORMSTATETYPE eStateType, _fmatrix TRANSFORMMATRIX)
+{
+	if (nullptr == m_pPipeline)
+		return;
+
+	m_pPipeline->Set_Transform(eStateType, TRANSFORMMATRIX);
+}
+
 _float4x4 CGameInstance::Get_TransformFloat4x4(CPipeline::TRANSFORMSTATETYPE eStateType)
 {
 	if (nullptr == m_pPipeline)
