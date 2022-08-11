@@ -14,6 +14,7 @@ protected:
 public:
 	virtual HRESULT NativeConstruct_Prototype();
 	virtual HRESULT NativeConstruct(void* pArg);
+	virtual HRESULT Render() { return S_OK; }
 
 protected:
 	ID3D11Device*				m_pDevice = nullptr;

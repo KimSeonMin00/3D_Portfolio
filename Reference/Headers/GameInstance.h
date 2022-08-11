@@ -9,6 +9,7 @@
 #include "Component_Manager.h"
 #include "Pipeline.h"
 #include "Light_Manager.h"
+#include "Target_Manager.h"
 
 
 BEGIN(Engine)
@@ -72,6 +73,9 @@ public: /* For.Light */
 public: /* For.Picking */
 	bool Picking(class CVIBuffer* pVIBuffer, class CTransform* pTransform, _float3* pOut);
 
+public: /* For.Target_Manager */
+	ID3D11ShaderResourceView* Get_RenderTargetSRV(const _tchar* pTargetTag);
+
 
 private:
 	CGraphic_Device*			m_pGraphic_Device = nullptr;
@@ -83,6 +87,7 @@ private:
 	CPipeline*						m_pPipeline = nullptr;
 	CLight_Manager*				m_pLight_Manager = nullptr;
 	CPicking*					m_pPicking = nullptr;
+	CTarget_Manager*			m_pTarget_Manager = nullptr;
 
 public:
 	static void Release_Engine();

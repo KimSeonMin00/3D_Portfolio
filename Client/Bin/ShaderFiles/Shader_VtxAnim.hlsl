@@ -1,7 +1,6 @@
 #include "Shader_Defines.hpp"
 
 matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-matrix			g_SocketMatrix;
 
 float			g_Alpha = 1.f;
 
@@ -11,22 +10,6 @@ struct BoneDesc
 };
 
 BoneDesc		g_Bones;
-
-vector			g_vLightDir = vector(1.f, -1.f, 1.f, 0.f);
-vector			g_vLightPos;
-float			g_fRange = 0.f;
-
-vector			g_vLightDiffuse = vector(1.f, 1.f, 1.f, 1.f);
-vector			g_vLightAmbient = vector(1.f, 1.f, 1.f, 1.f);
-vector			g_vLightSpecular = vector(1.f, 1.f, 1.f, 1.f);
-
-vector			g_vMtrlDiffuse;
-vector			g_vMtrlAmbient = vector(0.7f, 0.7f, 0.7f, 1.f);
-vector			g_vMtrlSpecular = vector(0.f, 0.f, 0.f, 1.f);
-vector			g_vHitColor = vector(1.f, 1.f, 1.f, 1.f);
-
-vector			g_vCamPosition;
-
 texture2D		g_DiffuseTexture;
 
 struct VS_IN
@@ -45,6 +28,7 @@ struct VS_OUT
 	float3		vNormal : NORMAL;
 	float2		vTexUV : TEXCOORD0;
 	float4		vWorldPos : TEXCOORD1;
+	float4		vProjPos : TEXCOORD2;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
@@ -71,27 +55,7 @@ VS_OUT VS_MAIN(VS_IN In)
 	Out.vNormal = mul(vNormal, g_WorldMatrix).xyz;
 	Out.vTexUV = In.vTexUV;
 	Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
-
-	return Out;
-}
-
-VS_OUT VS_MAIN_SOCKET(VS_IN In)
-{
-	VS_OUT		Out = (VS_OUT)0;
-
-	matrix		matVP;
-
-
-	matVP = mul(g_ViewMatrix, g_ProjMatrix);
-
-	vector		vPosition = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
-	vPosition = mul(vPosition, g_SocketMatrix);
-	vPosition = mul(vPosition, matVP);
-
-	Out.vPosition = vPosition;
-	Out.vNormal = mul(vector(In.vNormal, 0.f), g_WorldMatrix).xyz;
-	Out.vTexUV = In.vTexUV;
-	Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+	Out.vProjPos = vPosition;
 
 	return Out;
 }
@@ -102,35 +66,29 @@ struct PS_IN
 	float3		vNormal : NORMAL;
 	float2		vTexUV : TEXCOORD0;
 	float4		vWorldPos : TEXCOORD1;
+	float4		vProjPos : TEXCOORD2;
 };
 
 struct PS_OUT
 {
-	float4		vColor : SV_TARGET0;
+	float4		vDiffuse : SV_TARGET0;
+	float4		vNormal : SV_TARGET1;
+	float4		vDepth : SV_TARGET2;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	vector		vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+	Out.vDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+	Out.vDiffuse *= g_Alpha;
 
-	float		fShade = max(dot(normalize(g_vLightDir.xyz) * -1.f, In.vNormal), 0.f);
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 
-	vector		vLook = In.vWorldPos - g_vCamPosition;
-	vector		vReflect = reflect(normalize(g_vLightDir), vector(In.vNormal, 0.f));
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 0.f);
 
-	float		fSpecular = pow(max(dot(normalize(vLook) * -1.f, normalize(vReflect)), 0.f), 30.f);
-
-	Out.vColor.xyz = ((g_vLightDiffuse * vMtrlDiffuse) * (fShade + g_vLightAmbient * g_vMtrlAmbient)
-		+ (g_vLightSpecular * g_vMtrlSpecular) * fSpecular).xyz;
-
-	Out.vColor.a = vMtrlDiffuse.a;
-
-	if (Out.vColor.a < 0.1f)
+	if (Out.vDiffuse.a < 0.1f)
 		discard;
-
-	Out.vColor.a = Out.vColor.a* g_Alpha;
 
 	return Out;
 }
@@ -139,24 +97,14 @@ PS_OUT PS_HIT(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	vector		vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+	Out.vDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV) * vector(1.f, 0.f, 0.f, 1.f);
 
-	float		fShade = max(dot(normalize(g_vLightDir.xyz) * -1.f, In.vNormal), 0.f);
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 
-	vector		vLook = In.vWorldPos - g_vCamPosition;
-	vector		vReflect = reflect(normalize(g_vLightDir), vector(In.vNormal, 0.f));
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 0.f);
 
-	float		fSpecular = pow(max(dot(normalize(vLook) * -1.f, normalize(vReflect)), 0.f), 30.f);
-
-	Out.vColor.xyz = ((g_vHitColor * g_vLightDiffuse * vMtrlDiffuse) * (fShade + g_vLightAmbient * g_vMtrlAmbient)
-		+ (g_vLightSpecular * g_vMtrlSpecular) * fSpecular).xyz;
-
-	Out.vColor.a = vMtrlDiffuse.a;
-
-	if (Out.vColor.a < 0.1f)
+	if (Out.vDiffuse.a < 0.1f)
 		discard;
-
-	Out.vColor.a = Out.vColor.a* g_Alpha;
 
 	return Out;
 }

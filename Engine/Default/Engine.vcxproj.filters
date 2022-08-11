@@ -118,6 +118,12 @@
     <ClCompile Include="..\Private\VIBuffer_RectInstance.cpp">
       <Filter>01.Utility\03.Components\VIBuffer\Instance\Rect</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\RenderTarget.cpp">
+      <Filter>01.Utility\07. RenderTarget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Target_Manager.cpp">
+      <Filter>01.Utility\07. RenderTarget\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -250,6 +256,12 @@
     <ClInclude Include="..\Public\VIBuffer_RectInstance.h">
       <Filter>01.Utility\03.Components\VIBuffer\Instance\Rect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\RenderTarget.h">
+      <Filter>01.Utility\07. RenderTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Target_Manager.h">
+      <Filter>01.Utility\07. RenderTarget\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00.System">
@@ -345,9 +357,6 @@
     <Filter Include="01.Utility\06.Picking">
       <UniqueIdentifier>{4b61b836-2008-4b8d-896f-bf3403603a2e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\03.Components\Model\HierarchyNode">
-      <UniqueIdentifier>{201188fa-4edd-47bc-b67d-b271548d6a31}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\03.Components\Model\Animation">
       <UniqueIdentifier>{00be4c17-ecb3-4d12-a0b2-98a1297b74e5}</UniqueIdentifier>
     </Filter>
@@ -381,6 +390,15 @@
     <Filter Include="01.Utility\03.Components\VIBuffer\Instance\Rect">
       <UniqueIdentifier>{6e3b34c9-60cd-4fd9-a660-1d14661765a5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\07. RenderTarget">
+      <UniqueIdentifier>{f03f6d28-7d7e-4893-bf05-20c788d059b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\07. RenderTarget\Manager">
+      <UniqueIdentifier>{1fa0df3b-33d1-4144-a4c7-7a33ddc635cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Components\Model\HierarchyNode">
+      <UniqueIdentifier>{201188fa-4edd-47bc-b67d-b271548d6a31}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc" />
@@ -388,6 +406,9 @@
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Navigation.hlsl">
       <Filter>01.Utility\03.Components\Navigation\NaviShader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl">
+      <Filter>01.Utility\03.Components\Renderer</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

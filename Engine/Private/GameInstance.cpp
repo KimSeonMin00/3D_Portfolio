@@ -12,7 +12,9 @@ CGameInstance::CGameInstance()
 	, m_pPipeline(CPipeline::Get_Instance())
 	, m_pLight_Manager(CLight_Manager::Get_Instance())
 	,m_pPicking(CPicking::Get_Instance())
+	, m_pTarget_Manager(CTarget_Manager::Get_Instance())
 {
+	Safe_AddRef(m_pTarget_Manager);
 	Safe_AddRef(m_pPicking);
 	Safe_AddRef(m_pLight_Manager);
 	Safe_AddRef(m_pPipeline);
@@ -50,6 +52,9 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInstance, _uint iNumLevels, 
 
 
 	if (FAILED(m_pPicking->Initialize(GraphicDesc.hWnd, GraphicDesc.iWinCX, GraphicDesc.iWinCY)))
+		return E_FAIL;
+
+	if (FAILED(m_pTarget_Manager->Ready_Debug_Buffer(*ppOutDevice, *ppOutDeviceContext)))
 		return E_FAIL;
 
 	return S_OK;
@@ -309,6 +314,14 @@ bool CGameInstance::Picking(CVIBuffer * pVIBuffer, CTransform * pTransform, _flo
 	return m_pPicking->Picking(pVIBuffer, pTransform, pOut);
 }
 
+ID3D11ShaderResourceView * CGameInstance::Get_RenderTargetSRV(const _tchar * pTargetTag)
+{
+	if (nullptr == m_pTarget_Manager)
+		return nullptr;
+
+	return m_pTarget_Manager->Get_SRV(pTargetTag);
+}
+
 void CGameInstance::Release_Engine()
 {	
 	CGameInstance::Get_Instance()->Destroy_Instance();
@@ -329,8 +342,9 @@ void CGameInstance::Release_Engine()
 
 	CLight_Manager::Get_Instance()->Destroy_Instance();
 
-	CGraphic_Device::Get_Instance()->Destroy_Instance();	
+	CTarget_Manager::Get_Instance()->Destroy_Instance();
 
+	CGraphic_Device::Get_Instance()->Destroy_Instance();	
 	
 }
 

@@ -1,25 +1,9 @@
 #include "Shader_Defines.hpp"
 
 matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-
-vector			g_vLightDir = vector(1.f, -1.f, 1.f, 0.f);
-vector			g_vLightPos;
-float			g_fRange = 0.f;
-
-vector			g_vLightDiffuse = vector(1.f, 1.f, 1.f, 1.f);
-vector			g_vLightAmbient = vector(1.f, 1.f, 1.f, 1.f);
-vector			g_vLightSpecular = vector(1.f, 1.f, 1.f, 1.f);
-
-vector			g_vMtrlDiffuse;
-vector			g_vMtrlAmbient = vector(0.2f, 0.2f, 0.2f, 1.f);
-vector			g_vMtrlSpecular = vector(1.f, 1.f, 1.f, 1.f);
-
-vector			g_vCamPosition;
-vector			g_vColor = vector(1.f, 1.f, 1.f, 1.f);
-
-
+matrix			g_SocketMatrix;
 texture2D		g_DiffuseTexture;
-texture2D		g_AlphaTexture;
+texture2D		g_NormalTexture;
 
 float2			g_vMoveTex = float2(0.f, 0.f);
 float			g_Alpha = 1.f;
@@ -38,6 +22,9 @@ struct VS_OUT
 	float3		vNormal : NORMAL;
 	float2		vTexUV : TEXCOORD0;
 	float4		vWorldPos : TEXCOORD1;
+	float4		vProjPos : TEXCOORD2;
+	float3		vTangent : TANGENT;
+	float3		vBinormal: BINORMAL;
 };
 
 VS_OUT VS_MAIN_RECT(VS_IN In)
@@ -53,8 +40,11 @@ VS_OUT VS_MAIN_RECT(VS_IN In)
 
 	Out.vPosition = vPosition;
 	Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix).xyz);
+	Out.vTangent = normalize(mul(vector(In.vTangent, 0.f), g_WorldMatrix).xyz);
+	Out.vBinormal = normalize(cross(Out.vNormal, Out.vTangent));
 	Out.vTexUV = In.vTexUV;
 	Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+	Out.vProjPos = vPosition;
 
 	return Out;
 }
@@ -65,31 +55,35 @@ struct PS_IN
 	float3		vNormal : NORMAL;
 	float2		vTexUV : TEXCOORD0;
 	float4		vWorldPos : TEXCOORD1;
+	float4		vProjPos : TEXCOORD2;
+	float3		vTangent : TANGENT;
+	float3		vBinormal: BINORMAL;
 };
 
 struct PS_OUT
 {
-	float4		vColor : SV_TARGET0;
+	float4		vDiffuse : SV_TARGET0;
+	float4		vNormal : SV_TARGET1;
+	float4		vDepth : SV_TARGET2;
 };
 
 PS_OUT PS_MAIN_RECT(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	vector		vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+	Out.vDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+	vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexUV);
 
-	float		fShade = max(dot(normalize(g_vLightDir.xyz) * -1.f, In.vNormal), 0.f);
+	float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
 
-	vector		vLook = In.vWorldPos - g_vCamPosition;
-	vector		vReflect = reflect(normalize(g_vLightDir), vector(In.vNormal, 0.f));
+	float3x3	WorldMatrix = float3x3(In.vTangent, In.vBinormal, In.vNormal);
 
-	float		fSpecular = pow(max(dot(normalize(vLook) * -1.f, normalize(vReflect)), 0.f), 30.f);
+	vNormal = mul(vNormal, WorldMatrix);
 
-	Out.vColor.xyz = vMtrlDiffuse.xyz;
+	Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 0.f);
 
-	Out.vColor.a = vMtrlDiffuse.a;
-
-	if (Out.vColor.a < 0.1f)
+	if (Out.vDiffuse.a < 0.1f)
 		discard;
 
 	return Out;
@@ -99,21 +93,19 @@ PS_OUT PS_MAIN_RECT_SELECT(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	vector		vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
+	Out.vDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV) * vector(1.f, 0.f, 0.f, 1.f);
+	vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexUV);
 
-	float		fShade = max(dot(normalize(g_vLightDir.xyz) * -1.f, In.vNormal), 0.f);
+	float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
 
-	vector		vLook = In.vWorldPos - g_vCamPosition;
-	vector		vReflect = reflect(normalize(g_vLightDir), vector(In.vNormal, 0.f));
+	float3x3	WorldMatrix = float3x3(In.vTangent, In.vBinormal, In.vNormal);
 
-	float		fSpecular = pow(max(dot(normalize(vLook) * -1.f, normalize(vReflect)), 0.f), 30.f);
+	vNormal = mul(vNormal, WorldMatrix);
 
-	Out.vColor.xyz = ((g_vColor * g_vLightDiffuse * vMtrlDiffuse) * (fShade + g_vLightAmbient * g_vMtrlAmbient)
-		+ (g_vLightSpecular * g_vMtrlSpecular) * fSpecular).xyz;
+	Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 0.f);
 
-	Out.vColor.a = vMtrlDiffuse.a;
-
-	if (Out.vColor.a < 0.1f)
+	if (Out.vDiffuse.a < 0.1f)
 		discard;
 
 	return Out;
@@ -125,12 +117,21 @@ PS_OUT PS_MAIN_EFFECT(PS_IN In)
 
 	float2 vTexUVMove = In.vTexUV + g_vMoveTex;
 
-	vector		vMtrlAlpha = g_AlphaTexture.Sample(DefaultSampler, vTexUVMove);
+	Out.vDiffuse = g_DiffuseTexture.Sample(DefaultSampler, vTexUVMove);
+	Out.vDiffuse.a *= g_Alpha;
+	vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, vTexUVMove);
 
-	Out.vColor = g_vColor * vMtrlAlpha;
+	float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
 
-	Out.vColor.a =  vMtrlAlpha.a * g_Alpha;
+	float3x3	WorldMatrix = float3x3(In.vTangent, In.vBinormal, In.vNormal);
 
+	vNormal = mul(vNormal, WorldMatrix);
+
+	Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 0.f);
+
+	if (Out.vDiffuse.a < 0.1f)
+		discard;
 
 	return Out;
 }
@@ -140,13 +141,22 @@ PS_OUT PS_MAIN_MOVE(PS_IN In)
 	PS_OUT		Out = (PS_OUT)0;
 
 	float		fAlpha = In.vTexUV.x;
-	float2 vTexUVMove = In.vTexUV + g_vMoveTex;
+	float2		vTexUVMove = In.vTexUV + g_vMoveTex;
 
-	vector		vMtrlAlpha = g_AlphaTexture.Sample(DefaultSampler, vTexUVMove);
+	Out.vDiffuse = g_DiffuseTexture.Sample(DefaultSampler, vTexUVMove);
+	vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, vTexUVMove);
 
-	Out.vColor = g_vColor * vMtrlAlpha;
+	float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
 
-	Out.vColor.a = vMtrlAlpha.a * g_Alpha * fAlpha * fAlpha;
+	float3x3	WorldMatrix = float3x3(In.vTangent, In.vBinormal, In.vNormal);
+
+	vNormal = mul(vNormal, WorldMatrix);
+
+	Out.vNormal = vector(vNormal * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 0.f);
+
+	if (Out.vDiffuse.a < 0.1f)
+		discard;
 
 	return Out;
 }
