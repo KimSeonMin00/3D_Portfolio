@@ -75,6 +75,11 @@ HRESULT CGameObject::Render()
 	return S_OK;
 }
 
+HRESULT CGameObject::Render_ShadowDepth()
+{
+	return S_OK;
+}
+
 HRESULT CGameObject::Add_Components(_uint iLevelID, const _tchar * pPrototypeTag, const _tchar* pComponentTag, CComponent ** ppOut, void * pArg)
 {
 	if (nullptr != Find_Component(pComponentTag))

@@ -33,7 +33,11 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Depth"), m_pDevice, m_pDeviceContext, ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 
-	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_Light_Depth"), m_pDevice, m_pDeviceContext, ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
+	_uint		iShadowMapCX = 8000;
+	_uint		iShadowMapCY = 6000;
+
+	// For.Target_ShadowDepth
+	if (FAILED(m_pTarget_Manager->Add_RenderTarget(TEXT("Target_ShadowDepth"), m_pDevice, m_pDeviceContext, iShadowMapCX, iShadowMapCY, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 
 	/* For.Target_Shade */
@@ -52,8 +56,6 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Deferred"), TEXT("Target_Depth"))))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_Deferred"), TEXT("Target_Light_Depth"))))
-		return E_FAIL;
 
 	/* For.MRT_LightAcc */
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Shade"))))
@@ -61,6 +63,9 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Specular"))))
 		return E_FAIL;
 
+	// For.MRT_ShadowDepth(Shadow)
+	if (FAILED(m_pTarget_Manager->Add_MRT(L"MRT_LightDepth", L"Target_ShadowDepth")))
+		return E_FAIL;
 
 
 	m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pDeviceContext);
@@ -111,6 +116,9 @@ HRESULT CRenderer::Draw_Renderer()
 	if (FAILED(Render_Priority()))
 		return E_FAIL;
 
+	if (FAILED(Render_ShadowDepth()))
+		return E_FAIL;
+
 	if (FAILED(Render_NonAlphaBlend()))
 		return E_FAIL;
 
@@ -136,6 +144,8 @@ HRESULT CRenderer::Draw_Renderer()
 	if (FAILED(m_pTarget_Manager->Render_Debug(TEXT("MRT_Deferred"))))
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Render_Debug(TEXT("MRT_LightAcc"))))
+		return E_FAIL;
+	if (FAILED(m_pTarget_Manager->Render_Debug(TEXT("MRT_Light_Depth"))))
 		return E_FAIL;
 #endif // _DEBUG
 
@@ -179,6 +189,27 @@ HRESULT CRenderer::Render_Priority()
 	}
 
 	m_RenderList[RENDER_PRIORITY].clear();
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_ShadowDepth()
+{
+	if (FAILED(m_pTarget_Manager->Begin_MRT(m_pDeviceContext, TEXT("MRT_LightDepth"))))
+		return E_FAIL;
+
+
+	for (auto& pGameObject : m_RenderList[RENDER_SHADOWDEPTH])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render_ShadowDepth();
+		Safe_Release(pGameObject);
+	}
+
+	m_RenderList[RENDER_SHADOWDEPTH].clear();
+
+	if (FAILED(m_pTarget_Manager->End_MRT(m_pDeviceContext)))
+		return E_FAIL;
 
 	return S_OK;
 }

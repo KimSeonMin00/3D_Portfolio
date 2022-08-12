@@ -62,7 +62,7 @@ VS_OUT VS_LIGHT(VS_IN In)
 	Out.vPosition = vPosition;
 	Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), g_WorldMatrix));
 	Out.vTexUV = In.vTexUV;
-	Out.vWorldPos = mul(vector(In.vPosition, 0.f), g_WorldMatrix);
+	Out.vWorldPos = mul(float4(In.vPosition, 0.f), g_WorldMatrix);
 	Out.vProjPos = vPosition;
 
 	return Out;
@@ -93,9 +93,6 @@ PS_OUT PS_MAIN_TERRAIN(PS_IN In)
 
 	Out.vDiffuse = vSourDiffuse;
 	Out.vDiffuse.a = 1.f;
-
-	/* -1 -> 0 */
-	/*  1 -> 1 */
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 0.f);
 
