@@ -2,6 +2,7 @@
 
 // float4x4
 matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+matrix			g_LightViewMatrix, g_LightProjMatrix;
 
 texture2D		g_SourDiffTexture;
 texture2D		g_DestDiffTexture;
@@ -48,6 +49,25 @@ VS_OUT VS_MAIN(VS_IN In)
 	return Out;
 }
 
+VS_OUT VS_LIGHT(VS_IN In)
+{
+	VS_OUT		Out = (VS_OUT)0;
+
+	matrix		matLWV, matLWVP;
+
+	matLWV = mul(g_WorldMatrix, g_LightViewMatrix);
+	matLWVP = mul(matLWV, g_LightProjMatrix);
+	vector vPosition = mul(float4(In.vPosition, 1.f), matLWVP);
+
+	Out.vPosition = vPosition;
+	Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), g_WorldMatrix));
+	Out.vTexUV = In.vTexUV;
+	Out.vWorldPos = mul(vector(In.vPosition, 0.f), g_WorldMatrix);
+	Out.vProjPos = vPosition;
+
+	return Out;
+}
+
 struct PS_IN
 {
 	float4		vPosition : SV_POSITION;
@@ -62,6 +82,7 @@ struct PS_OUT
 	float4		vDiffuse : SV_TARGET0;
 	float4		vNormal : SV_TARGET1;
 	float4		vDepth : SV_TARGET2;
+	float4		vLightDepth : SV_TARGET3;
 };
 
 PS_OUT PS_MAIN_TERRAIN(PS_IN In)
@@ -81,6 +102,15 @@ PS_OUT PS_MAIN_TERRAIN(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_LIGHT(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vLightDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 0.f);
+
+	return Out;
+}
+
 technique11 DefaultTechinque
 {
 	pass Terrain_Directional
@@ -92,5 +122,16 @@ technique11 DefaultTechinque
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_TERRAIN();
+	}
+
+	pass Terrain_Light
+	{
+		SetBlendState(BS_None, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
+		SetDepthStencilState(DSS_Default, 0);
+		SetRasterizerState(RS_Default);
+
+		VertexShader = compile vs_5_0 VS_LIGHT();
+		GeometryShader = NULL;
+		PixelShader = compile ps_5_0 PS_LIGHT();
 	}
 }

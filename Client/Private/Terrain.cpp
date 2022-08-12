@@ -83,6 +83,12 @@ HRESULT CTerrain::Render()
 	if (FAILED(m_pVIBufferCom->Render()))
 		return E_FAIL;
 
+	if (FAILED(m_pShaderCom->Begin(1)))
+		return E_FAIL;
+
+	if (FAILED(m_pVIBufferCom->Render()))
+		return E_FAIL;
+
 #ifdef _DEBUG
 	//m_pNavigationCom->Render();
 #endif // _DEBUG
@@ -125,6 +131,8 @@ HRESULT CTerrain::SetUp_ConstantTable()
 	m_pShaderCom->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_VIEW), sizeof(_float4x4));
 	m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_PROJ), sizeof(_float4x4));
 	m_pShaderCom->Set_RawValue("g_vCamPosition", &pGameInstance->Get_CamPositionFloat4(), sizeof(_float4));
+	m_pShaderCom->Set_RawValue("g_LightViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_LIGHTVIEW), sizeof(_float4x4));
+	m_pShaderCom->Set_RawValue("g_LightProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_LIGHTPROJ), sizeof(_float4x4));
 
 	if (FAILED(m_pTextureCom->Bind_OnShader(m_pShaderCom, "g_SourDiffTexture", 0)))
 		return E_FAIL;
