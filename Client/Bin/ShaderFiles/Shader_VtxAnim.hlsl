@@ -1,7 +1,6 @@
 #include "Shader_Defines.hpp"
 
 matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-matrix			g_LightViewMatrix, g_LightProjMatrix;
 
 float			g_Alpha = 1.f;
 
@@ -61,35 +60,6 @@ VS_OUT VS_MAIN(VS_IN In)
 	return Out;
 }
 
-VS_OUT VS_LIGHT(VS_IN In)
-{
-	VS_OUT		Out = (VS_OUT)0;
-
-	matrix		matLWV, matLWVP;
-
-	matLWV = mul(g_WorldMatrix, g_LightViewMatrix);
-	matLWVP = mul(matLWV, g_LightProjMatrix);
-
-	float		fWeightW = 1.f - (In.vBlendWeight.x + In.vBlendWeight.y + In.vBlendWeight.z);
-
-	matrix		BoneMatrix = g_Bones.BoneMatrices[In.vBlendIndex.x] * In.vBlendWeight.x
-		+ g_Bones.BoneMatrices[In.vBlendIndex.y] * In.vBlendWeight.y
-		+ g_Bones.BoneMatrices[In.vBlendIndex.z] * In.vBlendWeight.z
-		+ g_Bones.BoneMatrices[In.vBlendIndex.w] * fWeightW;
-
-	vector		vPosition = mul(float4(In.vPosition, 1.f), BoneMatrix);
-	vector		vNormal = mul(float4(In.vNormal, 0.f), BoneMatrix);
-	vPosition = mul(vPosition, matLWVP);
-
-	Out.vPosition = vPosition;
-	Out.vNormal = mul(In.vNormal, g_WorldMatrix).xyz;
-	Out.vTexUV = In.vTexUV;
-	Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
-	Out.vProjPos = vPosition;
-
-	return Out;
-}
-
 struct PS_IN
 {
 	float4		vPosition : SV_POSITION;
@@ -124,9 +94,23 @@ PS_OUT PS_MAIN(PS_IN In)
 	return Out;
 }
 
-PS_OUT PS_LIGHT(PS_IN In)
+struct PS_SHADOW_IN
 {
-	PS_OUT		Out = (PS_OUT)0;
+	float4		vPosition : SV_POSITION;
+	float3		vNormal : NORMAL;
+	float2		vTexUV : TEXCOORD0;
+	float4		vWorldPos : TEXCOORD1;
+	float4		vProjPos : TEXCOORD2;
+};
+
+struct PS_SHADOW_OUT
+{
+	float4		vLightDepth : SV_TARGET0;
+};
+
+PS_SHADOW_OUT PS_SHADOW(PS_SHADOW_IN In)
+{
+	PS_SHADOW_OUT		Out = (PS_SHADOW_OUT)0;
 
 	Out.vLightDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.f, 0.f, 0.f);
 
@@ -188,12 +172,12 @@ technique11 DefaultTechinque
 
 	pass Light
 	{
-		SetBlendState(BS_AlphaBlend, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
+		SetBlendState(BS_None, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
 		SetDepthStencilState(DSS_Default, 0);
 		SetRasterizerState(RS_Default);
 
-		VertexShader = compile vs_5_0 VS_LIGHT();
+		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
-		PixelShader = compile ps_5_0 PS_LIGHT();
+		PixelShader = compile ps_5_0 PS_SHADOW();
 	}
 }

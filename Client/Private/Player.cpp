@@ -132,6 +132,7 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 	}
 
 	m_pRendererCom->Add_RenderList(CRenderer::RENDER_NONALPHABLEND, this);
+	m_pRendererCom->Add_RenderList(CRenderer::RENDER_SHADOWDEPTH, this);
 }
 
 HRESULT CPlayer::Render()
@@ -161,17 +162,45 @@ HRESULT CPlayer::Render()
 
 		if (i != 0)//피리 메쉬 제외
 			m_pModelCom->Render(i);
-
-		m_pShaderCom->Begin(3);
-
-		if (i != 0)//피리 메쉬 제외
-			m_pModelCom->Render(i);
 	}
 
 	m_pAABBCom->Render();
 	m_pOBBCom->Render();
 	m_pSPHERECom->Render();
 	m_pHitSphereCom->Render();
+
+	return S_OK;
+}
+
+HRESULT CPlayer::Render_ShadowDepth()
+{
+	if (nullptr == m_pShaderCom ||
+		nullptr == m_pModelCom)
+		return E_FAIL;
+
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	if (FAILED(m_pTransformCom->Bind_OnShader(m_pShaderCom, "g_WorldMatrix")))
+		return E_FAIL;
+
+	m_pShaderCom->Set_RawValue("g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_LIGHTVIEW), sizeof(_float4x4));
+	m_pShaderCom->Set_RawValue("g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4_TP(CPipeline::D3DTS_LIGHTPROJ), sizeof(_float4x4));
+
+	RELEASE_INSTANCE(CGameInstance);
+
+	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		m_pModelCom->SetUp_BoneMatrices_OnShader(m_pShaderCom, "g_Bones", i);
+
+		m_pModelCom->SetUp_Material_OnShader(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+
+		m_pShaderCom->Begin(3);
+
+		if (i != 0)//피리 메쉬 제외
+			m_pModelCom->Render(i);
+	}
 
 	return S_OK;
 }

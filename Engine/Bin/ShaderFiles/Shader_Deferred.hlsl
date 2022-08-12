@@ -1,5 +1,6 @@
 matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 matrix			g_ViewMatrixInv, g_ProjMatrixInv;
+matrix			g_LightView, g_LightProj;
 
 vector			g_vCamPosition;
 
@@ -9,6 +10,7 @@ texture2D		g_DiffuseTexture;
 texture2D		g_ShadeTexture;
 texture2D		g_SpecularTexture;
 texture2D		g_DepthTexture;
+texture2D		g_ShadowTexture;
 
 
 
@@ -113,8 +115,6 @@ PS_OUT_LIGHT PS_MAIN_DIRECTIONAL(PS_IN In)
 	/* 월드위치 */
 	vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
 
-
-
 	Out.vShade = saturate((g_vLightDiffuse * saturate(dot(normalize(g_vLightDir) * -1.f, vNormal))) + (g_vLightAmbient * g_vMtrlAmbient));
 	Out.vShade.a = 1.f;
 
@@ -189,6 +189,38 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 	fFogPower = max((vDepth.y * 1000.f) - fFogDistance, 0.f) / 15.0f;
 
 	Out.vColor = (vDiffuse * vShade + vSpecular)/* + vFogColor * fFogPower*/;
+
+	vector		vWorldPos;
+
+	/* 투영스페이스상의 위치. */
+	/* 월드위치 * 뷰행렬 * 투영행렬 / w */
+	float		fViewZ = vDepth.y * 1000.f;
+	vWorldPos.x = In.vTexUV.x * 2.f - 1.f;
+	vWorldPos.y = In.vTexUV.y * -2.f + 1.f;
+	vWorldPos.z = vDepth.x; /* 0 ~ 1 */
+	vWorldPos.w = 1.f;
+
+	/* 월드위치 * 뷰행렬 * 투영행렬 */
+	vWorldPos = vWorldPos * fViewZ /* 뷰스페이스 상의 z */;
+
+	/* 월드위치 * 뷰행렬 */
+	vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+
+	/* 월드위치 */
+	vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+
+	vWorldPos = mul(vWorldPos, g_LightView);
+
+	vector		vUVPos = mul(vWorldPos, g_LightProj);
+	float2		vNewUV;
+
+	vNewUV.x = (vUVPos.x / vUVPos.w) * 0.5f + 0.5f;
+	vNewUV.y = (vUVPos.y / vUVPos.w) * -0.5f + 0.5f;
+
+	vector		vShadowDepthInfo = g_ShadowTexture.Sample(DefaultSampler, vNewUV);
+
+	if (vWorldPos.z > vShadowDepthInfo.x * 1000)
+		Out.vColor = Out.vColor * 0.5f;
 
 	if (Out.vColor.a == 0.f)
 		discard;

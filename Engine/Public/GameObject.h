@@ -21,7 +21,7 @@ public:
 	virtual void Tick(_float fTimeDelta);
 	virtual void Late_Tick(_float fTimeDelta);
 	virtual HRESULT Render();
-	virtual HRSULT Render_ShadowDepth();
+	virtual HRESULT Render_ShadowDepth();
 
 public:
 	_bool			Check_Dead()

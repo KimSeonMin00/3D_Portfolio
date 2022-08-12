@@ -79,7 +79,7 @@ HRESULT CLevel_Boss::Ready_LightDesc()
 	_vector LVMvLook = XMVectorSet(1.f, -1.f, 1.f, 0.f);
 	_vector	LVMvRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), LVMvLook);
 	_vector	LVMvUp = XMVector3Cross(LVMvLook, LVMvRight);
-	_vector	LVMvPos = XMVectorSet(0.f, 10.f, 0.f, 1.f);
+	_vector	LVMvPos = XMVectorSet(0.f, 60.f, 0.f, 1.f);
 
 	LightViewMat.r[0] = XMVector3Normalize(LVMvRight);
 	LightViewMat.r[1] = XMVector3Normalize(LVMvUp);
@@ -87,10 +87,10 @@ HRESULT CLevel_Boss::Ready_LightDesc()
 	LightViewMat.r[3] = LVMvPos;
 
 	_matrix LightProjMat = 
-		XMMatrixPerspectiveFovLH(XMConvertToRadians(60.0f), 
+		XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), 
 		(_float)g_iWinCX / g_iWinCY, 
 			0.2f, 
-			300.f);
+			1000.f);
 
 	LightViewMat = XMMatrixInverse(nullptr, LightViewMat);
 

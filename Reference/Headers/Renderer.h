@@ -12,6 +12,7 @@ class ENGINE_DLL CRenderer final : public CComponent
 public:
 	enum RENDERGROUP { 
 		RENDER_PRIORITY,
+		RENDER_SHADOWDEPTH,
 		RENDER_NONALPHABLEND,
 		RENDER_NONLIGHT,
 		RENDER_ALPHABLEND,
@@ -54,9 +55,10 @@ private:
 
 private:
 	HRESULT Render_Priority();
+	HRESULT Render_ShadowDepth();
 	HRESULT Render_NonAlphaBlend();
 	HRESULT Render_LightAcc();
-	HRESULT Render_Blend();
+	HRESULT Render_Blend(); 
 	HRESULT Render_NonLight();
 	HRESULT Render_AlphaBlend();
 	HRESULT Render_UI();

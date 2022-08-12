@@ -64,7 +64,7 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 		return E_FAIL;
 
 	// For.MRT_ShadowDepth(Shadow)
-	if (FAILED(m_pTarget_Manager->Add_MRT(L"MRT_LightDepth", L"Target_ShadowDepth")))
+	if (FAILED(m_pTarget_Manager->Add_MRT(TEXT("MRT_LightDepth"), TEXT("Target_ShadowDepth"))))
 		return E_FAIL;
 
 
@@ -87,7 +87,7 @@ HRESULT CRenderer::NativeConstruct_Prototype()
 	if (FAILED(m_pTarget_Manager->Ready_Debug_TargetDesc(TEXT("Target_Depth"), 50.f, 250.f, 100.f, 100.f)))
 		return E_FAIL;
 
-	if (FAILED(m_pTarget_Manager->Ready_Debug_TargetDesc(TEXT("Target_Light_Depth"), 50.f, 350.f, 100.f, 100.f)))
+	if (FAILED(m_pTarget_Manager->Ready_Debug_TargetDesc(TEXT("Target_ShadowDepth"), 50.f, 350.f, 100.f, 100.f)))
 		return E_FAIL;
 
 	if (FAILED(m_pTarget_Manager->Ready_Debug_TargetDesc(TEXT("Target_Shade"), 300.f, 100.f, 200.f, 200.f)))
@@ -145,7 +145,7 @@ HRESULT CRenderer::Draw_Renderer()
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Render_Debug(TEXT("MRT_LightAcc"))))
 		return E_FAIL;
-	if (FAILED(m_pTarget_Manager->Render_Debug(TEXT("MRT_Light_Depth"))))
+	if (FAILED(m_pTarget_Manager->Render_Debug(TEXT("MRT_LightDepth"))))
 		return E_FAIL;
 #endif // _DEBUG
 
@@ -299,14 +299,38 @@ HRESULT CRenderer::Render_Blend()
 		return E_FAIL;
 	if (FAILED(m_pShader->Set_SRV("g_SpecularTexture", m_pTarget_Manager->Get_SRV(TEXT("Target_Specular")))))
 		return E_FAIL;
-	//if (FAILED(m_pShader->Set_SRV("g_DepthTexture", m_pTarget_Manager->Get_SRV(TEXT("Target_Depth")))))
-	//	return E_FAIL;
+	if (FAILED(m_pShader->Set_SRV("g_ShadowTexture", m_pTarget_Manager->Get_SRV(TEXT("Target_ShadowDepth")))))
+		return E_FAIL;
 
 	if (FAILED(m_pShader->Set_RawValue("g_WorldMatrix", &m_WorldMatrix, sizeof(_float4x4))))
 		return E_FAIL;
 	if (FAILED(m_pShader->Set_RawValue("g_ViewMatrix", &m_ViewMatrix, sizeof(_float4x4))))
 		return E_FAIL;
 	if (FAILED(m_pShader->Set_RawValue("g_ProjMatrix", &m_ProjMatrix, sizeof(_float4x4))))
+		return E_FAIL;
+
+	_matrix LightViewMat = XMMatrixIdentity();
+	_vector LVMvLook = XMVectorSet(1.f, -1.f, 1.f, 0.f);
+	_vector	LVMvRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), LVMvLook);
+	_vector	LVMvUp = XMVector3Cross(LVMvLook, LVMvRight);
+	_vector	LVMvPos = XMVectorSet(0.f, 60.f, 0.f, 1.f);
+
+	LightViewMat.r[0] = XMVector3Normalize(LVMvRight);
+	LightViewMat.r[1] = XMVector3Normalize(LVMvUp);
+	LightViewMat.r[2] = XMVector3Normalize(LVMvLook);
+	LightViewMat.r[3] = LVMvPos;
+
+	_matrix LightProjMat =
+		XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f),
+		(_float)1280 / 720,
+			0.2f,
+			1000.f);
+
+	LightViewMat = XMMatrixInverse(nullptr, LightViewMat);
+
+	if (FAILED(m_pShader->Set_RawValue("g_LightView", &XMMatrixTranspose(LightViewMat), sizeof(_float4x4))))
+		return E_FAIL;
+	if (FAILED(m_pShader->Set_RawValue("g_LightProj", &XMMatrixTranspose(LightProjMat), sizeof(_float4x4))))
 		return E_FAIL;
 
 	m_pShader->Begin(3);
