@@ -167,7 +167,7 @@ technique11 DefaultTechinque
 
 	pass Rect_Ratio
 	{
-		SetBlendState(BS_AlphaBlend, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
+		SetBlendState(BS_One, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
 		SetDepthStencilState(DSS_None_ZTest_And_Write, 0);
 		SetRasterizerState(RS_Default);
 

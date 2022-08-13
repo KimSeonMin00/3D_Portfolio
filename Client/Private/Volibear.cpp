@@ -7,6 +7,7 @@
 #include "Voli_Ghost.h"
 #include "Camera_Free.h"
 #include "Player.h"
+#include "Boss_HP.h"
 
 CVolibear::CVolibear(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
 	:CMonster(pDevice, pDevice_Context)
@@ -79,6 +80,14 @@ HRESULT CVolibear::NativeConstruct(void * pArg)
 
 	Safe_AddRef(m_pLeftSparkTransform);
 
+	pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_UI"), TEXT("Prototype_GameObject_Boss_HP"));
+
+	_uint iIndex = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_UI")) - 1;
+
+	m_pHP = pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_UI"), iIndex);
+
+	Safe_AddRef(m_pHP);
+
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
@@ -87,6 +96,8 @@ HRESULT CVolibear::NativeConstruct(void * pArg)
 void CVolibear::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+
+	((CBoss_HP*)m_pHP)->Set_Ratio(m_fHealthPoint / m_fMaxHealth);
 
 	if (m_bStop == false && m_bStun == false)
 		Check_Loop(fTimeDelta);
@@ -1682,4 +1693,5 @@ void CVolibear::Free()
 	Safe_Release(m_pOBBRightHand);
 	Safe_Release(m_pOBBLeftHand);
 	Safe_Release(m_pOBBJaw);
+	Safe_Release(m_pHP);
 }

@@ -239,9 +239,6 @@ HRESULT CLevel_Boss::Ready_Layer_Monster(const _tchar * pLayerTag)
 	if (FAILED(pGameInstance->Add_Layer(LEVEL_BOSS, pLayerTag, TEXT("Prototype_GameObject_Boss"))))
 		return E_FAIL;
 
-	if (FAILED(pGameInstance->Add_Layer(LEVEL_BOSS, TEXT("Layer_UI"), TEXT("Prototype_GameObject_Boss_HP"))))
-		return E_FAIL;
-
 	Safe_Release(pGameInstance);
 
 	return S_OK;

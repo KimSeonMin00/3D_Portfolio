@@ -33,7 +33,7 @@ HRESULT CBoss_HP::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	Set_Pos((_float)(g_iWinCX >> 1), 50.f);
-	Set_Scale(700.f, 100.f);
+	Set_Scale(800.f, 50.f);
 
 	return S_OK;
 }
@@ -68,6 +68,9 @@ HRESULT CBoss_HP::Render()
 	if (FAILED(m_pTexture_Frame->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture", 0)))
 		return E_FAIL;
 
+	_float fRatio = 1.f;
+	m_pShaderCom->Set_RawValue("g_Ratio", &fRatio, sizeof(_float));
+
 	m_pShaderCom->Set_RawValue("g_Alpha", &m_fAlpha, sizeof(_float));
 
 	if (FAILED(m_pShaderCom->Begin(1)))
@@ -78,6 +81,8 @@ HRESULT CBoss_HP::Render()
 
 	if (FAILED(m_pTexture_HP->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture", 0)))
 		return E_FAIL;
+
+	m_pShaderCom->Set_RawValue("g_Ratio", &m_fRatio, sizeof(_float));
 
 	if (FAILED(m_pShaderCom->Begin(4)))
 		return E_FAIL;

@@ -30,6 +30,13 @@ private:
 	CTexture* m_pTexture_HP;
 private:
 	_float		m_fAlpha = 1.f;
+	_float		m_fRatio = 1.f;
+
+public:
+	void		Set_Ratio(_float fRatio)
+	{
+		m_fRatio = fRatio;
+	}
 
 public:
 	static CBoss_HP* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, const CTransform::TRANSFORMDESC& TransformDesc);
