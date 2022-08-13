@@ -166,6 +166,7 @@
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp" />
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\Public\Bird.h" />
+    <ClInclude Include="..\Public\Boss_HP.h" />
     <ClInclude Include="..\Public\Camera_Free.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Duck.h" />
@@ -237,6 +238,7 @@
     <ClCompile Include="..\..\Reference\Headers\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\Private\Bird.cpp" />
+    <ClCompile Include="..\Private\Boss_HP.cpp" />
     <ClCompile Include="..\Private\Camera_Free.cpp" />
     <ClCompile Include="..\Private\Duck.cpp" />
     <ClCompile Include="..\Private\Duckie.cpp" />
