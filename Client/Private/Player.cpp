@@ -806,6 +806,9 @@ void CPlayer::Attack(_float fTimeDelta)
 		{
 			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
+			pGameInstance->StopSound(CSound_Device::CHANNEL_PLAYER);
+			pGameInstance->PlaySounds(TEXT("Yasuo_Attack.wav"), CSound_Device::CHANNEL_PLAYER, 1.f);
+
 			_uint iLayerSize = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_Monster"));
 			if (iLayerSize != 0)
 			{

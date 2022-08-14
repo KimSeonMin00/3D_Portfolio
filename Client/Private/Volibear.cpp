@@ -889,6 +889,11 @@ void CVolibear::Attack(_float fTimeDelta)
 	{
 		if (m_pModelCom->Get_Finished())
 		{
+			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+			pGameInstance->StopSound(CSound_Device::CHANNEL_MONSTER);
+			pGameInstance->PlaySounds(TEXT("Voli_Attack.wav"), CSound_Device::CHANNEL_MONSTER, 1.f);
+			RELEASE_INSTANCE(CGameInstance);
+
 			m_bQAttack = false;
 			m_bHitPlayer = false;
 			if (m_iAttackIndex == 4)
@@ -929,7 +934,8 @@ void CVolibear::Q_Skill(_float fTimeDelta)
 			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + 2.f * m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
 			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Voli_Q_Down"), &vPos);
-
+			pGameInstance->StopSound(CSound_Device::CHANNEL_MONSTER);
+			pGameInstance->PlaySounds(TEXT("Voli_Q_Down.wav"), CSound_Device::CHANNEL_MONSTER, 1.f);			
 			RELEASE_INSTANCE(CGameInstance);
 
 			m_bSkillFinished = true;
@@ -950,6 +956,11 @@ void CVolibear::W_Skill(_float fTimeDelta)
 		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
 		if (m_pModelCom->Get_IsChange() == false)
 		{
+			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+			pGameInstance->StopSound(CSound_Device::CHANNEL_MONSTER);
+			pGameInstance->PlaySounds(TEXT("Voli_W_Slash.wav"), CSound_Device::CHANNEL_MONSTER, 1.f);
+			RELEASE_INSTANCE(CGameInstance);
+
 			m_bHitPlayer = false;
 			m_bStateChange = false;
 			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
@@ -960,7 +971,7 @@ void CVolibear::W_Skill(_float fTimeDelta)
 	else
 	{
 		if (m_pModelCom->Get_Finished())
-		{				
+		{		
 			m_bHitPlayer = false;
 			m_bIsChanneling = false;
 			m_eState = m_eDoingState;
@@ -980,6 +991,11 @@ void CVolibear::W_Bite_Skill(_float fTimeDelta)
 		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
 		if (m_pModelCom->Get_IsChange() == false)
 		{
+			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+			pGameInstance->StopSound(CSound_Device::CHANNEL_MONSTER);
+			pGameInstance->PlaySounds(TEXT("Voli_W_Bite.wav"), CSound_Device::CHANNEL_MONSTER, 1.f);
+			RELEASE_INSTANCE(CGameInstance);
+
 			m_bHitPlayer = false;
 			m_bStateChange = false;
 			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
@@ -1018,6 +1034,9 @@ void CVolibear::E_Skill(_float fTimeDelta)
 			Safe_AddRef(pGameInstance);
 
 			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Voli_E"), &(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
+
+			pGameInstance->StopSound(CSound_Device::CHANNEL_MONSTER);
+			pGameInstance->PlaySounds(TEXT("Voli_E_Cast.wav"), CSound_Device::CHANNEL_MONSTER, 1.f);
 
 			Safe_Release(pGameInstance);
 
@@ -1060,6 +1079,9 @@ void CVolibear::R_Skill(_float fTimeDelta)
 			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Voli_R"), &m_vMovePos);
+
+			pGameInstance->StopSound(CSound_Device::CHANNEL_MONSTER);
+			pGameInstance->PlaySounds(TEXT("Voli_R.wav"), CSound_Device::CHANNEL_MONSTER, 1.f);
 
 			RELEASE_INSTANCE(CGameInstance);
 
@@ -1269,6 +1291,11 @@ void CVolibear::Pattern_1(_float fTimeDelta)
 			m_fPatternTime = 0.f;
 			m_bIsChanneling = true;
 			m_iPattern_AttackTime = 0;
+
+			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+			pGameInstance->StopSound(CSound_Device::CHANNEL_MONSTER);
+			pGameInstance->PlaySounds(TEXT("Voli_Q_Run.wav"), CSound_Device::CHANNEL_MONSTER, 1.f);
+			RELEASE_INSTANCE(CGameInstance);
 		}
 	}
 
