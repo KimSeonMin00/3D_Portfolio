@@ -152,6 +152,46 @@ _byte CGameInstance::Get_DIMButtonState(CInput_Device::DIMB eMouseButtonID)
 	return m_pInput_Device->Get_DIMButtonState(eMouseButtonID);
 }
 
+void CGameInstance::PlaySounds(TCHAR * pSoundKey, CSound_Device::CHANNELID eID, float fVolume)
+{
+	if (nullptr == m_pSound_Device)
+		return;
+
+	m_pSound_Device->PlaySoundW(pSoundKey, eID, fVolume);
+}
+
+void CGameInstance::PlayBGM(TCHAR * pSoundKey, float fVolume)
+{
+	if (nullptr == m_pSound_Device)
+		return;
+
+	m_pSound_Device->PlayBGM(pSoundKey, fVolume);
+}
+
+void CGameInstance::StopSound(CSound_Device::CHANNELID eID)
+{
+	if (nullptr == m_pSound_Device)
+		return;
+
+	m_pSound_Device->StopSound(eID);
+}
+
+void CGameInstance::StopAll()
+{
+	if (nullptr == m_pSound_Device)
+		return;
+
+	m_pSound_Device->StopAll();
+}
+
+void CGameInstance::SetChannelVolume(CSound_Device::CHANNELID eID, float fVolume)
+{
+	if (nullptr == m_pSound_Device)
+		return;
+
+	m_pSound_Device->SetChannelVolume(eID, fVolume);
+}
+
 HRESULT CGameInstance::Add_Timer(const _tchar * pTimerTag)
 {
 	if (nullptr == m_pTimer_Manager)

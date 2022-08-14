@@ -124,6 +124,9 @@
     <ClCompile Include="..\Private\Target_Manager.cpp">
       <Filter>01.Utility\07. RenderTarget\Manager</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Sound_Device.cpp">
+      <Filter>00.System\00.Device\Sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -262,6 +265,9 @@
     <ClInclude Include="..\Public\Target_Manager.h">
       <Filter>01.Utility\07. RenderTarget\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Sound_Device.h">
+      <Filter>00.System\00.Device\Sound</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00.System">
@@ -398,6 +404,9 @@
     </Filter>
     <Filter Include="01.Utility\03.Components\Model\HierarchyNode">
       <UniqueIdentifier>{201188fa-4edd-47bc-b67d-b271548d6a31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.System\00.Device\Sound">
+      <UniqueIdentifier>{c312649e-65d7-4e4b-b31e-ad342e92289b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
