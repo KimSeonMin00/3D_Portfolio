@@ -385,6 +385,8 @@ void CPlayer::Key_Input(_float fTimeDelta)
 			WorldMat.r[3] = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 0.5f, 0.f, 0.f);
 		}
 		pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Q_Effect"), &WorldMat);
+		pGameInstance->StopSound(CSound_Device::CHANNEL_PLAYER);
+		pGameInstance->PlaySounds(TEXT("Yasuo_Q.wav"), CSound_Device::CHANNEL_PLAYER, 1.f);
 		m_iQ_Time++;
 
 		if (m_iQ_Time == 1)

@@ -4,6 +4,7 @@ IMPLEMENT_SINGLETON(CGameInstance)
 
 CGameInstance::CGameInstance()
 	: m_pGraphic_Device(CGraphic_Device::Get_Instance())
+	, m_pSound_Device(CSound_Device::Get_Instance())
 	, m_pTimer_Manager(CTimer_Manager::Get_Instance())	
 	, m_pLevel_Manager(CLevel_Manager::Get_Instance())
 	, m_pObject_Manager(CObject_Manager::Get_Instance())
@@ -21,6 +22,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pComponent_Manager);
 	Safe_AddRef(m_pObject_Manager);
 	Safe_AddRef(m_pLevel_Manager);
+	Safe_AddRef(m_pSound_Device);
 	Safe_AddRef(m_pInput_Device);
 	Safe_AddRef(m_pGraphic_Device);
 	Safe_AddRef(m_pTimer_Manager);
@@ -43,6 +45,8 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInstance, _uint iNumLevels, 
 		return E_FAIL;
 
 	/* 사운드장치 초기화. */
+	if (FAILED(m_pSound_Device->Initialize_Sound_Device("../Bin/Resources/Sound/*.wav")))
+		return E_FAIL;
 
 	/* 각각의 매니져들의 예약. */
 	if (FAILED(m_pObject_Manager->Reserve_Manager(iNumLevels)))
@@ -392,6 +396,8 @@ void CGameInstance::Release_Engine()
 
 	CTarget_Manager::Get_Instance()->Destroy_Instance();
 
+	CSound_Device::Get_Instance()->Destroy_Instance();
+
 	CGraphic_Device::Get_Instance()->Destroy_Instance();	
 	
 }
@@ -405,6 +411,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pObject_Manager);
 	Safe_Release(m_pLevel_Manager);	
 	Safe_Release(m_pTimer_Manager);
+	Safe_Release(m_pSound_Device);
 	Safe_Release(m_pInput_Device);
 	Safe_Release(m_pGraphic_Device);
 }
