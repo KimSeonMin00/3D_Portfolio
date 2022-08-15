@@ -358,6 +358,7 @@ _uint CLoader::Loading_ForLogo()
 
 _uint CLoader::Loading_ForGamePlay()
 {
+	Create_Prototype();
 	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
 
@@ -423,7 +424,7 @@ _uint CLoader::Loading_ForGamePlay()
 
 _uint CLoader::Loading_ForBoss()
 {
-	Create_Prototype();
+	//Create_Prototype();
 
 	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
