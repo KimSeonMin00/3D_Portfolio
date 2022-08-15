@@ -638,6 +638,8 @@ void CPantheon::Attack(_float fTimeDelta)
 				((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
 
 				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_Hit_Effect"), &m_vMovePos);
+				pGameInstance->StopSound(CSound_Device::CHANNEL_MONSTER);
+				pGameInstance->PlaySounds(TEXT("Pantheon_Attack.wav"), CSound_Device::CHANNEL_MONSTER, 1.f);
 
 				RELEASE_INSTANCE(CGameInstance);
 			}
@@ -673,6 +675,8 @@ void CPantheon::Q_Skill(_float fTimeDelta)
 			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_Q_Effect"), &m_pTransformCom->Get_WorldMatrix());
+			pGameInstance->StopSound(CSound_Device::CHANNEL_MONSTER);
+			pGameInstance->PlaySounds(TEXT("Pantheon_Q_Short.wav"), CSound_Device::CHANNEL_MONSTER, 1.f);
 
 			if (((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pQ_Hitbox))
 			{
@@ -740,6 +744,9 @@ void CPantheon::Q_Skill_Charge(_float fTimeDelta)
 
 				m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(30.f) / XMConvertToRadians(60.f));
 
+				pGameInstance->StopSound(CSound_Device::CHANNEL_MONSTER);
+				pGameInstance->PlaySounds(TEXT("Pantheon_Q_Long.wav"), CSound_Device::CHANNEL_MONSTER, 1.f);
+
 				RELEASE_INSTANCE(CGameInstance);
 				m_fInitTime = 0.f;
 				m_bSkillFinished = true;
@@ -792,6 +799,9 @@ void CPantheon::W_Skill(_float fTimeDelta)
 			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + 2.f * XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
 			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_W_Effect"),&vPos);
+
+			pGameInstance->StopSound(CSound_Device::CHANNEL_MONSTER);
+			pGameInstance->PlaySounds(TEXT("Pantheon_W.wav"), CSound_Device::CHANNEL_MONSTER, 1.f);
 
 			RELEASE_INSTANCE(CGameInstance);
 
@@ -851,6 +861,8 @@ void CPantheon::E_Skill(_float fTimeDelta)
 				CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_E_Swipe"), &m_pTransformCom->Get_WorldMatrix());
+				pGameInstance->StopSound(CSound_Device::CHANNEL_MONSTER);
+				pGameInstance->PlaySounds(TEXT("Pantheon_E_Swipe.wav"), CSound_Device::CHANNEL_MONSTER, 1.f);
 
 				if (m_fMoveDistTotal <= 6.f)
 				{
@@ -896,6 +908,8 @@ void CPantheon::E_Skill(_float fTimeDelta)
 				CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
 				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_E_Slash"), &m_pTransformCom->Get_WorldMatrix());
+				pGameInstance->StopSound(CSound_Device::CHANNEL_MONSTER);
+				pGameInstance->PlaySounds(TEXT("Pantheon_E_Slash.wav"), CSound_Device::CHANNEL_MONSTER, 1.f);
 
 				if(m_fMoveDistTotal <= 6.f)
 				{
