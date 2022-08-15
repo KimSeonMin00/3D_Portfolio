@@ -1671,15 +1671,20 @@ void CVolibear::Pattern_Phase1(_float fTimeDelta)
 
 		else if (m_iPatternIndex == 2)
 		{
-			Pattern_2(fTimeDelta);
+			Pattern_3(fTimeDelta);
 		}
 
 		else if (m_iPatternIndex == 3)
 		{
-			Pattern_6(fTimeDelta);
+			Pattern_2(fTimeDelta);
 		}
 
 		else if (m_iPatternIndex == 4)
+		{
+			Pattern_6(fTimeDelta);
+		}
+
+		else if (m_iPatternIndex == 5)
 		{
 			Pattern_5(fTimeDelta);
 		}
