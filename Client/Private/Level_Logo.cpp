@@ -18,6 +18,11 @@ HRESULT CLevel_Logo::NativeConstruct()
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	pGameInstance->PlayBGM(TEXT("BGM_GamePlay.wav"), 0.5f);
+
+	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }
@@ -46,7 +51,7 @@ void CLevel_Logo::Tick(_float fTimeDelta)
 	{
 		if (m_fTimeAcc >= 2.f)
 		{
-			if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pDeviceContext, LEVEL_BOSS))))
+			if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pDeviceContext, LEVEL_GAMEPLAY))))
 				return;
 		}
 	}

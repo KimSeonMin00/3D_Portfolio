@@ -629,6 +629,7 @@ void CPantheon::Attack(_float fTimeDelta)
 			m_iCurrentIndex = 57;
 			m_bStateChange = false;
 			m_bW_3Attack = true;
+
 			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 			m_pModelCom->Set_Initialize();
 		}
@@ -639,6 +640,13 @@ void CPantheon::Attack(_float fTimeDelta)
 			m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
 			if (m_pModelCom->Get_IsChange() == false)
 			{
+				CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+				pGameInstance->StopSound(CSound_Device::CHANNEL_MONSTER);
+				pGameInstance->PlaySounds(TEXT("Pantheon_Attack.wav"), CSound_Device::CHANNEL_MONSTER, 1.f);
+
+				RELEASE_INSTANCE(CGameInstance);
+
 				m_bStateChange = false;
 				m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 				m_pModelCom->Set_Initialize();
@@ -655,6 +663,14 @@ void CPantheon::Attack(_float fTimeDelta)
 				if (m_pModelCom->Get_Finished())
 				{
 					m_iCurrentIndex = 51;
+
+					CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+					pGameInstance->StopSound(CSound_Device::CHANNEL_MONSTER);
+					pGameInstance->PlaySounds(TEXT("Pantheon_Attack.wav"), CSound_Device::CHANNEL_MONSTER, 1.f);
+
+					RELEASE_INSTANCE(CGameInstance);
+
 					m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 					m_pModelCom->Set_Initialize();
 				}
@@ -669,6 +685,14 @@ void CPantheon::Attack(_float fTimeDelta)
 					m_bHitPlayer = false;
 					m_fHitTime = 0.f;
 					m_iCurrentIndex = m_iAttackIndex;
+
+					CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+					pGameInstance->StopSound(CSound_Device::CHANNEL_MONSTER);
+					pGameInstance->PlaySounds(TEXT("Pantheon_Attack.wav"), CSound_Device::CHANNEL_MONSTER, 1.f);
+
+					RELEASE_INSTANCE(CGameInstance);
+
 					m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 					m_pModelCom->Set_Initialize();
 				}

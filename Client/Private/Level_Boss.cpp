@@ -2,6 +2,7 @@
 #include "..\Public\Level_Boss.h"
 #include "GameInstance.h"
 #include "Camera.h"
+#include "FadeOut.h"
 
 CLevel_Boss::CLevel_Boss(ID3D11Device * pDevice, ID3D11DeviceContext * pDeviceContext)
 	:CLevel(pDevice, pDeviceContext)
@@ -29,8 +30,8 @@ HRESULT CLevel_Boss::NativeConstruct()
 	if (FAILED(Ready_Layer_Map(TEXT("Layer_Map"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
-		return E_FAIL;
+	/*if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
+		return E_FAIL;*/
 
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
@@ -42,6 +43,60 @@ HRESULT CLevel_Boss::NativeConstruct()
 void CLevel_Boss::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+
+	if (m_bCutSceneEnd == false)
+	{
+		if (m_bCutScene == false)
+		{
+			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+			CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_BOSS, TEXT("Layer_Player"), TEXT("Com_Transform"));
+			Safe_AddRef(pTransform);
+
+			if (XMVectorGetZ(pTransform->Get_State(CTransform::STATE_POSITION)) >= 12.f)
+			{
+				if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_FadeOut"))))
+					return;
+
+				_uint iUILayerSize = pGameInstance->Get_Layer_Size(LEVEL_GAMEPLAY, TEXT("Layer_UI"));
+				m_pFadeOut = pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_UI"), iUILayerSize - 1);
+
+				Safe_AddRef(m_pFadeOut);
+
+				m_bCutScene = true;
+			}
+
+			Safe_Release(pTransform);
+
+			RELEASE_INSTANCE(CGameInstance);
+		}
+		else
+		{
+			if (m_pFadeOut != nullptr)
+			{
+				if (((CFadeOut*)m_pFadeOut)->Get_FadeOut() == true)
+				{
+					CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+					if (FAILED(pGameInstance->Add_Layer(LEVEL_BOSS, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Boss"))))
+						return;
+
+					CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_BOSS, TEXT("Layer_Player"), TEXT("Com_Transform"));
+
+					Safe_AddRef(pTransform);
+
+					pTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(12.f, 0.f, 15.f, 1.f));
+					pTransform->LookAt(XMVectorSet(12.f, 0.f, 16.f, 1.f));
+
+					Safe_Release(pTransform);
+
+					m_bCutSceneEnd = true;
+
+					RELEASE_INSTANCE(CGameInstance);
+				}
+			}
+		}
+	}
 }
 
 HRESULT CLevel_Boss::Render()
@@ -265,4 +320,6 @@ CLevel_Boss * CLevel_Boss::Create(ID3D11Device * pDevice, ID3D11DeviceContext * 
 void CLevel_Boss::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pFadeOut);
 }

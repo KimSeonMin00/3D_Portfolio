@@ -80,14 +80,6 @@ HRESULT CVolibear::NativeConstruct(void * pArg)
 
 	Safe_AddRef(m_pLeftSparkTransform);
 
-	pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_UI"), TEXT("Prototype_GameObject_Boss_HP"));
-
-	_uint iIndex = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_UI")) - 1;
-
-	m_pHP = pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_UI"), iIndex);
-
-	Safe_AddRef(m_pHP);
-
 	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
@@ -97,8 +89,10 @@ void CVolibear::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
-
-	((CBoss_HP*)m_pHP)->Set_Ratio(m_fHealthPoint / m_fMaxHealth);
+	if (m_pHP != nullptr)
+	{
+		((CBoss_HP*)m_pHP)->Set_Ratio(m_fHealthPoint / m_fMaxHealth);
+	}
 
 	if (m_bStop == false && m_bStun == false)
 		Check_Loop(fTimeDelta);
@@ -721,6 +715,21 @@ void CVolibear::Init(_float fTimeDelta)
 		{
 			m_ePreState = STATE_FLY;
 			m_eState = STATE_IDLE;
+
+			CGameInstance* pGameInstance = CGameInstance::Get_Instance();
+
+			if (pGameInstance == nullptr)
+				return;
+
+			Safe_AddRef(pGameInstance);
+
+			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Voli_E"), &XMVectorSet(12.f, 0.f, 17.f, 1.f));
+
+			pGameInstance->StopSound(CSound_Device::CHANNEL_MONSTER);
+			pGameInstance->PlaySounds(TEXT("Voli_E_Cast.wav"), CSound_Device::CHANNEL_MONSTER, 1.f);
+
+			Safe_Release(pGameInstance);
+
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(12.f, 0.f, 17.f, 1.f));
 			m_bInitFall = true;
 			m_fInitTime = 0.f;
@@ -730,7 +739,21 @@ void CVolibear::Init(_float fTimeDelta)
 	if(m_bInitFall == true)
 	{
 		if (m_fInitTime >= 3.f)
+		{
 			m_bCutScene = true;
+
+			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_UI"), TEXT("Prototype_GameObject_Boss_HP"));
+
+			_uint iIndex = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_UI")) - 1;
+
+			m_pHP = pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_UI"), iIndex);
+
+			Safe_AddRef(m_pHP);
+
+			RELEASE_INSTANCE(CGameInstance);
+		}
 	}
 }
 
@@ -917,6 +940,11 @@ void CVolibear::Attack(_float fTimeDelta)
 		m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
 		if (m_pModelCom->Get_IsChange() == false)
 		{
+			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+			pGameInstance->StopSound(CSound_Device::CHANNEL_MONSTER);
+			pGameInstance->PlaySounds(TEXT("Voli_Attack.wav"), CSound_Device::CHANNEL_MONSTER, 1.f);
+			RELEASE_INSTANCE(CGameInstance);
+
 			m_bHitPlayer = false;
 			m_bStateChange = false;
 			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
