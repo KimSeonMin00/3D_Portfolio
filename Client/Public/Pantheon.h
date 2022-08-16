@@ -33,6 +33,7 @@ private:
 
 private:
 	CGameObject*    m_pShield = nullptr;
+	CGameObject*    m_pHP = nullptr;
 
 private:
 	void	Key_Input(_float fTimeDelta);

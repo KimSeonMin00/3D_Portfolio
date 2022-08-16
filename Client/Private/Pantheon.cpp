@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Pantheon_Shield.h"
 #include "Player.h"
+#include "Boss_HP.h"
 
 CPantheon::CPantheon(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
 	:CMonster(pDevice, pDevice_Context)
@@ -44,12 +45,24 @@ HRESULT CPantheon::NativeConstruct(void * pArg)
 
 	m_fMoveSpeed = 4.f;
 
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_UI"), TEXT("Prototype_GameObject_Boss_HP"));
+
+	_uint iIndex = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_UI")) - 1;
+
+	m_pHP = pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_UI"), iIndex);
+
+	Safe_AddRef(m_pHP);
+
+	RELEASE_INSTANCE(CGameInstance);
+
 	return S_OK;
 }
 
 void CPantheon::Tick(_float fTimeDelta)
 {
-
+	((CBoss_HP*)m_pHP)->Set_Ratio(m_fHealthPoint / m_fMaxHealth);
 
 	if (m_bStop == false)
 		Check_Loop(fTimeDelta);
@@ -61,49 +74,65 @@ void CPantheon::Tick(_float fTimeDelta)
 
 	else
 	{
-		//Key_Input(fTimeDelta);
-		if (m_fInitTime < 5.f)
+		if (m_bAirborne == true)
 		{
-			m_fInitTime += fTimeDelta;		
-			Normal_Pattern(fTimeDelta);
+			m_fAirborneTime += fTimeDelta;
+			m_eState = STATE_IDLE;
+
+			if (m_fAirborneTime >= 3.f)
+			{
+				m_bAirborne = false;
+				m_bIsChanneling = false;
+				m_bPatternFinished = true;
+			}
 		}
 
 		else
 		{
-			if (m_bPatternFinished == true)
+			//Key_Input(fTimeDelta);
+			if (m_fInitTime < 5.f)
 			{
-				while (true)
-				{
-					m_iCurrentPattern = rand() % 4;
-					if (m_iCurrentPattern != m_iPrePattern)
-					{
-						m_iPrePattern = m_iCurrentPattern;
-						m_bPatternFinished = false;
-						break;
-					}
-				}
+				m_fInitTime += fTimeDelta;
+				Normal_Pattern(fTimeDelta);
 			}
 
-			switch (m_iCurrentPattern)
+			else
 			{
-			case 0:
-				Pattern_1(fTimeDelta);
-				break;
+				if (m_bPatternFinished == true)
+				{
+					while (true)
+					{
+						m_iCurrentPattern = rand() % 4;
+						if (m_iCurrentPattern != m_iPrePattern)
+						{
+							m_iPrePattern = m_iCurrentPattern;
+							m_bPatternFinished = false;
+							break;
+						}
+					}
+				}
 
-			case 1:
-				Pattern_2(fTimeDelta);
-				break;
+				switch (m_iCurrentPattern)
+				{
+				case 0:
+					Pattern_1(fTimeDelta);
+					break;
 
-			case 2:
-				Pattern_3(fTimeDelta);
-				break;
+				case 1:
+					Pattern_2(fTimeDelta);
+					break;
 
-			case 3:
-				Pattern_4(fTimeDelta);
-				break;
+				case 2:
+					Pattern_3(fTimeDelta);
+					break;
 
-			default:
-				break;
+				case 3:
+					Pattern_4(fTimeDelta);
+					break;
+
+				default:
+					break;
+				}
 			}
 		}
 	}
@@ -1243,5 +1272,6 @@ void CPantheon::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pHP);
 	Safe_Release(m_pQ_Hitbox);
 }

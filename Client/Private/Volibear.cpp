@@ -109,7 +109,21 @@ void CVolibear::Tick(_float fTimeDelta)
 
 	else
 	{
-		if (m_bAirborne == false && m_pModelCom->Get_IsChange() == false)
+		if (m_bAirborne == true)
+		{
+			m_fAirborneTime += fTimeDelta;
+			m_eState = STATE_IDLE;
+
+			if (m_fAirborneTime >= 3.f)
+			{
+				m_bAirborne = false;
+				m_iPatternIndex = rand() % 6;
+				m_fDelayTime = 0.f;
+				m_bPatternFinished = true;
+			}
+		}
+
+		else if (m_bAirborne == false && m_pModelCom->Get_IsChange() == false)
 		{
 			Pattern_Phase1(fTimeDelta);
 		}
@@ -1337,6 +1351,7 @@ void CVolibear::Pattern_2(_float fTimeDelta)
 		m_bIsChanneling = true;
 		__super::Chase_Player(fTimeDelta);
 		m_pTransformCom->LookAt(m_vMovePos);
+		m_iPattern_AttackTime = 0;
 		m_iPattern_AttackTime++;
 	}
 
@@ -1392,6 +1407,7 @@ void CVolibear::Pattern_3(_float fTimeDelta)
 		m_bIsChanneling = true;
 		__super::Chase_Player(fTimeDelta);
 		m_pTransformCom->LookAt(m_vMovePos);
+		m_iPattern_AttackTime = 0;
 		m_iPattern_AttackTime++;
 	}
 
@@ -1432,6 +1448,7 @@ void CVolibear::Pattern_4(_float fTimeDelta)
 		m_bIsChanneling = true;
 		__super::Chase_Player(fTimeDelta);
 		m_pTransformCom->LookAt(m_vMovePos);
+		m_iPattern_AttackTime = 0;
 		m_iPattern_AttackTime++;
 	}
 
@@ -1649,7 +1666,7 @@ void CVolibear::Pattern_Phase1(_float fTimeDelta)
 		if (m_fDelayTime >= 1.f)
 		{
 			m_fDelayTime = 0.f;
-			if (m_iPatternIndex == 4)
+			if (m_iPatternIndex == 5)
 				m_iPatternIndex = 0;
 			else
 				m_iPatternIndex++;

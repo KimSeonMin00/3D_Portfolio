@@ -188,7 +188,7 @@ PS_OUT PS_MAIN_BLEND(PS_IN In)
 
 	fFogPower = max((vDepth.y * 1000.f) - fFogDistance, 0.f) / 15.0f;
 
-	Out.vColor = (vDiffuse * vShade + vSpecular)/* + vFogColor * fFogPower*/;
+	Out.vColor = (vDiffuse * vShade)/* + vFogColor * fFogPower*/;
 
 	vector		vWorldPos;
 

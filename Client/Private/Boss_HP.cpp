@@ -33,7 +33,7 @@ HRESULT CBoss_HP::NativeConstruct(void * pArg)
 		return E_FAIL;
 
 	Set_Pos((_float)(g_iWinCX >> 1), 50.f);
-	Set_Scale(800.f, 50.f);
+	Set_Scale(1200.f, 50.f);
 
 	return S_OK;
 }
@@ -42,6 +42,8 @@ void CBoss_HP::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
+	if (m_fRatio <= 0.f)
+		m_bDead = true;
 }
 
 void CBoss_HP::Late_Tick(_float fTimeDelta)
