@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Camera_Free.h"
 #include "Level_Loading.h"
+#include "FadeOut.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext)
 	: CLevel(pDevice, pDeviceContext)
@@ -29,8 +30,8 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 	if (FAILED(Ready_Layer_Map(TEXT("Layer_Map"))))
 		return E_FAIL;
 
-	/*if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
-		return E_FAIL;*/
+	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
+		return E_FAIL;
 
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
@@ -53,6 +54,15 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 			if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Pantheon"))))
 				return;
 
+			if (FAILED(pGameInstance->Add_Layer(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_FadeOut"))))
+				return;
+
+			_uint iUILayerSize = pGameInstance->Get_Layer_Size(LEVEL_GAMEPLAY, TEXT("Layer_UI"));
+			m_pFadeOut = pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_UI"), iUILayerSize - 1);
+
+			Safe_AddRef(m_pFadeOut);
+
+			m_bCutScene = true;
 			m_bBossSpawned = true;
 		}
 
@@ -61,7 +71,27 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 
 	else
 	{
+
 		CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+		if (m_bCutScene == true && m_bCutSceneEnd == false)
+		{
+			if (m_pFadeOut != nullptr)
+			{
+				if (((CFadeOut*)m_pFadeOut)->Get_FadeOut() == true)
+				{
+					CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"));
+
+					Safe_AddRef(pTransform);
+
+					pTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(43.f, 0.f, 15.f, 1.f));
+
+					m_bCutSceneEnd = true;
+
+					Safe_Release(pTransform);
+				}
+			}
+		}
 
 		_uint iLayerSize = pGameInstance->Get_Layer_Size(LEVEL_GAMEPLAY, TEXT("Layer_Monster"));
 		if (iLayerSize == 0)
@@ -341,4 +371,6 @@ CLevel_GamePlay * CLevel_GamePlay::Create(ID3D11Device* pDevice, ID3D11DeviceCon
 void CLevel_GamePlay::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pFadeOut);
 }

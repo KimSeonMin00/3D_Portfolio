@@ -9,6 +9,7 @@
 #include "UI.h"
 #include "Player_Hit_UI.h"
 #include "Player_HP.h"
+#include "FadeOut.h"
 
 #include "Player.h"
 #include "WhirlWind_Normal.h"
@@ -303,6 +304,10 @@ _uint CLoader::Create_Prototype()
 		CPlayer_Hit_UI::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC()))))
 		return -1;
 
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FadeOut"),
+		CFadeOut::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC()))))
+		return -1;
+
 	///* For.Prototype_GameObject_Sky */
 	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Sky"),
 	//	CSky::Create(m_pGraphic_Device))))
@@ -374,6 +379,10 @@ _uint CLoader::Loading_ForGamePlay()
 	///* For.Prototype_Component_Texture_Terrain . */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"),
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Meshes/Map/earth_river_dragoncamp_ground_a.dds")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Logo"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Default%d.dds"), 2))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을 생성 중입니다. "));

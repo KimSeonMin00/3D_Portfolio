@@ -3,6 +3,10 @@
 #include "Client_Defines.h"
 #include "Level.h"
 
+BEGIN(Engine)
+class CGameObject;
+END
+
 BEGIN(Client)
 
 class CLevel_GamePlay final : public CLevel
@@ -28,6 +32,10 @@ private:
 private:
 	_float m_fTimeAcc = 0.f;
 	_bool  m_bBossSpawned = false;
+	_bool  m_bCutScene = false;
+	_bool  m_bCutSceneEnd = false;
+
+	CGameObject*	m_pFadeOut = nullptr;
 	
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext);

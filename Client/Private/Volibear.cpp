@@ -1728,11 +1728,11 @@ void CVolibear::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pHP);
 	Safe_Release(m_pRightSparkTransform);
 	Safe_Release(m_pLeftSparkTransform);
 	Safe_Release(m_pSPHEREAttackRange);
 	Safe_Release(m_pOBBRightHand);
 	Safe_Release(m_pOBBLeftHand);
 	Safe_Release(m_pOBBJaw);
-	Safe_Release(m_pHP);
 }

@@ -37,106 +37,118 @@ HRESULT CPantheon::NativeConstruct(void * pArg)
 	m_eState = STATE_IDLE;
 	m_ePreState = STATE_IDLE;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.f, 0.f, 15.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 	/*m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(20.f, 0.f, 15.f, 1.f));*/
-	m_pTransformCom->LookAt(XMVectorSet(0.f, 0.f, 0.f, 1.f));
+	m_pTransformCom->LookAt(XMVectorSet(-1.f, 0.f, 0.f, 1.f));
 	
 	m_pTransformCom->Set_Scaled(XMVectorSet(0.75f, 0.75f, 0.75f, 0.f));
 
 	m_fMoveSpeed = 4.f;
-
-	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
-
-	pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_UI"), TEXT("Prototype_GameObject_Boss_HP"));
-
-	_uint iIndex = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_UI")) - 1;
-
-	m_pHP = pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_UI"), iIndex);
-
-	Safe_AddRef(m_pHP);
-
-	RELEASE_INSTANCE(CGameInstance);
 
 	return S_OK;
 }
 
 void CPantheon::Tick(_float fTimeDelta)
 {
-	((CBoss_HP*)m_pHP)->Set_Ratio(m_fHealthPoint / m_fMaxHealth);
+	if (m_pHP != nullptr)
+	{
+		((CBoss_HP*)m_pHP)->Set_Ratio(m_fHealthPoint / m_fMaxHealth);
+	}
 
 	if (m_bStop == false)
 		Check_Loop(fTimeDelta);
 
-	if (m_fHealthPoint <= 0.f)
+	if (m_bInit == false)
 	{
-		m_eState = STATE_DEATH;
-	}
+		m_fInitTime += fTimeDelta;
 
-	else
-	{
-		if (m_bAirborne == true)
+		if (m_bThrowSpear == false)
 		{
-			m_fAirborneTime += fTimeDelta;
-			m_eState = STATE_IDLE;
-
-			if (m_fAirborneTime >= 3.f)
+			if (m_fInitTime >= 7.f)
 			{
-				m_bAirborne = false;
-				m_bIsChanneling = false;
-				m_bPatternFinished = true;
+				Throw_Spear(fTimeDelta);
+				m_bThrowSpear = true;
 			}
+		}
+
+		if (m_fInitTime >= 8.f)
+		{
+			m_eState = STATE_INIT;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.f, 0.f, 15.f, 1.f));
+		}
+	}
+	else if(m_bInit_2 == true)
+	{
+		if (m_fHealthPoint <= 0.f)
+		{
+			m_eState = STATE_DEATH;
 		}
 
 		else
 		{
-			//Key_Input(fTimeDelta);
-			if (m_fInitTime < 5.f)
+			if (m_bAirborne == true)
 			{
-				m_fInitTime += fTimeDelta;
-				Normal_Pattern(fTimeDelta);
+				m_fAirborneTime += fTimeDelta;
+				m_eState = STATE_IDLE;
+
+				if (m_fAirborneTime >= 3.f)
+				{
+					m_bAirborne = false;
+					m_bIsChanneling = false;
+					m_bPatternFinished = true;
+				}
 			}
 
 			else
 			{
-				if (m_bPatternFinished == true)
+				//Key_Input(fTimeDelta);
+				if (m_fInitTime < 5.f)
 				{
-					while (true)
-					{
-						m_iCurrentPattern = rand() % 4;
-						if (m_iCurrentPattern != m_iPrePattern)
-						{
-							m_iPrePattern = m_iCurrentPattern;
-							m_bPatternFinished = false;
-							break;
-						}
-					}
+					m_fInitTime += fTimeDelta;
+					Normal_Pattern(fTimeDelta);
 				}
 
-				switch (m_iCurrentPattern)
+				else
 				{
-				case 0:
-					Pattern_1(fTimeDelta);
-					break;
+					if (m_bPatternFinished == true)
+					{
+						while (true)
+						{
+							m_iCurrentPattern = rand() % 4;
+							if (m_iCurrentPattern != m_iPrePattern)
+							{
+								m_iPrePattern = m_iCurrentPattern;
+								m_bPatternFinished = false;
+								break;
+							}
+						}
+					}
 
-				case 1:
-					Pattern_2(fTimeDelta);
-					break;
+					switch (m_iCurrentPattern)
+					{
+					case 0:
+						Pattern_1(fTimeDelta);
+						break;
 
-				case 2:
-					Pattern_3(fTimeDelta);
-					break;
+					case 1:
+						Pattern_2(fTimeDelta);
+						break;
 
-				case 3:
-					Pattern_4(fTimeDelta);
-					break;
+					case 2:
+						Pattern_3(fTimeDelta);
+						break;
 
-				default:
-					break;
+					case 3:
+						Pattern_4(fTimeDelta);
+						break;
+
+					default:
+						break;
+					}
 				}
 			}
 		}
 	}
-
 	Change_State(fTimeDelta);
 
 	if (m_bStop == false)
@@ -441,6 +453,7 @@ void CPantheon::Init(_float fTimeDelta)
 		if (m_pModelCom->Get_Finished())
 		{
 			m_bIsChanneling = false;
+			m_bInit = true;
 			m_eState = STATE_IDLE;
 			return;
 		}
@@ -448,6 +461,25 @@ void CPantheon::Init(_float fTimeDelta)
 		if (m_pModelCom->Get_IsChange() == false)
 			m_pModelCom->Play_Animation(fTimeDelta);
 	}
+}
+
+void CPantheon::Throw_Spear(_float fTimeDelta)
+{
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+	_matrix		pTransform = m_pTransformCom->Get_WorldMatrix();
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(45.f, 0.f, 15.f, 1.f) + XMVectorSet(6.f, 8.f, 0.f, 0.f));
+	m_pTransformCom->LookAt(XMVectorSet(45.f, 0.f, 15.f, 1.f));
+
+	pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Skill"), TEXT("Prototype_GameObject_Pantheon_Q_Spear"), &m_pTransformCom->Get_WorldMatrix());
+
+	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, pTransform.r[0]);
+	m_pTransformCom->Set_State(CTransform::STATE_UP, pTransform.r[1]);
+	m_pTransformCom->Set_State(CTransform::STATE_LOOK, pTransform.r[2]);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, pTransform.r[3]);
+
+	RELEASE_INSTANCE(CGameInstance);
 }
 
 void CPantheon::Idle(_float fTimeDelta)
@@ -511,6 +543,23 @@ void CPantheon::Idle(_float fTimeDelta)
 		{
 			if (m_pModelCom->Get_Finished())
 			{
+				if (m_bInit_2 == false && m_bInit == true)
+				{
+					m_bInit_2 = true;
+
+					CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+					pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_UI"), TEXT("Prototype_GameObject_Boss_HP"));
+
+					_uint iIndex = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_UI")) - 1;
+
+					m_pHP = pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_UI"), iIndex);
+
+					Safe_AddRef(m_pHP);
+
+					RELEASE_INSTANCE(CGameInstance);
+				}
+
 				m_iCurrentIndex = 12;
 				m_pModelCom->Change_Animation(fTimeDelta, m_iCurrentIndex, 3.0);
 				if (m_pModelCom->Get_IsChange() == false)

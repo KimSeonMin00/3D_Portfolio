@@ -42,6 +42,7 @@ private:
 	void	Update_State(_float fTimeDelta);
 
 	void	Init(_float fTimeDelta);
+	void	Throw_Spear(_float fTimeDelta);
 	void	Idle(_float fTimeDelta);
 	void	Move(_float fTimeDelta);
 	void	Attack(_float fTimeDelta);
@@ -65,6 +66,9 @@ private:
 	_uint  m_iPrePattern = 0;
 
 	_float	m_fInitTime = 0.f;
+	_bool	m_bInit = false;
+	_bool	m_bInit_2 = false;
+	_bool	m_bThrowSpear = false;
 	_bool	m_bPatternFinished = true;
 	_bool	m_bStop = false;
 	_bool	m_bSkillFinished = false;

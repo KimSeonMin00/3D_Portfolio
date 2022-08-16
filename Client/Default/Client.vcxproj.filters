@@ -202,6 +202,9 @@
     <Filter Include="02.GameObjects\Monster\Boss\HP">
       <UniqueIdentifier>{07701a55-7522-4f95-9d88-6b778586f07e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\FadeOut">
+      <UniqueIdentifier>{2419447c-5ee9-46a9-9421-2711986c4ea8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -420,6 +423,9 @@
     <ClInclude Include="..\Public\Boss_HP.h">
       <Filter>02.GameObjects\Monster\Boss\HP</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\FadeOut.h">
+      <Filter>02.GameObjects\FadeOut</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -622,6 +628,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Boss_HP.cpp">
       <Filter>02.GameObjects\Monster\Boss\HP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FadeOut.cpp">
+      <Filter>02.GameObjects\FadeOut</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
