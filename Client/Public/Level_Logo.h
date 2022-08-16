@@ -18,6 +18,7 @@ public:
 
 private:
 	_float			m_fTimeAcc = 0.f;
+	_bool			m_bLoadLevel = false;
 
 private:
 	HRESULT Ready_Layer_BackGround(const _tchar* pLayerTag);

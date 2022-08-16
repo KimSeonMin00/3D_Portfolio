@@ -36,6 +36,10 @@ private:
 private:
 	_float				m_fX, m_fY, m_fSizeX, m_fSizeY;
 	_float4x4			m_ProjMatrix;
+	_float				m_fColor = 1.f;
+	_float				m_fTimeAcc = 0.f;
+
+	_bool				m_bLoadLevel = false;
 
 public:
 	HRESULT SetUp_Components();

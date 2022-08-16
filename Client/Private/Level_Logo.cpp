@@ -28,17 +28,29 @@ void CLevel_Logo::Tick(_float fTimeDelta)
 
 	m_fTimeAcc += fTimeDelta;
 
+	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
+	Safe_AddRef(pGameInstance);
 
-	if (m_fTimeAcc >= 2.f)
+	if (m_bLoadLevel == false)
 	{
-		CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
-		Safe_AddRef(pGameInstance);
-
-		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pDeviceContext, LEVEL_BOSS))))
-			return;
-
-		Safe_Release(pGameInstance);
+		if (m_fTimeAcc >= 2.f)
+		{
+			if (pGameInstance->Get_DIKeyState(DIK_RETURN) & 0x80)
+			{
+				m_bLoadLevel = true;
+				m_fTimeAcc = 0.f;
+			}
+		}
 	}
+	else
+	{
+		if (m_fTimeAcc >= 2.f)
+		{
+			if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pDeviceContext, LEVEL_GAMEPLAY))))
+				return;
+		}
+	}
+	Safe_Release(pGameInstance);
 
 }
 

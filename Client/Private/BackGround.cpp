@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "BackGround.h"
 #include "GameInstance.h"
+#include "Level_Loading.h"
 
 CBackGround::CBackGround(ID3D11Device * pDevice, ID3D11DeviceContext * pDevice_Context)
 	:CGameObject(pDevice, pDevice_Context)
@@ -40,6 +41,27 @@ HRESULT CBackGround::NativeConstruct(void * pArg)
 
 void CBackGround::Tick(_float fTimeDelta)
 {
+	m_fTimeAcc += fTimeDelta;
+
+
+	if (m_fTimeAcc >= 2.f)
+	{
+		CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
+		Safe_AddRef(pGameInstance);
+
+		if (m_bLoadLevel == false)
+		{
+			if (pGameInstance->Get_DIKeyState(DIK_RETURN) & 0x80)
+			{
+				m_bLoadLevel = true;
+			}
+		}
+		else
+		{
+			m_fColor -= 1.f * fTimeDelta;
+		}
+		Safe_Release(pGameInstance);
+	}
 }
 
 void CBackGround::Late_Tick(_float fTimeDelta)
@@ -71,6 +93,8 @@ HRESULT CBackGround::Render()
 
 	if (FAILED(m_pTextureCom->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture", 0)))
 		return E_FAIL;
+
+	m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(m_fColor, m_fColor, m_fColor, 1.f), sizeof(_vector));
 
 	if (FAILED(m_pShaderCom->Begin(0)))
 		return E_FAIL;
