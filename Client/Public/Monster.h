@@ -100,6 +100,11 @@ public:
 		return m_iMonsterIndex;
 	}
 
+	_vector		Get_Pos()
+	{
+		return m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	}
+
 protected:
 	void	Chase_Player(_float fTimeDelta);
 	void	None_Overlap(_float fTimeDelta);

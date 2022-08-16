@@ -167,7 +167,7 @@ private:
 	_float          m_fKnockBackTime = 0.f;
 
 private:
-	list<_uint*>			m_MonsterIndexList;
+	list<CGameObject*>			m_MonsterIndexList;
 
 	_float			m_fDamage = 100.f;
 

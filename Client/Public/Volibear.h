@@ -50,6 +50,7 @@ private:
 	void	Check_Loop(_float fTimeDelta);
 	void	Update_State(_float fTimeDelta);
 
+	void	Init(_float	 fTimeDelta);
 	void	Move(_float fTimeDelta);
 	void	Attack(_float fTimeDelta);
 	void	Q_Skill(_float fTimeDelta);
@@ -80,6 +81,7 @@ private:
 	_bool	m_bStun = false;
 	_bool	m_bGrab = false;
 	_bool	m_bCutScene = false;
+	_bool	m_bInitFall = false;
 
 	_float	m_fFlyAttackDelay = 0.f;
 

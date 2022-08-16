@@ -512,9 +512,9 @@ _bool CPlayer::Cast_R(_float fTimeDelta)
 						pGameInstance->StopSound(CSound_Device::CHANNEL_PLAYER);
 						pGameInstance->PlaySounds(TEXT("Yasuo_R.wav"), CSound_Device::CHANNEL_PLAYER, 1.f);
 						
-						_uint* iIndex = new _uint;
-						*iIndex = i;
-						m_MonsterIndexList.push_back(iIndex);
+						CGameObject* pMonster = pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), i);
+						Safe_AddRef(pMonster);
+						m_MonsterIndexList.push_back(pMonster);
 					}
 				}
 				Safe_Release(pTransform);
@@ -986,14 +986,12 @@ void CPlayer::R_Skill(_float fTimeDelta)
 
 		for (auto& iter = m_MonsterIndexList.begin(); iter != m_MonsterIndexList.end();)
 		{
-			CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Monster"), TEXT("Com_Transform"), *(*iter));
+			_vector vPos = ((CMonster*)(*iter))->Get_Pos();
 
-			_vector vPos = pTransform->Get_State(CTransform::STATE_POSITION);
-
-			((CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), *(*iter)))->Damaged(200.f);
+			((CMonster*)*iter)->Damaged(200.f);
 			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_R_Effect"), &vPos);
 			
-			Safe_Delete(*iter);
+			Safe_Release(*iter);
 			iter = m_MonsterIndexList.erase(iter);
 		}
 
@@ -1012,9 +1010,7 @@ void CPlayer::R_Skill(_float fTimeDelta)
 
 			for (auto& iter = m_MonsterIndexList.begin(); iter != m_MonsterIndexList.end();)
 			{
-				CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Monster"), TEXT("Com_Transform"), *(*iter));
-
-				_vector vPos = pTransform->Get_State(CTransform::STATE_POSITION);
+				_vector vPos = ((CMonster*)(*iter))->Get_Pos();
 
 				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_R_Hit_Effect"), &vPos);
 
@@ -1138,7 +1134,7 @@ void CPlayer::Free()
 	__super::Free();
 
 	for (auto& pMonsterPos : m_MonsterIndexList)
-		Safe_Delete(pMonsterPos);
+		Safe_Release(pMonsterPos);
 
 	m_MonsterIndexList.clear();
 

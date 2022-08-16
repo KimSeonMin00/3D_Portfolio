@@ -46,7 +46,7 @@ void CLevel_Logo::Tick(_float fTimeDelta)
 	{
 		if (m_fTimeAcc >= 2.f)
 		{
-			if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pDeviceContext, LEVEL_GAMEPLAY))))
+			if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pDeviceContext, LEVEL_BOSS))))
 				return;
 		}
 	}

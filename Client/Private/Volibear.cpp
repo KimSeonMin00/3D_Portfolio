@@ -52,8 +52,8 @@ HRESULT CVolibear::NativeConstruct(void * pArg)
 	m_pModelCom->SetUp_AnimationIndex(14);
 	m_eState = STATE_IDLE;
 	m_ePreState = STATE_IDLE;
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(12.f, 0.f, 17.f, 1.f));
-	m_pTransformCom->LookAt(XMVectorSet(0.f, 0.f, 0.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+	m_pTransformCom->LookAt(XMVectorSet(0.f, 0.f, -1.f, 1.f));
 
 	m_pTransformCom->Set_Scaled(XMVectorSet(0.75f, 0.75f, 0.75f, 0.f));
 
@@ -97,52 +97,62 @@ void CVolibear::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
+
 	((CBoss_HP*)m_pHP)->Set_Ratio(m_fHealthPoint / m_fMaxHealth);
 
 	if (m_bStop == false && m_bStun == false)
 		Check_Loop(fTimeDelta);
 
-	if (m_fHealthPoint <= 0.f)
+	if (m_bCutScene == false)
 	{
-		m_eState = STATE_DEATH;
-		m_bStun = false;
+		Init(fTimeDelta);
 	}
-
 	else
 	{
-		if (m_bAirborne == true)
+		if (m_fHealthPoint <= 0.f)
 		{
-			m_eState = STATE_STUN;
+			m_eState = STATE_DEATH;
+			m_bStun = false;
 		}
 
-		else if (m_bAirborne == false && m_pModelCom->Get_IsChange() == false)
+		else
 		{
-			Pattern_Phase1(fTimeDelta);
+			if (m_bAirborne == true)
+			{
+				m_eState = STATE_STUN;
+			}
+
+			else if (m_bAirborne == false && m_pModelCom->Get_IsChange() == false)
+			{
+				Pattern_Phase1(fTimeDelta);
+			}
 		}
 	}
-
 	Change_State(fTimeDelta);
 
 	if (m_bStop == false)
 		Update_State(fTimeDelta);
 
-	m_pAABBCom->Update(m_pTransformCom->Get_WorldMatrix());
-	m_pSphereCom->Update(m_pTransformCom->Get_WorldMatrix());
-	Update_HandCollider();
-	m_pSPHEREAttackRange->Update(m_pTransformCom->Get_WorldMatrix());
+	if (m_bCutScene == true)
+	{
+		m_pAABBCom->Update(m_pTransformCom->Get_WorldMatrix());
+		m_pSphereCom->Update(m_pTransformCom->Get_WorldMatrix());
+		Update_HandCollider();
+		m_pSPHEREAttackRange->Update(m_pTransformCom->Get_WorldMatrix());
 
-	_matrix  SocketMatrix;
+		_matrix  SocketMatrix;
 
-	SocketMatrix =  m_pRHNode->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&m_PivotMatrix) * m_pTransformCom->Get_WorldMatrix();
+		SocketMatrix = m_pRHNode->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&m_PivotMatrix) * m_pTransformCom->Get_WorldMatrix();
 
-	_vector vRHPos = SocketMatrix.r[3];
+		_vector vRHPos = SocketMatrix.r[3];
 
-	SocketMatrix = m_pLHNode->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&m_PivotMatrix) * m_pTransformCom->Get_WorldMatrix();
+		SocketMatrix = m_pLHNode->Get_CombinedTransformationMatrix() * XMLoadFloat4x4(&m_PivotMatrix) * m_pTransformCom->Get_WorldMatrix();
 
-	_vector vLHPos = SocketMatrix.r[3];
+		_vector vLHPos = SocketMatrix.r[3];
 
-	m_pRightSparkTransform->Set_State(CTransform::STATE_POSITION, vRHPos);
-	m_pLeftSparkTransform->Set_State(CTransform::STATE_POSITION, vLHPos);
+		m_pRightSparkTransform->Set_State(CTransform::STATE_POSITION, vRHPos);
+		m_pLeftSparkTransform->Set_State(CTransform::STATE_POSITION, vLHPos);
+	}
 }
 
 void CVolibear::Late_Tick(_float fTimeDelta)
@@ -698,6 +708,29 @@ void CVolibear::Update_State(_float fTimeDelta)
 
 	default:
 		break;
+	}
+}
+
+void CVolibear::Init(_float fTimeDelta)
+{
+	m_fInitTime += fTimeDelta;
+
+	if (m_fInitTime >= 3.f)
+	{
+		if (m_bInitFall == false)
+		{
+			m_ePreState = STATE_FLY;
+			m_eState = STATE_IDLE;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(12.f, 0.f, 17.f, 1.f));
+			m_bInitFall = true;
+			m_fInitTime = 0.f;
+		}
+	}
+
+	if(m_bInitFall == true)
+	{
+		if (m_fInitTime >= 3.f)
+			m_bCutScene = true;
 	}
 }
 
