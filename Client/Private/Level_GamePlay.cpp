@@ -36,7 +36,11 @@ HRESULT CLevel_GamePlay::NativeConstruct()
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
 
+	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
+	pGameInstance->PlayBGM(TEXT("BGM_GamePlay.wav"), 0.5f);
+
+	RELEASE_INSTANCE(CGameInstance);
 	return S_OK;
 }
 
