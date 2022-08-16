@@ -105,22 +105,14 @@ void CVolibear::Tick(_float fTimeDelta)
 	if (m_fHealthPoint <= 0.f)
 	{
 		m_eState = STATE_DEATH;
+		m_bStun = false;
 	}
 
 	else
 	{
 		if (m_bAirborne == true)
 		{
-			m_fAirborneTime += fTimeDelta;
-			m_eState = STATE_IDLE;
-
-			if (m_fAirborneTime >= 3.f)
-			{
-				m_bAirborne = false;
-				m_iPatternIndex = rand() % 6;
-				m_fDelayTime = 0.f;
-				m_bPatternFinished = true;
-			}
+			m_eState = STATE_STUN;
 		}
 
 		else if (m_bAirborne == false && m_pModelCom->Get_IsChange() == false)
