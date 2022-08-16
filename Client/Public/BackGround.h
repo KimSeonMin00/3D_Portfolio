@@ -38,6 +38,7 @@ private:
 	_float4x4			m_ProjMatrix;
 	_float				m_fColor = 1.f;
 	_float				m_fTimeAcc = 0.f;
+	_uint				m_iTextureIndex = 0;
 
 	_bool				m_bLoadLevel = false;
 

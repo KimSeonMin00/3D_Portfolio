@@ -22,6 +22,25 @@ HRESULT CLevel_Loading::NativeConstruct(LEVEL eNextLevelID)
 	if (nullptr == m_pLoader)
 		return E_FAIL;
 
+	if (m_eNextLevelID != LEVEL_LOGO)
+	{
+		CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
+		Safe_AddRef(pGameInstance);
+
+		/* For.BackGround */
+		_uint iIndex;
+		if (m_eNextLevelID == LEVEL_GAMEPLAY)
+			iIndex = 0;
+
+		else if (m_eNextLevelID == LEVEL_BOSS)
+			iIndex = 1;
+
+		if (FAILED(pGameInstance->Add_Layer(LEVEL_LOADING, TEXT("Layer_Background"), TEXT("Prototype_GameObject_BackGround"), &iIndex)))
+			return E_FAIL;
+
+		Safe_Release(pGameInstance);
+	}
+
 	return S_OK;
 }
 

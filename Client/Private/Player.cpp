@@ -405,8 +405,8 @@ void CPlayer::Key_Input(_float fTimeDelta)
 		else if (m_iQ_Time == 3)
 		{
 			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Skill"), TEXT("Prototype_GameObject_WhirlWind_Normal"), &m_pTransformCom->Get_WorldMatrix());
-			pGameInstance->StopSound(CSound_Device::CHANNEL_PLAYER);
-			pGameInstance->PlaySounds(TEXT("Yasuo_Q_Whirlwind.wav"), CSound_Device::CHANNEL_PLAYER, 1.f);
+			pGameInstance->StopSound(CSound_Device::CHANNEL_GUN);
+			pGameInstance->PlaySounds(TEXT("Yasuo_Q_Whirlwind.wav"), CSound_Device::CHANNEL_GUN, 1.f);
 			m_iQAnimation_Index = 29;
 		}
 

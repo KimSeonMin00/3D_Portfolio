@@ -26,6 +26,11 @@ HRESULT CBackGround::NativeConstruct(void * pArg)
 	if (FAILED(__super::NativeConstruct(pArg)))
 		return E_FAIL;
 
+	if (pArg != nullptr)
+	{
+		memcpy(&m_iTextureIndex, pArg, sizeof(_uint));
+	}
+
 	if (FAILED(SetUp_Components()))
 		return E_FAIL;
 
@@ -91,7 +96,7 @@ HRESULT CBackGround::Render()
 	m_pShaderCom->Set_RawValue("g_ViewMatrix", &ViewMatrix, sizeof(_float4x4));
 	m_pShaderCom->Set_RawValue("g_ProjMatrix", &m_ProjMatrix, sizeof(_float4x4));
 
-	if (FAILED(m_pTextureCom->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture", 0)))
+	if (FAILED(m_pTextureCom->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture", m_iTextureIndex)))
 		return E_FAIL;
 
 	m_pShaderCom->Set_RawValue("g_vColor", &XMVectorSet(m_fColor, m_fColor, m_fColor, 1.f), sizeof(_vector));
@@ -120,7 +125,7 @@ HRESULT CBackGround::SetUp_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Components(LEVEL_LOGO, TEXT("Prototype_Component_Texture_Logo"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
+	if (FAILED(__super::Add_Components(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Loading"), TEXT("Com_Texture"), (CComponent**)&m_pTextureCom)))
 		return E_FAIL;
 
 	return S_OK;
