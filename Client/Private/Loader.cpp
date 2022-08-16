@@ -359,10 +359,7 @@ _uint CLoader::Loading_ForLogo()
 _uint CLoader::Loading_ForGamePlay()
 {
 	Create_Prototype();
-<<<<<<< HEAD
 
-=======
->>>>>>> 7844bcaa1424e994d29cbea5ba8f105a684af0c0
 	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
 
@@ -428,10 +425,7 @@ _uint CLoader::Loading_ForGamePlay()
 
 _uint CLoader::Loading_ForBoss()
 {
-<<<<<<< HEAD
-=======
 	//Create_Prototype();
->>>>>>> 7844bcaa1424e994d29cbea5ba8f105a684af0c0
 
 	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);

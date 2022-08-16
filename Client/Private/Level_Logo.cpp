@@ -33,7 +33,6 @@ void CLevel_Logo::Tick(_float fTimeDelta)
 
 	if (m_bLoadLevel == false)
 	{
-<<<<<<< HEAD
 		if (m_fTimeAcc >= 2.f)
 		{
 			if (pGameInstance->Get_DIKeyState(DIK_RETURN) & 0x80)
@@ -42,15 +41,6 @@ void CLevel_Logo::Tick(_float fTimeDelta)
 				m_fTimeAcc = 0.f;
 			}
 		}
-=======
-		CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
-		Safe_AddRef(pGameInstance);
-
-		if (FAILED(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pDeviceContext, LEVEL_GAMEPLAY))))
-			return;
-
-		Safe_Release(pGameInstance);
->>>>>>> 7844bcaa1424e994d29cbea5ba8f105a684af0c0
 	}
 	else
 	{
