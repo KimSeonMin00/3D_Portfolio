@@ -85,6 +85,7 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 					Safe_AddRef(pTransform);
 
 					pTransform->Set_State(CTransform::STATE_POSITION, XMVectorSet(43.f, 0.f, 15.f, 1.f));
+					pTransform->LookAt(XMVectorSet(45.f, 0.f, 15.f, 1.f));
 
 					m_bCutSceneEnd = true;
 

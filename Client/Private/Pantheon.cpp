@@ -455,6 +455,18 @@ void CPantheon::Init(_float fTimeDelta)
 			m_bIsChanneling = false;
 			m_bInit = true;
 			m_eState = STATE_IDLE;
+
+			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_W_Effect"), &vPos);
+
+			pGameInstance->StopSound(CSound_Device::CHANNEL_MONSTER);
+			pGameInstance->PlaySounds(TEXT("Pantheon_W.wav"), CSound_Device::CHANNEL_MONSTER, 1.f);
+
+			RELEASE_INSTANCE(CGameInstance);
+
 			return;
 		}
 
@@ -473,6 +485,8 @@ void CPantheon::Throw_Spear(_float fTimeDelta)
 	m_pTransformCom->LookAt(XMVectorSet(45.f, 0.f, 15.f, 1.f));
 
 	pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Skill"), TEXT("Prototype_GameObject_Pantheon_Q_Spear"), &m_pTransformCom->Get_WorldMatrix());
+	pGameInstance->StopSound(CSound_Device::CHANNEL_MONSTER);
+	pGameInstance->PlaySounds(TEXT("Pantheon_Q_Long.wav"), CSound_Device::CHANNEL_MONSTER, 1.f);
 
 	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, pTransform.r[0]);
 	m_pTransformCom->Set_State(CTransform::STATE_UP, pTransform.r[1]);
