@@ -22,6 +22,8 @@
 
 #include <DirectXMath.h>
 #include <DirectXCollision.h>
+
+
 using namespace DirectX;
 
 #include <typeinfo>
@@ -40,6 +42,9 @@ using namespace DirectX;
 #include <unordered_map>
 #include <algorithm>
 
+#include <io.h>
+#include <FMOD/fmod.h>
+#include <FMOD/fmod.hpp>
 
 #ifdef _DEBUG
 

@@ -61,6 +61,11 @@ void CEffect_Voli_E::Tick(_float fTimeDelta)
 		{
 			m_bPlayer_Hit = false;
 			m_bCast = true;
+
+			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+			pGameInstance->StopSound(CSound_Device::CHANNEL_EFFECT);
+			pGameInstance->PlaySounds(TEXT("Voli_E_Lightening.wav"), CSound_Device::CHANNEL_EFFECT, 1.f);
+			RELEASE_INSTANCE(CGameInstance);
 		}
 
 		if (m_fFlashScale > 0.f)

@@ -43,6 +43,8 @@ private:
 	CHierarchyNode*	m_pLHNode = nullptr;
 	CHierarchyNode*	m_pJawNode = nullptr;
 
+	CGameObject* m_pHP;
+
 private:
 	void	Change_State(_float fTimeDelta);
 	void	Check_Loop(_float fTimeDelta);

@@ -139,14 +139,14 @@ HRESULT CRenderer::Draw_Renderer()
 
 
 #ifdef _DEBUG
-	if (FAILED(Draw_DebugList()))
+	/*if (FAILED(Draw_DebugList()))
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Render_Debug(TEXT("MRT_Deferred"))))
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Render_Debug(TEXT("MRT_LightAcc"))))
 		return E_FAIL;
 	if (FAILED(m_pTarget_Manager->Render_Debug(TEXT("MRT_LightDepth"))))
-		return E_FAIL;
+		return E_FAIL;*/
 #endif // _DEBUG
 
 	return S_OK;

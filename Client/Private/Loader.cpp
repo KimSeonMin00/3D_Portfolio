@@ -24,6 +24,7 @@
 #include "Player_R_Hit_Effect.h"
 #include "Player_Attack_Effect.h"
 
+#include "Boss_HP.h"
 #include "Volibear.h"
 #include "Voli_Ghost.h"
 #include "Effect_Voli_E.h"
@@ -173,6 +174,10 @@ _uint CLoader::Create_Prototype()
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player_HP"),
 		CPlayer_HP::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
+
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Boss_HP"),
+		CBoss_HP::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
 		return -1;
 
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Boss"),
@@ -354,7 +359,10 @@ _uint CLoader::Loading_ForLogo()
 _uint CLoader::Loading_ForGamePlay()
 {
 	Create_Prototype();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7844bcaa1424e994d29cbea5ba8f105a684af0c0
 	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
 
@@ -420,6 +428,10 @@ _uint CLoader::Loading_ForGamePlay()
 
 _uint CLoader::Loading_ForBoss()
 {
+<<<<<<< HEAD
+=======
+	//Create_Prototype();
+>>>>>>> 7844bcaa1424e994d29cbea5ba8f105a684af0c0
 
 	CGameInstance*		pGameInstance = CGameInstance::Get_Instance();
 	Safe_AddRef(pGameInstance);
@@ -1451,6 +1463,14 @@ _uint CLoader::Load_VoliBear(LEVEL eLevel)
 
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_BOSS, TEXT("Prototype_Component_Texture_Voli_R_Crator"),
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Volibear/Effect/volibear_base_r_landingcrater_add.dds")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Monster_HP_Frame"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/UI/monster_HP_Frame.dds")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(eLevel, TEXT("Prototype_Component_Texture_Monster_HP"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/UI/monster_HP_Color.dds")))))
 		return E_FAIL;
 
 	_matrix		PivotMatrix;

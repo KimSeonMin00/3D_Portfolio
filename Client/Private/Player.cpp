@@ -122,7 +122,9 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 					if (m_eState == STATE_Q || m_eState == STATE_ATTACK)
 					{
 						if (((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Monster"), TEXT("Com_HitBox"), i))->Collision_AABB(m_pOBBCom))
+						{
 							Hit_Monster(i);
+						}
 					}
 				}
 			}
@@ -385,6 +387,8 @@ void CPlayer::Key_Input(_float fTimeDelta)
 			WorldMat.r[3] = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 0.5f, 0.f, 0.f);
 		}
 		pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Q_Effect"), &WorldMat);
+		pGameInstance->StopSound(CSound_Device::CHANNEL_PLAYER);
+		pGameInstance->PlaySounds(TEXT("Yasuo_Q.wav"), CSound_Device::CHANNEL_PLAYER, 1.f);
 		m_iQ_Time++;
 
 		if (m_iQ_Time == 1)
@@ -393,12 +397,16 @@ void CPlayer::Key_Input(_float fTimeDelta)
 		else if (m_iQ_Time == 2)
 		{
 			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Q_Passive"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			pGameInstance->StopSound(CSound_Device::CHANNEL_PLAYER);
+			pGameInstance->PlaySounds(TEXT("Yasuo_Q_3.wav"), CSound_Device::CHANNEL_PLAYER, 1.f);
 			m_iQAnimation_Index = 28;
 		}
 
 		else if (m_iQ_Time == 3)
 		{
 			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Skill"), TEXT("Prototype_GameObject_WhirlWind_Normal"), &m_pTransformCom->Get_WorldMatrix());
+			pGameInstance->StopSound(CSound_Device::CHANNEL_PLAYER);
+			pGameInstance->PlaySounds(TEXT("Yasuo_Q_Whirlwind.wav"), CSound_Device::CHANNEL_PLAYER, 1.f);
 			m_iQAnimation_Index = 29;
 		}
 
@@ -449,6 +457,8 @@ void CPlayer::Key_Input(_float fTimeDelta)
 
 		m_pTransformCom->LookAt(XMVectorSet(vPositionPicking.x, vPositionPicking.y, vPositionPicking.z, 1.f));
 		pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_E_Effect"), &m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		pGameInstance->StopSound(CSound_Device::CHANNEL_PLAYER);
+		pGameInstance->PlaySounds(TEXT("Yasuo_E.wav"), CSound_Device::CHANNEL_PLAYER, 1.f);
 
 		m_iEAnimation_Index = 35;
 		m_pModelCom->SetUp_AnimationIndex(m_iEAnimation_Index);
@@ -499,6 +509,8 @@ _bool CPlayer::Cast_R(_float fTimeDelta)
 					if (((CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), i))->Get_Airborne() == true)
 					{
 						((CMonster*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Monster"), i))->Set_Drop();
+						pGameInstance->StopSound(CSound_Device::CHANNEL_PLAYER);
+						pGameInstance->PlaySounds(TEXT("Yasuo_R.wav"), CSound_Device::CHANNEL_PLAYER, 1.f);
 						
 						_uint* iIndex = new _uint;
 						*iIndex = i;
@@ -798,6 +810,9 @@ void CPlayer::Attack(_float fTimeDelta)
 		{
 			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
+			pGameInstance->StopSound(CSound_Device::CHANNEL_PLAYER);
+			pGameInstance->PlaySounds(TEXT("Yasuo_Attack.wav"), CSound_Device::CHANNEL_PLAYER, 1.f);
+
 			_uint iLayerSize = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_Monster"));
 			if (iLayerSize != 0)
 			{
@@ -899,7 +914,9 @@ void CPlayer::E_Skill(_float fTimeDelta)
 			}
 
 			Initialize_Hit();
-			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Skill"), TEXT("Prototype_GameObject_WhirlWind_EQ"), &vPos);			
+			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Skill"), TEXT("Prototype_GameObject_WhirlWind_EQ"), &vPos);	
+			pGameInstance->StopSound(CSound_Device::CHANNEL_PLAYER_BULLET);
+			pGameInstance->PlaySounds(TEXT("Yasuo_E_Q.wav"), CSound_Device::CHANNEL_PLAYER_BULLET, 1.f);
 			m_bE_Q_Used = true;
 			m_pModelCom->SetUp_AnimationIndex(25);
 			m_pModelCom->Set_Initialize();
@@ -1048,12 +1065,20 @@ void CPlayer::Hit_Monster(_uint iIndex)
 		if (pMonster->Damaged(m_fDamage) == true)
 		{
 			CTransform* pTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Monster"), TEXT("Com_Transform"), iIndex);
-
-			if(m_eState == STATE_ATTACK)
+	
+			if (m_eState == STATE_ATTACK)
+			{
 				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Attack_Effect"), &pTransform->Get_State(CTransform::STATE_POSITION));
+				pGameInstance->StopSound(CSound_Device::CHANNEL_EFFECT);
+				pGameInstance->PlaySounds(TEXT("Yasuo_Attack_Hit.wav"), CSound_Device::CHANNEL_EFFECT, 1.f);
+			}
 
-			else if(m_eState == STATE_Q)
+			else if (m_eState == STATE_Q)
+			{
 				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Yasuo_Q_Hit_Effect"), &pTransform->Get_State(CTransform::STATE_POSITION));
+				pGameInstance->StopSound(CSound_Device::CHANNEL_EFFECT);
+				pGameInstance->PlaySounds(TEXT("Yasuo_Q_Hit.wav"), CSound_Device::CHANNEL_EFFECT, 1.f);
+			}
 		}
 	}
 

@@ -96,7 +96,7 @@ PS_OUT PS_MAIN_RATIO(PS_IN In)
 	vector		vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexUV);
 
 	Out.vColor = g_vColor * vMtrlDiffuse;
-	Out.vColor.a = g_Alpha;
+	Out.vColor.a *= g_Alpha;
 
 	if (g_Ratio < In.vTexUV.x)
 		discard;
@@ -167,7 +167,7 @@ technique11 DefaultTechinque
 
 	pass Rect_Ratio
 	{
-		SetBlendState(BS_One, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
+		SetBlendState(BS_AlphaBlend, vector(1.f, 1.f, 1.f, 1.f), 0xffffffff);
 		SetDepthStencilState(DSS_None_ZTest_And_Write, 0);
 		SetRasterizerState(RS_Default);
 

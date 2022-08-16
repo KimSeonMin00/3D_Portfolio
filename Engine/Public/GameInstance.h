@@ -2,6 +2,7 @@
 
 #include "Graphic_Device.h"
 #include "Input_Device.h"
+#include "Sound_Device.h"
 #include "Picking.h"
 #include "Timer_Manager.h"
 #include "Level_Manager.h"
@@ -37,6 +38,12 @@ public: /* For.Input_Device */
 	_long Get_DIMMoveState(CInput_Device::DIMM eMouseMoveID);
 	_byte Get_DIMButtonState(CInput_Device::DIMB eMouseButtonID);
 
+public: //For SoundDevice
+	void PlaySounds(TCHAR* pSoundKey, CSound_Device::CHANNELID eID, float fVolume);
+	void PlayBGM(TCHAR* pSoundKey, float fVolume);
+	void StopSound(CSound_Device::CHANNELID eID);
+	void StopAll();
+	void SetChannelVolume(CSound_Device::CHANNELID eID, float fVolume);
 
 public: /* For.Timer_Manager */
 	HRESULT Add_Timer(const _tchar* pTimerTag);
@@ -81,6 +88,7 @@ public: /* For.Target_Manager */
 private:
 	CGraphic_Device*			m_pGraphic_Device = nullptr;
 	CInput_Device*				m_pInput_Device = nullptr;
+	CSound_Device*				m_pSound_Device = nullptr;
 	CTimer_Manager*				m_pTimer_Manager = nullptr;
 	CLevel_Manager*				m_pLevel_Manager = nullptr;
 	CObject_Manager*			m_pObject_Manager = nullptr;
