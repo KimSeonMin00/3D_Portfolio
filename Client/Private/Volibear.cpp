@@ -67,8 +67,11 @@ HRESULT CVolibear::NativeConstruct(void * pArg)
 	_uint iLayerSize = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_Effect"));
 
 	m_pRightSparkTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Effect"), TEXT("Com_Transform"), iLayerSize - 1);
+	m_pRightSpark = pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Effect"), iLayerSize - 1);
+
 
 	Safe_AddRef(m_pRightSparkTransform);
+	Safe_AddRef(m_pRightSpark);
 
 	_vector vLHPos = m_pLHNode->Get_CombinedTransformationMatrix().r[3];
 
@@ -77,8 +80,10 @@ HRESULT CVolibear::NativeConstruct(void * pArg)
 	iLayerSize = pGameInstance->Get_Layer_Size(m_iLevel, TEXT("Layer_Effect"));
 
 	m_pLeftSparkTransform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Effect"), TEXT("Com_Transform"), iLayerSize - 1);
+	m_pLeftSpark = pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Effect"), iLayerSize - 1);
 
 	Safe_AddRef(m_pLeftSparkTransform);
+	Safe_AddRef(m_pLeftSpark);
 
 	RELEASE_INSTANCE(CGameInstance);
 
@@ -107,6 +112,18 @@ void CVolibear::Tick(_float fTimeDelta)
 		{
 			m_eState = STATE_DEATH;
 			m_bStun = false;
+
+			if (m_pRightSpark != nullptr)
+			{
+				m_pRightSpark->Set_Dead();
+				Safe_Release(m_pRightSpark);
+			}
+
+			if (m_pLeftSpark != nullptr)
+			{
+				m_pLeftSpark->Set_Dead();
+				Safe_Release(m_pLeftSpark);
+			}
 		}
 
 		else
@@ -1790,6 +1807,8 @@ void CVolibear::Free()
 	__super::Free();
 
 	Safe_Release(m_pHP);
+	Safe_Release(m_pRightSpark);
+	Safe_Release(m_pLeftSpark);
 	Safe_Release(m_pRightSparkTransform);
 	Safe_Release(m_pLeftSparkTransform);
 	Safe_Release(m_pSPHEREAttackRange);

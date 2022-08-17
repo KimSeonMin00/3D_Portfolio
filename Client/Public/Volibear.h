@@ -31,6 +31,8 @@ private:
 private:
 	CTransform*						m_pRightSparkTransform = nullptr;
 	CTransform*						m_pLeftSparkTransform = nullptr;
+	CGameObject*					m_pRightSpark = nullptr;
+	CGameObject*					m_pLeftSpark = nullptr;
 
 	CCollider*						m_pSPHEREAttackRange = nullptr;
 	CCollider*						m_pOBBRightHand = nullptr;

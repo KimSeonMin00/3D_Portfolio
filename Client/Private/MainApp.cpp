@@ -37,7 +37,7 @@ HRESULT CMainApp::NativeConstruct()
 	if (FAILED(Open_Level(LEVEL_LOGO)))
 		return E_FAIL;
 
-	m_pImgui_Manager = CImguiManager::Create(g_hWnd, m_pDevice, m_pDeviceContext);
+	/*m_pImgui_Manager = CImguiManager::Create(g_hWnd, m_pDevice, m_pDeviceContext);*/
 
 	return S_OK;
 }
@@ -46,8 +46,8 @@ void CMainApp::Tick(_double TimeDelta)
 {
 	m_pGameInstance->Tick_Engine(TimeDelta);
 
-	if (nullptr != m_pImgui_Manager)
-		m_pImgui_Manager->Tick(TimeDelta);
+	/*if (nullptr != m_pImgui_Manager)
+		m_pImgui_Manager->Tick(TimeDelta);*/
 }
 
 HRESULT CMainApp::Render()
@@ -63,8 +63,8 @@ HRESULT CMainApp::Render()
 
 	m_pGameInstance->Render_Engine();
 
-	if (nullptr != m_pImgui_Manager)
-		m_pImgui_Manager->Render();
+	//if (nullptr != m_pImgui_Manager)
+	//	m_pImgui_Manager->Render();
 
 	m_pGameInstance->Present();
 
