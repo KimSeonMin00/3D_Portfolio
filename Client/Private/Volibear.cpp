@@ -1271,6 +1271,16 @@ void CVolibear::Stun(_float fTimeDelta)
 		{
 			m_bStateChange = false;
 
+			CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 2.f, 0.f, 0.f);
+
+			pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Stun"), &vPos);
+
+			RELEASE_INSTANCE(CGameInstance);
+
+			m_bStun = true;
+
 			m_fStunTime = 0.f;
 			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 			m_pModelCom->Set_Initialize();

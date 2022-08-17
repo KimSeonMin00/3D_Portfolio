@@ -41,6 +41,15 @@ HRESULT CStun::NativeConstruct(void * pArg)
 void CStun::Tick(_float fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+
+	m_fTimeAcc += fTimeDelta;
+
+	m_fRadian += 60.f * fTimeDelta;
+
+	if(m_fTimeAcc >= 5.f)
+	{
+		m_bDead = true;
+	}
 }
 
 void CStun::Late_Tick(_float fTimeDelta)
@@ -70,6 +79,7 @@ HRESULT CStun::Render()
 
 	ViewMat = pGameInstance->Get_TransformMatrix(CPipeline::D3DTS_VIEW);
 	ViewMat = XMMatrixInverse(nullptr, ViewMat);
+	ViewMat *= XMMatrixRotationAxis(ViewMat.r[2], XMConvertToRadians(m_fRadian));
 
 	WorldMat.r[0] = ViewMat.r[0] * xScale;
 	WorldMat.r[1] = ViewMat.r[1] * yScale;

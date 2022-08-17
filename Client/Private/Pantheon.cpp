@@ -103,7 +103,7 @@ void CPantheon::Tick(_float fTimeDelta)
 				m_fAirborneTime += fTimeDelta;
 				m_eState = STATE_IDLE;
 
-				if (m_fAirborneTime >= 3.f)
+				if (m_fAirborneTime >= 5.f)
 				{
 					m_bAirborne = false;
 					m_bIsChanneling = false;

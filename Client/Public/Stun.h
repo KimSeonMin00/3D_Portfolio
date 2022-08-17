@@ -25,9 +25,12 @@ public:
 	virtual void Late_Tick(_float fTimeDelta);
 	virtual HRESULT Render();
 
+private:
+	_float		m_fTimeAcc = 0.f;
+	_float		m_fRadian = 0.f;
+
 public:
 	HRESULT SetUp_Components();
-	HRESULT SetUp_ConstantTable();
 
 private:
 	CShader*							m_pShaderCom = nullptr;
