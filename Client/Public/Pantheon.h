@@ -72,6 +72,7 @@ private:
 	_bool	m_bPatternFinished = true;
 	_bool	m_bStop = false;
 	_bool	m_bSkillFinished = false;
+	_bool	m_bStun = false;
 
 private:
 	STATE			m_ePreState = STATE_END;

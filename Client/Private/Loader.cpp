@@ -10,6 +10,7 @@
 #include "Player_Hit_UI.h"
 #include "Player_HP.h"
 #include "FadeOut.h"
+#include "Stun.h"
 
 #include "Player.h"
 #include "WhirlWind_Normal.h"
@@ -119,6 +120,9 @@ _uint CLoader::Create_Prototype()
 		CTerrain::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC()))))
 		return -1;
 
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Stun"),
+		CStun::Create(m_pDevice, m_pDeviceContext, CTransform::TRANSFORMDESC(1.f, XMConvertToRadians(60.f))))))
+		return -1;
 
 	///*For.Prototype_GameObject_Player*/
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"),
@@ -381,6 +385,10 @@ _uint CLoader::Loading_ForGamePlay()
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Meshes/Map/earth_river_dragoncamp_ground_a.dds")))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Stun"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Stun.dds")))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을 생성 중입니다. "));
 
 	/* For.Prototype_Component_Navigation*/
@@ -445,6 +453,10 @@ _uint CLoader::Loading_ForBoss()
 	///* For.Prototype_Component_Texture_Terrain . */
 	if (FAILED(pGameInstance->Add_Prototype(LEVEL_BOSS, TEXT("Prototype_Component_Texture_Terrain"),
 		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Meshes/Map/earth_river_dragoncamp_ground_a.dds")))))
+		return E_FAIL;
+
+	if (FAILED(pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Stun"),
+		CTexture::Create(m_pDevice, m_pDeviceContext, TEXT("../Bin/Resources/Texture/Stun.dds")))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을 생성 중입니다. "));

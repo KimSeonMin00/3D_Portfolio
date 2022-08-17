@@ -43,9 +43,6 @@
     <Filter Include="96.ImGUI\Manager">
       <UniqueIdentifier>{bf9e0d73-5b85-4189-948e-6ae814a20960}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\UI">
-      <UniqueIdentifier>{d2ea9df6-816b-469f-b416-b8e4ec77f98c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\Player">
       <UniqueIdentifier>{ab8ba964-2bd6-4aec-a74a-f4b137535b52}</UniqueIdentifier>
     </Filter>
@@ -136,9 +133,6 @@
     <Filter Include="02.GameObjects\Monster\Normal\Effect">
       <UniqueIdentifier>{3d41e322-cc2d-40fe-9443-faa73a57eb75}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\UI\Player_Hit_UI">
-      <UniqueIdentifier>{f9457b8b-1660-4970-82f1-45494495be89}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\Monster\Normal\Monster_HP">
       <UniqueIdentifier>{11ee5c74-59cd-45b5-abc6-10b42e2a6e9f}</UniqueIdentifier>
     </Filter>
@@ -204,6 +198,15 @@
     </Filter>
     <Filter Include="02.GameObjects\FadeOut">
       <UniqueIdentifier>{2419447c-5ee9-46a9-9421-2711986c4ea8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Stun">
+      <UniqueIdentifier>{d7a5f642-0811-42b6-97ad-b2083d748825}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Terrain\UI">
+      <UniqueIdentifier>{d2ea9df6-816b-469f-b416-b8e4ec77f98c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\Terrain\UI\Player_Hit_UI">
+      <UniqueIdentifier>{f9457b8b-1660-4970-82f1-45494495be89}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -274,7 +277,7 @@
       <Filter>96.ImGUI\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI.h">
-      <Filter>02.GameObjects\UI</Filter>
+      <Filter>02.GameObjects\Terrain\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Player.h">
       <Filter>02.GameObjects\Player</Filter>
@@ -293,9 +296,6 @@
     </ClInclude>
     <ClInclude Include="MapObject.h">
       <Filter>02.GameObjects\MapObject</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
-      <Filter>97.ShaderFiles</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Effect.h">
       <Filter>02.GameObjects\Effect</Filter>
@@ -352,7 +352,7 @@
       <Filter>02.GameObjects\Player\WhirlWind\WhirlWind_Hit_Effect</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Player_Hit_UI.h">
-      <Filter>02.GameObjects\UI\Player_Hit_UI</Filter>
+      <Filter>02.GameObjects\Terrain\UI\Player_Hit_UI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Monster_HP.h">
       <Filter>02.GameObjects\Monster\Normal\Monster_HP</Filter>
@@ -426,6 +426,12 @@
     <ClInclude Include="..\Public\FadeOut.h">
       <Filter>02.GameObjects\FadeOut</Filter>
     </ClInclude>
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
+      <Filter>02.GameObjects\Terrain\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Stun.h">
+      <Filter>02.GameObjects\Stun</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -480,7 +486,7 @@
       <Filter>96.ImGUI\Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI.cpp">
-      <Filter>02.GameObjects\UI</Filter>
+      <Filter>02.GameObjects\Terrain\UI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
       <Filter>02.GameObjects\Player</Filter>
@@ -558,7 +564,7 @@
       <Filter>02.GameObjects\Monster\Normal\Effect</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Player_Hit_UI.cpp">
-      <Filter>02.GameObjects\UI\Player_Hit_UI</Filter>
+      <Filter>02.GameObjects\Terrain\UI\Player_Hit_UI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Monster_HP.cpp">
       <Filter>02.GameObjects\Monster\Normal\Monster_HP</Filter>
@@ -631,6 +637,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\FadeOut.cpp">
       <Filter>02.GameObjects\FadeOut</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Stun.cpp">
+      <Filter>02.GameObjects\Stun</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

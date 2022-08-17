@@ -88,6 +88,18 @@ void CPantheon::Tick(_float fTimeDelta)
 		{
 			if (m_bAirborne == true)
 			{
+				if (m_bStun == false)
+				{
+					CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
+
+					_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 2.f, 0.f, 0.f);
+
+					pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Stun"), &vPos);
+
+					RELEASE_INSTANCE(CGameInstance);
+
+					m_bStun = true;
+				}
 				m_fAirborneTime += fTimeDelta;
 				m_eState = STATE_IDLE;
 
@@ -96,6 +108,7 @@ void CPantheon::Tick(_float fTimeDelta)
 					m_bAirborne = false;
 					m_bIsChanneling = false;
 					m_bPatternFinished = true;
+					m_bStun = false;
 				}
 			}
 

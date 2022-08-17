@@ -208,6 +208,7 @@
     <ClInclude Include="..\Public\Player_R_Effect.h" />
     <ClInclude Include="..\Public\Player_R_Hit_Effect.h" />
     <ClInclude Include="..\Public\RazorBeak.h" />
+    <ClInclude Include="..\Public\Stun.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\UI.h" />
     <ClInclude Include="..\Public\Volibear.h" />
@@ -280,6 +281,7 @@
     <ClCompile Include="..\Private\Player_R_Effect.cpp" />
     <ClCompile Include="..\Private\Player_R_Hit_Effect.cpp" />
     <ClCompile Include="..\Private\RazorBeak.cpp" />
+    <ClCompile Include="..\Private\Stun.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\UI.cpp" />
     <ClCompile Include="..\Private\Volibear.cpp" />
