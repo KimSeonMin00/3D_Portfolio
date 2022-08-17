@@ -460,7 +460,7 @@ void CWolf::Attack(_float fTimeDelta)
 
 				CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-				((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(50.f);
+				((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(5.f);
 
 				pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Hit_Effect_Normal"), &m_vMovePos);
 

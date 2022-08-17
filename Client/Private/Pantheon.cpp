@@ -44,6 +44,8 @@ HRESULT CPantheon::NativeConstruct(void * pArg)
 	m_pTransformCom->Set_Scaled(XMVectorSet(0.75f, 0.75f, 0.75f, 0.f));
 
 	m_fMoveSpeed = 4.f;
+	m_fHealthPoint = 5000.f;
+	m_fMaxHealth = 5000.f;
 
 	return S_OK;
 }
@@ -715,7 +717,7 @@ void CPantheon::Attack(_float fTimeDelta)
 				{
 					CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
-					((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
+					((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(30.f);
 
 					pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Pantheon_Hit_Effect"), &m_vMovePos);
 
@@ -809,7 +811,7 @@ void CPantheon::Q_Skill(_float fTimeDelta)
 
 			if (((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pQ_Hitbox))
 			{
-				((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
+				((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(50.f);
 
 				__super::Chase_Player(fTimeDelta);
 
@@ -1000,7 +1002,7 @@ void CPantheon::E_Skill(_float fTimeDelta)
 
 					if (XMVectorGetX(XMVector3Dot(vLook, vPlayer)) >= cos(XMConvertToRadians(30.f)))
 					{
-						((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
+						((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(5.f);
 
 						CTransform* pPlayer_Transform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_Transform"));
 
@@ -1047,7 +1049,7 @@ void CPantheon::E_Skill(_float fTimeDelta)
 
 					if (XMVectorGetX(XMVector3Dot(vLook, vPlayer)) >= cos(XMConvertToRadians(30.f)))
 					{
-						((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
+						((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(30.f);
 
 						CTransform* pPlayer_Transform = (CTransform*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_Transform"));
 

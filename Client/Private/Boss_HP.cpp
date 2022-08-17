@@ -70,9 +70,6 @@ HRESULT CBoss_HP::Render()
 	if (FAILED(m_pTexture_Frame->Bind_OnShader(m_pShaderCom, "g_DiffuseTexture", 0)))
 		return E_FAIL;
 
-	_float fRatio = 1.f;
-	m_pShaderCom->Set_RawValue("g_Ratio", &fRatio, sizeof(_float));
-
 	m_pShaderCom->Set_RawValue("g_Alpha", &m_fAlpha, sizeof(_float));
 
 	if (FAILED(m_pShaderCom->Begin(1)))

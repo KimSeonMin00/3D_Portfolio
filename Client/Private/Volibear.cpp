@@ -56,7 +56,8 @@ HRESULT CVolibear::NativeConstruct(void * pArg)
 	m_pTransformCom->LookAt(XMVectorSet(0.f, 0.f, -1.f, 1.f));
 
 	m_pTransformCom->Set_Scaled(XMVectorSet(0.75f, 0.75f, 0.75f, 0.f));
-
+	m_fHealthPoint = 5000.f;
+	m_fMaxHealth = 5000.f;
 
 	CGameInstance*		pGameInstance = GET_INSTANCE(CGameInstance);
 
@@ -186,7 +187,7 @@ void CVolibear::Late_Tick(_float fTimeDelta)
 				{
 					__super::Chase_Player(fTimeDelta);
 
-					((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
+					((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(50.f);
 					pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Voli_Hit"), &m_vMovePos);
 					m_bHitPlayer = true;
 				}
@@ -201,7 +202,7 @@ void CVolibear::Late_Tick(_float fTimeDelta)
 				{
 					__super::Chase_Player(fTimeDelta);
 
-					((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
+					((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(70.f);
 					pGameInstance->Add_Layer(m_iLevel, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Effect_Voli_Hit"), &m_vMovePos);
 					m_bHitPlayer = true;
 				}
@@ -1279,8 +1280,6 @@ void CVolibear::Stun(_float fTimeDelta)
 
 			RELEASE_INSTANCE(CGameInstance);
 
-			m_bStun = true;
-
 			m_fStunTime = 0.f;
 			m_pModelCom->SetUp_AnimationIndex(m_iCurrentIndex);
 			m_pModelCom->Set_Initialize();
@@ -1600,22 +1599,6 @@ void CVolibear::Pattern_5(_float fTimeDelta)
 	{
 		if (m_eState == STATE_FLY && m_pModelCom->Get_Finished())
 		{
-			if (m_bCutScene == true)
-			{
-				/*CGameInstance* pGameInstance = CGameInstance::Get_Instance();
-
-				if (pGameInstance == nullptr)
-					return;
-
-				Safe_AddRef(pGameInstance);
-
-				((CCamera_Free*)pGameInstance->Get_GameObjectPtr(LEVEL_GAMEPLAY, TEXT("Layer_Camera"), 0))->Set_State(CCamera_Free::STATE_PLAYER);
-
-				Safe_Release(pGameInstance);*/
-
-				m_bCutScene = false;
-			}
-
 			m_fFlyAttackDelay += fTimeDelta;
 
 			if (m_fFlyAttackDelay >= 0.5f)

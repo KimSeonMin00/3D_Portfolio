@@ -81,7 +81,7 @@ void CPantheon_W_Effect::Tick(_float fTimeDelta)
 
 		if (((CCollider*)pGameInstance->Get_Component(m_iLevel, TEXT("Layer_Player"), TEXT("Com_HitBox")))->Collision_AABB(m_pSphere))
 		{
-			((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(10.f);
+			((CPlayer*)pGameInstance->Get_GameObjectPtr(m_iLevel, TEXT("Layer_Player")))->Damaged(70.f);
 
 			m_bPlayer_Hit = true;
 		}
